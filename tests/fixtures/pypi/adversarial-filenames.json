@@ -1,0 +1,57 @@
+{
+  "comment": [
+    "TM-2's corpus. `src/pypi/filename.rs` is a hand-rolled PEP 427/625 splitter, and",
+    "a misattributed filename would be judged as some other version — which is how a",
+    "version-specific block gets escaped. Every case below must yield either the",
+    "version named here or an exclusion; none may yield a different version.",
+    "",
+    "`version` is the spelling the filename carries, or null when the file cannot be",
+    "named at all and must be excluded. `listed` is whether the file appears in the",
+    "served listing when `friendly-bard` version `1.0` is blocked — so it is false",
+    "for every excluded file, false for every spelling PEP 440 says *is* 1.0, and",
+    "true for every genuinely different release.",
+    "",
+    "Only the `friendly-bard` cases take part in the end-to-end half; the others are",
+    "there because a version-like or heavily punctuated project name is exactly what",
+    "a naive splitter mis-reads."
+  ],
+  "blocked": {"project": "friendly-bard", "version": "1.0"},
+  "cases": [
+    {"project": "friendly-bard", "filename": "friendly_bard-1.0-py3-none-any.whl", "version": "1.0", "listed": false},
+    {"project": "friendly-bard", "filename": "friendly-bard-1.0.tar.gz", "version": "1.0", "listed": false},
+    {"project": "friendly-bard", "filename": "friendly.bard-1.0.zip", "version": "1.0", "listed": false},
+    {"project": "friendly-bard", "filename": "friendly--bard-1.0.tar.bz2", "version": "1.0", "listed": false},
+    {"project": "friendly-bard", "filename": "FRIENDLY_BARD-1.0-py3-none-any.whl", "version": "1.0", "listed": false},
+    {"project": "friendly-bard", "filename": "FrIeNdLy-._.-bArD-1.0.tgz", "version": "1.0", "listed": false},
+    {"project": "friendly-bard", "filename": "friendly_bard-1.0-1-py3-none-any.whl", "version": "1.0", "listed": false},
+    {"project": "friendly-bard", "filename": "friendly_bard-1.0.0-py3-none-any.whl", "version": "1.0.0", "listed": false},
+    {"project": "friendly-bard", "filename": "friendly_bard-1.0.post1-py3-none-any.whl", "version": "1.0.post1", "listed": true},
+    {"project": "friendly-bard", "filename": "friendly_bard-1.0.dev0-py3-none-any.whl", "version": "1.0.dev0", "listed": true},
+    {"project": "friendly-bard", "filename": "friendly_bard-1.0rc1-py3-none-any.whl", "version": "1.0rc1", "listed": true},
+    {"project": "friendly-bard", "filename": "friendly_bard-1.0+local.1-py3-none-any.whl", "version": "1.0+local.1", "listed": true},
+    {"project": "friendly-bard", "filename": "friendly_bard-1.0+ubuntu_1-py3-none-any.whl", "version": "1.0+ubuntu_1", "listed": true},
+    {"project": "friendly-bard", "filename": "friendly_bard-2.0-py3-none-any.whl", "version": "2.0", "listed": true},
+    {"project": "friendly-bard", "filename": "friendly-bard-2.0.1.tar.gz", "version": "2.0.1", "listed": true},
+
+    {"project": "friendly-bard", "filename": "friendly_bard-1.0-extra-py3-none-any.whl", "version": null, "listed": false},
+    {"project": "friendly-bard", "filename": "friendly_bard-1.0-py3-none-any-more.whl", "version": null, "listed": false},
+    {"project": "friendly-bard", "filename": "friendly_bard-1.0.whl", "version": null, "listed": false},
+    {"project": "friendly-bard", "filename": "friendly_bard-1.0-py3-none.whl", "version": null, "listed": false},
+    {"project": "friendly-bard", "filename": "friendly_bard-.1.0-py3-none-any.whl", "version": null, "listed": false},
+    {"project": "friendly-bard", "filename": "friendly-bard-notaversion.tar.gz", "version": null, "listed": false},
+    {"project": "friendly-bard", "filename": "friendly_bard-1.0.egg", "version": null, "listed": false},
+    {"project": "friendly-bard", "filename": "notfriendly-bard-1.0.tar.gz", "version": null, "listed": false},
+    {"project": "friendly-bard", "filename": "bard-1.0.tar.gz", "version": null, "listed": false},
+    {"project": "friendly-bard", "filename": "friendly_bard_extra-1.0-py3-none-any.whl", "version": null, "listed": false},
+
+    {"project": "1-0", "filename": "1.0-1.0.tar.gz", "version": "1.0", "listed": false},
+    {"project": "1-0", "filename": "1_0-1.0.zip", "version": "1.0", "listed": false},
+    {"project": "1-0", "filename": "1.0-2.0-py3-none-any.whl", "version": "2.0", "listed": false},
+    {"project": "1-0", "filename": "1.0.1-1.0.tar.gz", "version": null, "listed": false},
+
+    {"project": "a-b", "filename": "a._-_.b-1.0.tar.gz", "version": "1.0", "listed": false},
+    {"project": "a-b", "filename": "a_b-1.0-py3-none-any.whl", "version": "1.0", "listed": false},
+    {"project": "a-b", "filename": "a-b-c-1.0.tar.gz", "version": null, "listed": false},
+    {"project": "a-b", "filename": "a-1.0.tar.gz", "version": null, "listed": false}
+  ]
+}

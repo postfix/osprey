@@ -1,8 +1,8 @@
 # Package Firewall — Rust MVP Specification
 
 Status: reviewed implementation specification; runtime validation pending  
-Date: 2026-09-17  
-Revision: 2 — embedded Turso and consistency review  
+Date: 2026-09-19  
+Revision: 3 — bounded maximum age for cached project metadata  
 Principles: KISS, YAGNI, fast warm requests, bounded resource use
 
 ## 1. Problem and solution
@@ -78,6 +78,7 @@ blocklist_file = "/etc/package-firewall/blocklist.json"
 
 cooldown_seconds = 86400
 metadata_ttl_seconds = 300
+metadata_max_age_seconds = 86400      # 24 h ceiling on a cached copy; 0 disables
 blocklist_poll_seconds = 5
 
 cache_max_bytes = 107374182400        # 100 GiB, including temporary downloads
@@ -92,7 +93,7 @@ max_active_requests = 1024
 
 Public upstreams are fixed in this release: `https://registry.npmjs.org` and `https://pypi.org`. PyPI artifact downloads use `https://files.pythonhosted.org`. The public URL has no query, fragment, or path prefix. Configuration changes require a restart; blocklist changes do not.
 
-Reject invalid configuration, including an artifact limit larger than the total cache budget. Durations are nonnegative integers; zero cooldown explicitly disables only the age rule. Zero polling intervals and zero capacity limits are invalid.
+Reject invalid configuration, including an artifact limit larger than the total cache budget. Durations are nonnegative integers; zero cooldown explicitly disables only the age rule. Zero polling intervals and zero capacity limits are invalid. A nonzero `metadata_max_age_seconds` below `metadata_ttl_seconds` is invalid, because a ceiling beneath the revalidation interval would expire every copy before it could be revalidated; zero explicitly disables the ceiling and restores unbounded revalidation.
 
 ```text
 package-firewall serve --config /etc/package-firewall/config.toml
@@ -122,6 +123,8 @@ When a timestamp is absent, use a persisted first-seen timestamp for that exact 
 An exact artifact reference includes ecosystem, normalized package name, upstream version, filename, upstream URL, and expected integrity digests. Treat contradictory metadata for the same published filename/version as an upstream integrity error until fresh consistent metadata is available.
 
 The host must maintain an accurate clock. Cached projection expiry uses monotonic time as well as the UTC eligibility deadline. Recompute projections after a detected backward wall-clock jump; do not reuse an earlier age decision until its timestamp is eligible again.
+
+The metadata maximum-age ceiling is deliberately a wall-clock comparison rather than a monotonic one, because the time it measures from is persisted and must survive a restart, which no monotonic reading does. A wall-clock jump therefore shifts when the ceiling trips rather than defeating it: a forward jump makes snapshots look over-age early, which costs an extra full fetch and fails safe; a backward jump delays the trip by at most the size of the jump, after which wall time advances again and the ceiling applies as before.
 
 Known malware always overrides age. There are no implicit exemptions for top-level dependencies, locked dependencies, or popular packages.
 
@@ -219,13 +222,18 @@ The lookup path uses hash sets for package, package/version, and algorithm/diges
 
 ## 9. Artifact download and verification
 
-Artifact URLs have this form:
+Artifact URLs have one of these two forms, one per ecosystem:
 
 ```text
-/artifacts/{reference_id}/{filename}
+/npm/artifacts/{reference_id}/{filename}
+/pypi/artifacts/{reference_id}/{filename}
 ```
 
+Artifacts are served under the same path prefix as the ecosystem's metadata because npm 12 defaults `allow-remote` to `none` and exempts a registry's own tarballs only when the tarball URL shares both the origin and the path prefix of the configured registry. A tarball served outside that prefix is classed as a remote dependency and refused. PyPI uses the same shape for symmetry.
+
 `reference_id` is a SHA-256 digest of an unambiguous, length-prefixed encoding of the exact artifact reference. It is a lookup key, not a content hash or authorization token. Persist its record before advertising the URL. The filename preserves the original extension and wheel name. The server looks up the record; it never constructs an upstream URL from an arbitrary client URL parameter.
+
+The ecosystem in the URL is part of what the client is asserting, and it is checked the same way: the server compares it with the stored record's own ecosystem and answers `404` on a mismatch, on every method and for a byte range as well as a whole body. Because the reference id is derived from public metadata and is not an authorization token, an unchecked ecosystem segment would let a valid reference be served, and logged, under an ecosystem that did not decide it.
 
 Every artifact request must confirm that the reference is still advertised by a sufficiently fresh upstream project snapshot, pass the current blocklist/age checks, and then use the flow below. A removed reference is unavailable even if its bytes remain cached. Perform locally conclusive denials first: a known malware block or expired blocklist must not wait for upstream metadata. Local absence of a denial does not authorize delivery.
 
@@ -278,7 +286,7 @@ Persist only:
 | Record | Required fields |
 | --- | --- |
 | Schema | Schema version and the Turso engine/crate version used by this build. |
-| Project snapshot | Ecosystem, normalized name, upstream payload, validators, last successful validation time, generation. |
+| Project snapshot | Ecosystem, normalized name, upstream payload, validators, last successful validation time, last full fetch time, generation. |
 | Artifact reference | Reference ID, project, version, filename, URL, expected digests, publication/first-seen time, computed digests, optional content key. |
 | Content | SHA-256 key, SHA-512, size, creation/access timestamps. |
 | Blocklist | Last accepted revision, timestamps, complete validated snapshot. |
@@ -305,6 +313,14 @@ The deadline is the earliest of upstream metadata TTL, blocklist expiry, and the
 
 After metadata TTL, revalidate upstream before responding. An upstream `304` renews upstream freshness, but the firewall still rebuilds its policy-dependent representation when required. Coalesce concurrent metadata refreshes for the same project. Do not serve expired metadata during an upstream outage in the MVP.
 
+A cached project snapshot has a maximum age independent of revalidation. Track the last full fetch time separately from the last successful validation time: a `304` renews validation time only, never full fetch time. Once a snapshot's age since its last full fetch reaches `metadata_max_age_seconds`, it is over-age; the next request must fetch it in full, sending no validators, so upstream cannot answer `304`. An over-age snapshot is never served: if the full fetch fails or upstream is unreachable, refuse the request under the existing rule against serving expired metadata, rather than serving the over-age copy. This bounds how long an unchanging or dishonest upstream can hold this firewall's view of a project fixed. It is a freshness bound only; it neither weakens nor substitutes for blocklist enforcement, which invalidates rendered responses on its own revision and does not depend on upstream contact.
+
+Spread the ceiling so that projects fetched together do not all expire together. Each project's effective ceiling is its configured ceiling reduced by a deterministic per-project offset of up to one tenth of that ceiling, derived from the project's own identity so it is stable across restarts and across instances. The offset only ever shortens, so the configured value is never exceeded by the spread itself. Without this, a bulk seed or a restore leaves every snapshot sharing one expiry instant, and an upstream outage that crosses it turns a gradual lapse into a simultaneous fleet-wide refusal.
+
+The precise staleness bound, stated exactly rather than as an absolute, because coalescing makes an absolute unachievable without breaking it: a snapshot is never served beyond `metadata_max_age_seconds` plus at most the duration of one in-flight upstream refresh, itself bounded by the upstream request timeout. The overshoot is reachable only for a request that joins a refresh already in flight, and only when that refresh outlasts the joined project's spread offset — so it requires an offset near zero, which occurs for roughly one project in `metadata_max_age_seconds / 10`, and for every project when the ceiling is configured below ten times the upstream timeout. Requests that do not coalesce onto an in-flight refresh are never served beyond the configured maximum. The overshoot does not compound: the stored full fetch time is never advanced by it, no rendered representation is cached past the ceiling, and the next request that does not coalesce re-evaluates against its own clock and refuses. Closing the gap entirely would require each waiter to re-evaluate freshness after the refresh it joined completes, which contradicts the coalescing requirement above and would convert one refresh into one unconditional full fetch per waiter.
+
+The ceiling applies to project metadata only. It does not apply to verified artifact bytes, which are content-addressed and cannot become stale; their only removal reason remains capacity eviction. It does not apply to cached absent-name marks either: those already expire at `metadata_ttl_seconds` on the monotonic clock and are always rechecked unconditionally, so a ceiling that cannot be shorter than that TTL could never bind on them.
+
 Send `Cache-Control: no-store` on downstream metadata, artifacts, and errors. Do not forward upstream validators or return downstream `304` responses in this release. This avoids intermediaries retaining previously allowed responses. Package managers may still use their own local caches; HTTP headers do not eliminate that boundary.
 
 Disk eviction uses approximate least-recently-used order, with access updates batched off the request path. Never evict open files. Reserve capacity for temporary downloads; count unknown-length downloads against `max_artifact_bytes` until their final size is known. If capacity cannot be reserved or reclaimed, refuse the cold request without deleting in-use files. Reject an artifact exceeding its size cap even when `Content-Length` is missing.
@@ -322,7 +338,8 @@ The artifact cache limit does not cap the persistent state database or WAL. Moni
 | `GET /npm/-/ping` | npm connectivity response. |
 | `GET /pypi/simple/` | Known-project index. |
 | `GET /pypi/simple/{project}/` | Filtered HTML or JSON file listing. |
-| `GET, HEAD /artifacts/{reference_id}/{filename}` | Verified artifact delivery. |
+| `GET, HEAD /npm/artifacts/{reference_id}/{filename}` | Verified artifact delivery for an npm reference. |
+| `GET, HEAD /pypi/artifacts/{reference_id}/{filename}` | Verified artifact delivery for a PyPI reference. |
 | `GET /health/live` | Process liveness. |
 | `GET /health/ready` | Valid policy, usable storage, service ready; no live upstream probe. |
 
@@ -449,3 +466,50 @@ These are specification findings and corrections, not reproduced defects in an e
 License clarification: SQLite itself is public domain and does not require a commercial license; its optional paid Warranty of Title is a separate offering. Turso is chosen for the requested native Rust implementation and conventional MIT terms, not to escape an obligatory SQLite license fee. [SQLite's statement](https://www.sqlite.org/copyright.html).
 
 Post-rewrite verification covered resolution, cooldown, hash enforcement, cache reuse, blocklist replacement, concurrency, recovery, deployment boundaries, and performance/test contracts. JSON and TOML examples were parsed. Protocol compatibility, Turso persistence behavior, and performance have not been executed here. The design can proceed to implementation with the pinned-engine tests above as release gates; production readiness remains unassessed. Client-cache control and external intelligence quality retain their stated MVP boundaries.
+
+## 16. Review record for revision 3
+
+Revision 3 adds one control: a configurable maximum age for a cached project snapshot, so that
+repeated upstream `304` answers cannot hold this firewall's view of a project fixed indefinitely.
+It adds `metadata_max_age_seconds` to §4, "last full fetch time" to the §10 persistence table, a
+ceiling paragraph and a spreading rule to §10, and a clock-dependence paragraph to §5.
+
+The revision was reviewed adversarially before any code was written, and three findings changed
+it. The first was a blocker: the draft applied the ceiling to cached absent-name marks as well as
+to project snapshots, which cannot work. §4 requires the ceiling to be at least
+`metadata_ttl_seconds`, absent marks already expire at exactly that TTL on the monotonic clock and
+are rechecked unconditionally, and the mark carries no wall-clock field for a ceiling to read — so
+the ceiling could never bind on them, and a test named for it could only have passed by
+coincidence with behaviour that already existed. The claim and its test were removed rather than
+given a mechanism, because the property they described was already true.
+
+The second finding was that fail-closed expiry needed a spreading rule. Snapshots fetched together
+share an expiry instant, so a bulk seed or a restore would make an upstream outage that crosses
+the ceiling produce one simultaneous fleet-wide refusal instead of a gradual lapse. The same
+property gives an actor who can disrupt only the network path to upstream a new lever: sustaining
+that disruption past the ceiling once now takes warm projects offline that previously survived an
+outage indefinitely. The deterministic per-project offset in §10 answers the first and bounds the
+second; the residual risk is accepted, owned by operations, and documented there rather than left
+implicit. The offset only ever shortens a ceiling, so the spread itself never exceeds the
+configured value.
+
+The third finding was that the ceiling's clock dependence was stated nowhere, which §5 now covers.
+
+**Amended 2026-09-20, after implementation.** Revision 3 originally stated in §10 that "no snapshot
+is served beyond `metadata_max_age_seconds`, and the configured value remains a true maximum."
+Implementation and three independent reviews established that this absolute is not achievable
+alongside the coalescing requirement in the same section. A request that joins a refresh already in
+flight inherits the classification the leader made when it started, so a copy that crosses the
+ceiling mid-flight can be served to that joiner — bounded by one upstream request timeout, and
+reachable only when the refresh outlasts the joined project's spread offset. §10 now states the
+precise bound instead of the absolute. The alternative was rejected on the evidence: re-evaluating
+freshness per waiter after the joined refresh completes would convert one refresh into one
+unconditional full fetch per waiter, since over-age requests send no validators, which is the
+duplicated-upstream-traffic failure the coalescing requirement exists to prevent. The guarantee the
+control was asked for — that an unchanging or dishonest upstream cannot hold this firewall's view
+of a project fixed — is unaffected, because the overshoot is bounded by a single request timeout,
+never advances the stored full fetch time, and cannot compound across requests.
+
+Retained limitation: the review was a self-review rather than an independent pass, because no
+isolated reviewer was available in the session that produced it. That is the same constraint
+recorded for the two previous adversarial passes on this specification.

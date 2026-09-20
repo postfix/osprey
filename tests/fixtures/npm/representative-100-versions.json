@@ -1,0 +1,6240 @@
+{
+ "_id": "fixture-widget",
+ "_rev": "41-0000000000000000",
+ "name": "fixture-widget",
+ "description": "A representative 100-version package fixture.",
+ "dist-tags": {
+  "latest": "2.0.4",
+  "next": "2.0.0-rc.5",
+  "beta": "2.0.2",
+  "legacy": "1.0.0"
+ },
+ "versions": {
+  "1.0.0": {
+   "name": "fixture-widget",
+   "version": "1.0.0",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.0",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "7a1ef289c04e313ab6ddff761a801cea3a1a6113",
+    "integrity": "sha512-j+QTbgb5GOJnTRuCaUvKk7fza0e1mXM1vrf/mtkRRzyKp7QcyoY6x+777lrBqjjdjgeJsOBl99p9GgSe3+ACng==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.0.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.1": {
+   "name": "fixture-widget",
+   "version": "1.0.1",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.1",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "86a3962076bc3fa814135332561079a67fcf12ef",
+    "integrity": "sha512-yOcgOdCs3T5R8Q7zEXqEiYjnxh/uldqniq2kya/qnMqzwxPyoD6oSFKvHcEDXJ3GQoOIGeOOCeslODIc7c5dOg==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.1.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.2": {
+   "name": "fixture-widget",
+   "version": "1.0.2",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.2",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "e93659a2952bb6a8a067a7c41583db08ec6c1dc0",
+    "integrity": "sha512-3EFvgz/te/QB9sMy4NiRmPTWt5stjJOxwPhUclNUNbDONoXeAUIQJ2ISl8Tps7ZfvC/9z6MzamKeakCHJalbyg==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.2.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.3": {
+   "name": "fixture-widget",
+   "version": "1.0.3",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.3",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "061a9c5b07e166dae6b4205ca7d1b76ae67fdd37",
+    "integrity": "sha512-IA/roKch4Tl5ekB4NGZmq1LllGU77q6iY0Q1Vt2q9VbQvh0bJ74BFF2xAES0vLhb5cRTt1SVNykQMbWmID2wUw==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.3.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.4": {
+   "name": "fixture-widget",
+   "version": "1.0.4",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.4",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "2a473a2f6878b3c9821ca0546978af7ab7e895ff",
+    "integrity": "sha512-TaUUuVibQ8AM+NgrmdcXfhyAfxEWlARjj0maDPK/w+lfkQ9SfRvbjx8u7VpSwVvQd7c1+Nk7leWt+fj2P9Hozw==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.4.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.5": {
+   "name": "fixture-widget",
+   "version": "1.0.5",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.5",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "a8408756579abcfd881ef503a031e58d9db694a6",
+    "integrity": "sha512-+PPIHHy3s76SFUxJh4tje4YyqEVvPPx7jukx37mB2rOWDlwkOs2cYjBScy7czXjBKR7Cfa8TBdhXnRhFkmk3XA==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.5.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.6": {
+   "name": "fixture-widget",
+   "version": "1.0.6",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.6",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "04e6295444ded8c2cd1591195b484ff915e9715b",
+    "integrity": "sha512-Aw/vb1R8+ffxXz1iCmQUvDGZXf+m+ekVE0uCKQEtnlv8zEbgd9PQG3Jr2wZhjhkpYCcrg+w1Ql+g+35J0Z16Bw==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.6.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.7": {
+   "name": "fixture-widget",
+   "version": "1.0.7",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.7",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "8f1c3eb1240a0f9a377c05a38cbb786f4ec265c8",
+    "integrity": "sha512-hm157KnT1hL9AgFHcxAtcgzcDCQla8NL1zWE2hzbKE5ZdjNXn42CQ/BOweIjUTQGtW2zjU+kL5L7ZE/0Yqs1AQ==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.7.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.8": {
+   "name": "fixture-widget",
+   "version": "1.0.8",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.8",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "3ab892fa2ab23d0a0831bf3ceff5cfcc559a71c9",
+    "integrity": "sha512-jnHgVoPitLCjJpH30JfJnW/GMF8NHaIgcXCEZyjzGPnpC7mSbyr/gYlk9kkAVycFlLnPWbyM1MwuHEwNZm4tzQ==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.8.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.9": {
+   "name": "fixture-widget",
+   "version": "1.0.9",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.9",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "72c570c51aa24c3d4e872cedc9429d63021f658e",
+    "integrity": "sha512-O1MiZhGr83g0bQIXDWNRtLQcWs9Lkwwk1ruS3moQDZjwetgFv1U9kcqnHKcuOZdzSChXD6M0/ZZdU6PCQY0Zcw==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.9.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.10": {
+   "name": "fixture-widget",
+   "version": "1.0.10",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.10",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "3918aa601e59aeb1d0b4c29fb313c2bc504f13f9",
+    "integrity": "sha512-4JTger3LVh8PDiZRcI7ZTRQfJI0enqpg5Mdzfg4FzCh+2HmGnrEaA37jLK+3NQORRss8PecZhBHl256m9NDI4w==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.10.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.11": {
+   "name": "fixture-widget",
+   "version": "1.0.11",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.11",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "7ebaecc9dc08e67a2fc518c511d233eaaea7b2d7",
+    "integrity": "sha512-hY1XvhGP/w9ARbhjqocDN2YbOnxDPITYs4SxqdmneABnydTqMBXaJnm5myhlbUu/nftykieZb6xuP2lTbfhQEQ==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.11.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.12": {
+   "name": "fixture-widget",
+   "version": "1.0.12",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.12",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "2d2f28bdea10650e24af29f7594eeb0a4d7d1aaa",
+    "integrity": "sha512-C0LJb6nvDb3w7n6R026YIuCVcfURTda9iBSTdmabRWYGmEq7skzuBYhcX9A4jabQBeIJVzwDkrKk2LvXrQf9Ng==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.12.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.13": {
+   "name": "fixture-widget",
+   "version": "1.0.13",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.13",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "ad6b75f9fd2090de32ed7a35a46c8546ef40bf29",
+    "integrity": "sha512-GTHjFokaV32Aq0yw7TPzCSmu9SEK0gDQcoImLzp2iNBLG/8HpPgVzPpENk6Ypk1Hh9Wn08EVee3jiYMSMkUnFA==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.13.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.14": {
+   "name": "fixture-widget",
+   "version": "1.0.14",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.14",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "3a6a01b8191f188989d7833b1f574a08da5574ac",
+    "integrity": "sha512-20/VRAiYXirn8qhyW7nlnk2tokjexuGKMBgnYgI0eNVy7MHTd+qQV5jXzfsDAd070E5nkU4F39xVGm0ui4Cvcw==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.14.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.15": {
+   "name": "fixture-widget",
+   "version": "1.0.15",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.15",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "8dcf8e1211b3dc4cfae568c2b333af5a7d6a27c7",
+    "integrity": "sha512-DxlDCO6BsJ9KZxoyp0sggKXDzKZJWyZshoo5Trnr4BDRFKifuAmZdadofhiGzRUxlfmRgC+WnsnckCmmqsVEtg==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.15.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.16": {
+   "name": "fixture-widget",
+   "version": "1.0.16",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.16",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "2577440e84fc292dab21ba2520921c7a9ccad511",
+    "integrity": "sha512-Edno7bX09sgC8iGbqA6X4Pmj7bXsGrpDf/GwGaadngV8icdzvDHCBHwnb0mT/Jn7HA8x2Unf7+k37cIEy1Gscw==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.16.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.17": {
+   "name": "fixture-widget",
+   "version": "1.0.17",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.17",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "adea42bbdb3d15dbecc5e5987bf549275b109fc0",
+    "integrity": "sha512-D9shmIdrbr9UrOb0iq9bmei9LtfY3b3hA7Q/XGNIw3D8R9TbfDTifg+tWd2x/n2vP8q9gI85i8bKLsMfY067mg==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.17.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.18": {
+   "name": "fixture-widget",
+   "version": "1.0.18",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.18",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "2a9f4ad3c179843cd3568a84297b3e11df0247cd",
+    "integrity": "sha512-zeKYvjXvm8yCC9UlgY3RMcROF7nUxRBzlE9WiT7fxC4udQqkuAhGs4fFlL98z7sQ4KeLrXmNbDLqq0Z+yycnSw==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.18.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.19": {
+   "name": "fixture-widget",
+   "version": "1.0.19",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.19",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "3fef255c13db41bea317a9ff527f4c80da31a45e",
+    "integrity": "sha512-AeRIm0IzYJZfuRTZKUyCE+RDAZx26jo345Ov21Vp/Y4shWITCwqyVkNS8fTirFkHrb9UycaOmVNYAUufr0wS6w==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.19.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.20": {
+   "name": "fixture-widget",
+   "version": "1.0.20",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.20",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "5f849b45e3c7f8fac707fe726956bdea26bb6b2e",
+    "integrity": "sha512-maIPScz6+rpbPA51gaFD/bKVIKfzeok3hgdkwO94M7PkNKeymkT1RL/ndZ4xVgvdo6KgQTYi/okM5YhnJCs/QA==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.20.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.21": {
+   "name": "fixture-widget",
+   "version": "1.0.21",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.21",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "34440c720c3812317eb942da5e55c9700428f648",
+    "integrity": "sha512-nxP83JwHgUdsleD8mF0vIXaY1yAoEFNPfZuF9j72UrX4/PHk/MWB9lTCKMkga2LUpHapi2RvM6EBQL8DqaKdKQ==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.21.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.22": {
+   "name": "fixture-widget",
+   "version": "1.0.22",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.22",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "b987347d443466061cf9f817198429649a939751",
+    "integrity": "sha512-YKs7G3k/8c+csNTukLEuMNO76b5i/iTnK25GdZbvBf7qSwFrID7SndpGJDj0a29RocdkgW3wfs6Aq0+6xwSDyg==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.22.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.23": {
+   "name": "fixture-widget",
+   "version": "1.0.23",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.23",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "b8abc5369611ef999103a3ca912f3811ee14303f",
+    "integrity": "sha512-cpyjOxAW6TTWsml7TYQ962h6TIZjWJJ42ImTPA+RXFhqgmGvVTnhGHJX3ta4NjzmGUzYAAp6leOOVazWx++ozw==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.23.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.24": {
+   "name": "fixture-widget",
+   "version": "1.0.24",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.24",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "ab364f46efef627fd6a5e8a3488fb71776587f94",
+    "integrity": "sha512-lsa4ciy+XV1AmKsHAqa/pgp70iSKGRgwyOmQuGPhXoT3SjRGqe/Knm6+EFUjN+eaYM4zfjtxBpsJ2pRJ3P4AwQ==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.24.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.25": {
+   "name": "fixture-widget",
+   "version": "1.0.25",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.25",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "e5eacd5074870411436c586362a69ea034339568",
+    "integrity": "sha512-VTFzY10rwHGQlbN8w5FpGKia/ATq/rvOCbf8LZjM81pZNF+s5pn1EDxM5AuGBRmorgUuH6IcQaMsXCmEJ1X5UQ==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.25.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.26": {
+   "name": "fixture-widget",
+   "version": "1.0.26",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.26",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "5fb04fce5a84ecbdfc9359c965e0a5d0ca62cb72",
+    "integrity": "sha512-wb1nUd+Hvg6gjNn7SOGVFg/4yfa83cQC0/5IuT7zdmvCYzolLCrDkZtGVShVU9tEKUwxGnwKbThA7DaQus1TCw==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.26.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.27": {
+   "name": "fixture-widget",
+   "version": "1.0.27",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.27",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "e94ade95a3735b9c97b24b01950fe1ef42fcfdbf",
+    "integrity": "sha512-J1pcqNrNf4R93zyVCSw7ZKk661Wb0aNxbrWARlcl83IN414uby81xPcKChejlKtTK5BdsXbjBcVHXicudN1veA==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.27.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.28": {
+   "name": "fixture-widget",
+   "version": "1.0.28",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.28",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "c405ef94936e917f6d096324badd9ab83e115c42",
+    "integrity": "sha512-i41VUz1SxevCbR4Qnn8g/rMLn4R5fXIzmvfVQTZWoCQ2XUnV7l14bEW7foGgvAa32tKLCp9Phj38RV6kaSsZYA==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.28.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.29": {
+   "name": "fixture-widget",
+   "version": "1.0.29",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.29",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "4cc3c5c3dc2a34835d44f034df49e0f31f36e3ee",
+    "integrity": "sha512-lEZbrEkoaq7sPMjGyXKj6leeIAezgaqzwpXsk+B/bplQ4DL2AveM50600dcv1mjkGkAdVB9OOAWYJNtCvr0S3w==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.29.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.30": {
+   "name": "fixture-widget",
+   "version": "1.0.30",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.30",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "8c01ca492841d58d5442b5463e4f394e50ec3e10",
+    "integrity": "sha512-AVIMLqnp/GvW7nL4eQxCoOUUP1PldfGT4BQiCTRKU9DJgfW521NxnW5oeJLFSslMdp7wt9+cBPaINQPAbycCog==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.30.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.31": {
+   "name": "fixture-widget",
+   "version": "1.0.31",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.31",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "da7143cb01a2e084cf67e5f2924eca0821aef003",
+    "integrity": "sha512-taZxTbGSij/5ogrDmIyj3SfIjyB5titmk3gZzz5I6qqUk12z+vDanMi72fT/JXwk5DxIwdDwsp3rR+KPK+6bjQ==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.31.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.32": {
+   "name": "fixture-widget",
+   "version": "1.0.32",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.32",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "84fce48ef572248bc20ca19b75ab8b73f019fbe3",
+    "integrity": "sha512-5vazpqFzWDWIdNVc1fic9ZK2smpRi0whPioQSCYR9IPckKVDA8CFocauNEnJ9C52QiKo7foKn7TV88VJGwoM/Q==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.32.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.33": {
+   "name": "fixture-widget",
+   "version": "1.0.33",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.33",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "b557c3bdd7770ed6a666e5c17d5df1d8ad7dc969",
+    "integrity": "sha512-YZolmjxONqzvPf3XeAAZivk5uEK3shm0zImV+YXImUCeOiMkNiuipKKTGk433k3hkt4vPRbD6tlRoPsjD+MPNQ==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.33.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.34": {
+   "name": "fixture-widget",
+   "version": "1.0.34",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.34",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "32cdde8c65e64d104e41162621e2819d09d4126e",
+    "integrity": "sha512-AIn2lRoS73UhRnia18y0srFiNb5yPP2mCUleMNLxf2BR2LILOz5oXzg3u8MdDlA42k+ZtBk0Pg7wOtejYIeKXQ==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.34.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.35": {
+   "name": "fixture-widget",
+   "version": "1.0.35",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.35",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "0f39bae7ee52ea6edd188ee32b56046c3e48cb3d",
+    "integrity": "sha512-ZV8kIdxmkBzQBmPXmXxGiujwBFlSt1Sh8JsE52YbIA+vyAV5TbRVp8iE4LOpUhP0t/oUBA245D5Qc+5N/xdSIg==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.35.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.36": {
+   "name": "fixture-widget",
+   "version": "1.0.36",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.36",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "b4b56d506997449c069a359b787a62baa2e2a5b7",
+    "integrity": "sha512-dCTVAOsKgrobd/6ayh6Us/hhOLj0fSOHUFGjXwW6PnbMUW+IoOhRy3LHGGadWUiZQQZw9KIc43BY8YAhDHbt0g==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.36.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.37": {
+   "name": "fixture-widget",
+   "version": "1.0.37",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.37",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "85955c4a739bc6eb4081a82e6f890939c7d14cda",
+    "integrity": "sha512-72jhkDn4PFGVGz/38J+cCtgZnggopl7a8wmXbOt6Bw84vt5Z3BlOZ1rCsKKrqO7nLXZBbDp/USEeG9D0ygNi5Q==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.37.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.38": {
+   "name": "fixture-widget",
+   "version": "1.0.38",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.38",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "230961cbbe45f3aac48289e1291c6c11738ce49e",
+    "integrity": "sha512-bjG0lqK4Da13OWoit4niQyytlX32Z0r14kVT2tBke0afZw9JmElalaHIUWISjyuDtKAzZxXEnAly79898bRIrg==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.38.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.39": {
+   "name": "fixture-widget",
+   "version": "1.0.39",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.39",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "77f5bb59af65bdf5b2a24fb07b5bfaaac14ca6ae",
+    "integrity": "sha512-i3bNgYuBqHoOUFZkpWDvUhs20/n5b+qQ2GqHK0x6enOjVaTJffii5YRXB6PUL9Ba4G32FAmMYwejbBHXKk2UZg==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.39.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.40": {
+   "name": "fixture-widget",
+   "version": "1.0.40",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.40",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "e43d5ff993dc8f486039cbff7ce42e915653024f",
+    "integrity": "sha512-c633HY/JFEOIEt5uSw8encn3Gz01Z/ofdh5F5O2ZzIE5Cj6UhQaKxm+lcjzTEMS2+8ruULcKmDHP4pIPozjl7g==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.40.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.41": {
+   "name": "fixture-widget",
+   "version": "1.0.41",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.41",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "0e811c75b60ab7b8e3958b52d9569988adb258ba",
+    "integrity": "sha512-LbAj5vtNfOIVJMWICYnfikZbpUvySfpu5lwv4a2TfTqsS+nuzG8lIK6uZj9HDaaVMMZx4nO+cInYjjis9C59nw==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.41.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.42": {
+   "name": "fixture-widget",
+   "version": "1.0.42",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.42",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "bfb705367c1c0d4c566106d79f3694c9852e315d",
+    "integrity": "sha512-8R9UGHhV1v5RdpgOZWtqrjnvrOOHT7aQO6nFVt+oCwdee+TFNHD4TX9qNZNuBNm1vEgQj0ZwA6F78wvZcOk+MA==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.42.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.43": {
+   "name": "fixture-widget",
+   "version": "1.0.43",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.43",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "0ab09f30f30a9008ac39ccad0a58083de034c70f",
+    "integrity": "sha512-fyJrwOFZtalMJENLg3hlw5nPVfbMFL2kn7b3kZeTjxdYX775SfqlFdlsnbBjoLz4xdkTrVrRPoIgsd0j0nBrew==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.43.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.44": {
+   "name": "fixture-widget",
+   "version": "1.0.44",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.44",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "f26dc37fa79182b87972c4dc997b36e4c6ec4f9f",
+    "integrity": "sha512-mDrcTUT5Rg6Xm4y6bwHKE4AKAXJluzXt2zXEIVJtpI6o0/BhkIk1m0TAggIJxhRUgEuwEnVa1rDOuzxrAw8nXw==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.44.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.45": {
+   "name": "fixture-widget",
+   "version": "1.0.45",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.45",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "a8515c75feb592f9bf974c32d01bc75c14d4b037",
+    "integrity": "sha512-T9BHiqPAwOGa1G40vVCaTk5qSoRJgDRFmRIDB1wZvWwINxUw70GGkIzafXwd//YIA+HZ6x7Q2XX3uQBXzQLRBA==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.45.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.46": {
+   "name": "fixture-widget",
+   "version": "1.0.46",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.46",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "136bf527bd12af1d3c31c8085b869809208b88ce",
+    "integrity": "sha512-l7tMSRYU2H5UsxvYTS/RE/ZMHbkKqThQrVh8111URWXeNNZzvlLG8RI1VCAgUG4LMIr1ESxOEtPHVmU6lrgkHw==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.46.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.47": {
+   "name": "fixture-widget",
+   "version": "1.0.47",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.47",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "0f876cbdeb3b695691f408b3200f6dbe2744949d",
+    "integrity": "sha512-KRJ5ivr2V/WXPixZ4UOmiHtru7kWPCg48Yp39w/eatszJ6VHMGQa8AgdridWDXGDAdQydCGE4Ma33n0lkWiUBg==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.47.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.48": {
+   "name": "fixture-widget",
+   "version": "1.0.48",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.48",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "ed2c2b2494a86fa94c5208daf19a44128a30db8c",
+    "integrity": "sha512-JkTap27ku3Z4uukRGne0GHcRjHqmScHr+uFo8orB7IISs6cLp+bixpSqStyBSBn+EHE5xRIVCgRmJpgnWMZk2g==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.48.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.49": {
+   "name": "fixture-widget",
+   "version": "1.0.49",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.49",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "c77be1753efa63042ac1bcf40d19ea4311fd90a5",
+    "integrity": "sha512-cDFcUi15+NEDhYyR34YGDpaPZvWqbX1yBS4rVcY4G6eQESOM9K0WTDlUaPXEom7LHMTlXE0Zit1KvEoDdBdfzg==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.49.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.50": {
+   "name": "fixture-widget",
+   "version": "1.0.50",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.50",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "5176936c1690f6288dbc6993182f092b6654f947",
+    "integrity": "sha512-sRb5ML1eDub5QNpZqV5e6/uyKq6+nEVrWL4PrGBnbqR92RJc7P/kh4szjXF9Ig7unCxr72k7IVz5StZD0StiKQ==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.50.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.51": {
+   "name": "fixture-widget",
+   "version": "1.0.51",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.51",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "a01d1b9c65337d14009bfef2a6656ff67553984d",
+    "integrity": "sha512-wRiUGbXXy0sBaO+rBe6BidwqudY5n+MPRtvPVuU1qUS3wP9yvk8ncQ0sLHAHKzYB3ayZbvKBEmjj4wUaAuuLfA==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.51.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.52": {
+   "name": "fixture-widget",
+   "version": "1.0.52",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.52",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "67cc25acde230a3ba6d8af11f6d34e9fb4d16498",
+    "integrity": "sha512-77ah5rCjVcfqVWJ0FWIffP4ZkK0YJ/qawoqtqOAvCwGdh5EnJmS49wQsCyerz0KOfVj5dnSVz/yGoJDN5qdcMg==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.52.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.53": {
+   "name": "fixture-widget",
+   "version": "1.0.53",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.53",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "40ed36a1bf9ac5d5fc61c1040fff7d1b66c1fb80",
+    "integrity": "sha512-HS8RUfuz3Qc7HOTTQ2jBDSqZFv7LrAMKMaeKD+dM3ybIgcpCkDBeVZRdKWKPBhpvgTi2q4JrxcPW8VitEJ6LqQ==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.53.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.54": {
+   "name": "fixture-widget",
+   "version": "1.0.54",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.54",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "cac529422dd5dda149c39523d36d64c55141f8ac",
+    "integrity": "sha512-kw2efui6hdoTgQ8JtOoyPZ8BQ0KZsKVz97juXfqmsSXRFGWMMI5OiL6Q4m7T3bZ/aYQXtR1wpNbk6j3xuYtT6A==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.54.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.55": {
+   "name": "fixture-widget",
+   "version": "1.0.55",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.55",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "034a494f6083d77dfd0e4732291f16dddf5526bc",
+    "integrity": "sha512-rob1qiABgYV1rwcho4aittsIW2pmIQ/7A5wU+Xla6NEKOLLxcefmYn+YanQ0aarpymO8D38Rbf4RvRcr0ph9Rg==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.55.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.56": {
+   "name": "fixture-widget",
+   "version": "1.0.56",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.56",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "99390df7fe75e90e264717ac7f1149c6560dbf1f",
+    "integrity": "sha512-OhLl1sUL5U1ZCPvxV71WvqHQ2rvLjwuUg1QUjvo/fiN4VqZutVwWK4Lmj4TEJCehuQhAdJtgYcbHO/q+nEgYhg==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.56.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.57": {
+   "name": "fixture-widget",
+   "version": "1.0.57",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.57",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "ea7b4f33b6f9e9ce38067b029bfacb9b53e89ce0",
+    "integrity": "sha512-yz7E69PSYCrZgoonAjiF03fsNF5ReyoBnmVVTRRjsuuwCxbClmJQlKv7Ot6mXNnM8DgWh6QTWYu5UqDYMcAxXw==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.57.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.58": {
+   "name": "fixture-widget",
+   "version": "1.0.58",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.58",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "0de6f38036687ea442575c3e5bece452e77f3a27",
+    "integrity": "sha512-4EhiWA1HVtZBRCr50n/yUtk3BwFvjxwNF5z6v2y3zS8Vj8FeZonDWWlkzim/eLXJenRnloLDUYDyAc3uIWA00g==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.58.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.59": {
+   "name": "fixture-widget",
+   "version": "1.0.59",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.59",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "37a140abd2689a9a38bf207bd70339b5a21e0c0e",
+    "integrity": "sha512-LgPjLe15BiixdQQ+tJfx5Bv/LZKk5GzIZPWokf+c49tetGDV+30TegO+pSehtdTpfU48kdNKORLrAfKaYZIOpg==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.59.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.60": {
+   "name": "fixture-widget",
+   "version": "1.0.60",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.60",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "43c3007d08a666c3201054bbad18d840d5c6a886",
+    "integrity": "sha512-vMRR80dXEVylrIvGapEuH8cSgWf8RjA49gPwosHG1dMW8V2Foey2/u5W+9Ng44OgAAfoJnUSWqc3HY+J6pssLg==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.60.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.61": {
+   "name": "fixture-widget",
+   "version": "1.0.61",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.61",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "8840a38ad09a084591dfbb1a9a1473627d34362d",
+    "integrity": "sha512-IqPBzqgUqeZMTGiKDS2jY+cLFQyu5lPencatW5fTd2SpsRjQ1R6HPRNdk2iKrW2BHayLT6GAkIzid7igtjEHXA==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.61.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.62": {
+   "name": "fixture-widget",
+   "version": "1.0.62",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.62",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "054eaf31d9e266988dfd9467eab3486287313b99",
+    "integrity": "sha512-AF2IZEJQIHDVDTj+MaOsgm6X1FHIxonY/3gkKCMiPTtnokr0U5taIA2X0e7xH1pKTWGqPVVD5iz6bpzqNv969g==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.62.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.63": {
+   "name": "fixture-widget",
+   "version": "1.0.63",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.63",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "0c96fbaf59b93b184a1863339a0a4a6fecf74194",
+    "integrity": "sha512-XlNWmpSrXolMuAvt4lIJyZ7NWZUbEAO/PtaPcxFHgXdS5ZdenjKkxeFFTGpjZo32TgLcb1xhGDNqsGjg2hmChg==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.63.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.64": {
+   "name": "fixture-widget",
+   "version": "1.0.64",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.64",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "e3f54de96f21816f8bc0b32cadc7868c830368e5",
+    "integrity": "sha512-vOaHUytnUr8E16GebzrMZUoJDfC6ZIqVzaCoEYk4MczRUOPoD/ajTaD6xX8e4onWlIUYCVZ15iTpALur7AhgFA==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.64.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.65": {
+   "name": "fixture-widget",
+   "version": "1.0.65",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.65",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "665b1f0a834f7a91d3d41940ac42c26bf345ec71",
+    "integrity": "sha512-toKhi1qLFnp0w6ZvOkpaEHztXvhltk/Zlno4J4AoBnYCgp9FipaCJHzNRvasAkc2IXrNeTeKOf4iZbSJxFhzJw==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.65.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.66": {
+   "name": "fixture-widget",
+   "version": "1.0.66",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.66",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "bdcdc5831b34669cbe668bf5f5b84989cb62aea1",
+    "integrity": "sha512-TuhECPlxAflIJejEuu938vHTMxZN71NKSQ1UpfXAkIIXefkrHLcUqns9TdXMPrcF7VVOxmFPQSJYzTgTdijMSw==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.66.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.67": {
+   "name": "fixture-widget",
+   "version": "1.0.67",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.67",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "f0c63caf3ad7c5a8a3464db8a0b9b5046c59f494",
+    "integrity": "sha512-y7aVAmSFVfNaW+o3AFiONVjObB5YLwQGbuEK3B1y48TAKKGgzkZjFJXnkoNVD0b2pVEdR/IKa92ZIkA/G+0PcA==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.67.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.68": {
+   "name": "fixture-widget",
+   "version": "1.0.68",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.68",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "d08def912dc1f0c40c1d02a7b83c4fcb00f08aee",
+    "integrity": "sha512-M+GNO2DAYWXPUefon0PEF4tPCB/eA/EslpF6Y/gZaKVNvG4u7EdcNIxYBSXU25CCprBsxWqrjlkyQR6V3FYEiw==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.68.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.69": {
+   "name": "fixture-widget",
+   "version": "1.0.69",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.69",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "53a0aa2acf574374e8721f42f2f084731b13b3fa",
+    "integrity": "sha512-1+wsGMkZ16HSU9cern9WFWe6cZAgIvNZm8neJPO7SfzHudGTbPe2RTcV6/mf9GumYJ8UCpdzKCtMgPfROQezJA==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.69.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.70": {
+   "name": "fixture-widget",
+   "version": "1.0.70",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.70",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "ec6937bf08043a8cb39b416be0fb7e6e44bbba94",
+    "integrity": "sha512-9a7z3y6z85o7tFNHOL0ojk4LbzrT8/Bp8s7MCCZS0uc+bROfPvKW1e0CAlhEWbdsPqOsOUzgq6VkrQhGuLsk2A==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.70.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.71": {
+   "name": "fixture-widget",
+   "version": "1.0.71",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.71",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "123398ba649bfa498f9ef5620be7fe990a77d2fa",
+    "integrity": "sha512-Xwo5xAiK/tqyLfipu4lkDWZGcD816Aug0K7M0r+JINqVlWncStQ5p12BwPK4k85wN365zp+f9NoXo7I3bQbd2A==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.71.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.72": {
+   "name": "fixture-widget",
+   "version": "1.0.72",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.72",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "f6402306bc62a975a6c23c9e3143db4947044dd8",
+    "integrity": "sha512-FYeRlzsQJ2zMTkHWLHadS8JYMyaSNXM5RYc96Aywfq71G2BYWqGJeqS6BBrvQ4910JE2VU1c9IDMKSy3Xb+gHw==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.72.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.73": {
+   "name": "fixture-widget",
+   "version": "1.0.73",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.73",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "ef372913844f12deb3da83024db01786010f0666",
+    "integrity": "sha512-t4SmgRqrdsL3h9seg2wscchKNl5Cy26iUDVf7FKLnYRBEZMQAUDr04tYfC5N+7asC3MusfkTbBfMtWvTaB5erw==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.73.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.74": {
+   "name": "fixture-widget",
+   "version": "1.0.74",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.74",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "328f37211755a97628010e845a8724d8b3943352",
+    "integrity": "sha512-w39csDaE76x2Iqw9lYyedwk+jRR0cyWTpv825+EODaLQW6p6aP4PPGppVMg0obmQAnITTe9eL+0iMKpcsonWIQ==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.74.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.75": {
+   "name": "fixture-widget",
+   "version": "1.0.75",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.75",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "c221aada50e07ad89831ba3633d4f74d13728346",
+    "integrity": "sha512-ctLhQ607/c3h8tTYyvAVcHg37PhnCGMfJYmnNKYtvJtx3WN61Wpi2762OgLAHcuTmebJzwplmfSvo+1PLu6IGg==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.75.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.76": {
+   "name": "fixture-widget",
+   "version": "1.0.76",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.76",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "d881ceb9460eb74b31a83b01ded3ef7585611417",
+    "integrity": "sha512-k4pwlF5IFs9k2Nc+42Wr27M43OC4shnoyecOxYPrMac/cl7Vw5tjiOeLRDZRbsWmNXVaUEDIHJF0k82vY/iR5g==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.76.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.77": {
+   "name": "fixture-widget",
+   "version": "1.0.77",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.77",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "6381489dce0d4db1cd40e037eb4a5efc225b0f0e",
+    "integrity": "sha512-UhvyNHGBjOxqp8Nn8sFE6flCxfOfhZ2fp6SRaYW+0SSXoIjyU5Jzh3yBQ8E48BtLghkiST2BRxG8k6m3QbCweA==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.77.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.78": {
+   "name": "fixture-widget",
+   "version": "1.0.78",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.78",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "41218980922abb68405337556386239d75b207ea",
+    "integrity": "sha512-iMb5Z3sB3Mn3U5lsOKguUYWDrwr73FxmuXS0FSOcoxtprNEywV2UT4utmS1e3+XafZfLnHIPGfgz4GS+riCr+Q==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.78.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.79": {
+   "name": "fixture-widget",
+   "version": "1.0.79",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.79",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "7e5db79fba238e9be00bd84729182fc6c8785455",
+    "integrity": "sha512-trr0Ai6NvE8rK63kWia+eLWzYOcoUnzz3PAvllnXO/r8fVVdYr4pn4i/QmjGkCRcAZs4FWgLYu3w/DSHl5560A==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.79.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.80": {
+   "name": "fixture-widget",
+   "version": "1.0.80",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.80",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "c79c58ce0cf9ad4fa4b34cfff7e8b9c21475854b",
+    "integrity": "sha512-lsPYVTUSuwmeFELr4tGvcHML5NBNgQCJT/Iqf52JN1BwhT/94q9CNpt498giz04m2/7nQO75zoXlBhyun44puQ==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.80.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.81": {
+   "name": "fixture-widget",
+   "version": "1.0.81",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.81",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "e3cfe942b1861a434eeae8f83cb8627aaa55ca62",
+    "integrity": "sha512-1NX7j4vjhUsKHdKIDZ7E+IiLVLk3gCgMQh8rIoq+vJzfVU9moVZyQvreqv62GgjHvKRavtoa3BLsffqvnBI02w==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.81.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.82": {
+   "name": "fixture-widget",
+   "version": "1.0.82",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.82",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "8cdde8e984df6f1dd2a1c7a0052ba3cafd9b3b71",
+    "integrity": "sha512-1UDKjLoDngk0VIjEHjwWO4HsR6cjL+7KDc9lejj+OP37DdxvBqaq8HkRfIFsjYiMM+Rj8X0FuFbcJoZSS7F2VA==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.82.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.83": {
+   "name": "fixture-widget",
+   "version": "1.0.83",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.83",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "330d0f2c3c72bcc553911efda77aa44d02cd7922",
+    "integrity": "sha512-krSyCKXPmOCPn2bUphB7/KyNe9oybwRrHCcxiM8FkWWTCvqv4Pun2i30yIiNWBu0qA62hl5MvbiVMT7kbgjkdg==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.83.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.84": {
+   "name": "fixture-widget",
+   "version": "1.0.84",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.84",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "6857aec7fc37c3f4af363e5a27034eb23cb84e2d",
+    "integrity": "sha512-drAsqxF4ZbWHSwFKp6cMsDheHomc7n/NiNpfiNPuzuT4lZdzbeE53DenYGARMXfI85wpvBhK/+5NtEhmg2ryBQ==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.84.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.85": {
+   "name": "fixture-widget",
+   "version": "1.0.85",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.85",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "149903d3120673b0a8df28c8f4e7d46d1b66a7de",
+    "integrity": "sha512-Mjijj1RmGnKiu8rLJfB2SJIPxIHdp+Hb46JWQK87FPh90LkSPBdYsGG7UE4BC5kSd6+XPtcr1xzHegRHm8DKzA==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.85.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.86": {
+   "name": "fixture-widget",
+   "version": "1.0.86",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.86",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "7263e3be668fa8e18d569f5d4b5e26475c64f197",
+    "integrity": "sha512-zVU7eCceH4YvFmxiBjzPwgo9doBi14Luupoifn4qgGe0kEb5jWxsSF5huxDJ0PdCOy+YWS95IjSIe8KCmsHBzQ==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.86.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.87": {
+   "name": "fixture-widget",
+   "version": "1.0.87",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.87",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "55b9f70354c7978f6953ba210a7bd8ddabe89d14",
+    "integrity": "sha512-DCdpYzaDMUFSUGb5444N+H7R5J7aonKjy70ASMwlxwBbAIdSPbXOhbv4atvb7q98d20otznyrYtzdaB276KgDg==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.87.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.88": {
+   "name": "fixture-widget",
+   "version": "1.0.88",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.88",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "b170f81cd74a473d921e8edd4aeaed3b432d32bd",
+    "integrity": "sha512-nzlZOac90MGqa3/Lg19gTQB1sXt+dXtsZxUQ+7V0axxSHjIkI3MITO60qHk0OvaBS4yHjCuaabAVDKsapNjsPA==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.88.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.89": {
+   "name": "fixture-widget",
+   "version": "1.0.89",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@1.0.89",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "dec2511d6fcde90639f083d95f1219639677a8fd",
+    "integrity": "sha512-ZLGCzzSOHPUhCSSATh+/nH5dEOVUcCYG454OrQ9LxbIaBGdN2hKgvuWkkU0uJ9OzQ3RTDQJ+vEjrgG2eO/5gcw==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-1.0.89.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "2.0.0-rc.1": {
+   "name": "fixture-widget",
+   "version": "2.0.0-rc.1",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@2.0.0-rc.1",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "dcf36e89ac5e9124514281d9a1ee3a81e0d7353f",
+    "integrity": "sha512-pLFxiPx4w5BVxhV3HWDEPedM0rzCnyi26zRWaAlbnkMNMRa3DaQOma5UUWTkkWBny2qFVhsjHJ0y4QZhmV853Q==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-2.0.0-rc.1.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "2.0.0-rc.2": {
+   "name": "fixture-widget",
+   "version": "2.0.0-rc.2",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@2.0.0-rc.2",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "da6153f00a22b1c5f8b553117808846c3ad8dfba",
+    "integrity": "sha512-Zt7nNfrIbgnjoLCngB0//eJOXh2eB5Av5cxugE/phHP7wDSwmOGhvRw0yrU5EQwc2lyhlAdGv5lF4HFd2H1/Cw==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-2.0.0-rc.2.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "2.0.0-rc.3": {
+   "name": "fixture-widget",
+   "version": "2.0.0-rc.3",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@2.0.0-rc.3",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "c3dad3333c7ed372cbf823616a36bb00c8ae4420",
+    "integrity": "sha512-dPAh42p25shduOnLTs0m/QCGKKlVsIpwV4Oy4m7kwKPdG5GC/ucy1Y2d88Q8hZDv6UcIcBZfGoDiq8tgKdCR7A==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-2.0.0-rc.3.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "2.0.0-rc.4": {
+   "name": "fixture-widget",
+   "version": "2.0.0-rc.4",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@2.0.0-rc.4",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "e38c7acf32e36ab3d7aadc068bca164f98e8e3e7",
+    "integrity": "sha512-1C/CIFFXz3YuYwbSdEcg7j9noe2JAaGeFLC1lEb/PxA943Vwyf0RM/GU9kKV18rcYkacfni23a/X54qO6pfkSg==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-2.0.0-rc.4.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "2.0.0-rc.5": {
+   "name": "fixture-widget",
+   "version": "2.0.0-rc.5",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@2.0.0-rc.5",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "94862fd46b7a30a6d5a2aa4d8ae701385af35c59",
+    "integrity": "sha512-pwFqDhMS53qtb68abz+AMoHYGqokcJn+F4IEhTvi2odHJwLl26o7CBEAD9FmbMhRhkE5u8/boJ7dy1/rvMdDWA==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-2.0.0-rc.5.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "2.0.0": {
+   "name": "fixture-widget",
+   "version": "2.0.0",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@2.0.0",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "37efda08680996dd8fe1ba060ce896fe0016a82b",
+    "integrity": "sha512-Ha/fGArxMG7WpGRhcjtCTrjzrK0V6TZVTXGK9s0fIwwOS/GWuNRWy+Y5kWisLUHJKygKju+nTti06Fw/qVpRew==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-2.0.0.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "2.0.1": {
+   "name": "fixture-widget",
+   "version": "2.0.1",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@2.0.1",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "099202c335db09bafea853045a5156d055df9e53",
+    "integrity": "sha512-z6X1jy9L7rwSV5GTQTBekJfP9slcd66fY4yAdC9hCQKj8aQt4y8BFCnQDQtvHc3FS8l+qZnL+m1nNDulsiS0Cg==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-2.0.1.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "2.0.2": {
+   "name": "fixture-widget",
+   "version": "2.0.2",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@2.0.2",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "625100bcf1b3784b73bda4b3a611f234fac75373",
+    "integrity": "sha512-ApzLYiamCTOM9iX7fMUmuS6Z2ixxA+LzTBwmqOsuWQY2d/qYLmLIb4nJiAe94K1iT1SZb+TpoRbP00tF53tE+A==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-2.0.2.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "2.0.3": {
+   "name": "fixture-widget",
+   "version": "2.0.3",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@2.0.3",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "bf66f5d565390ebf03303b0fd383a47123c39cdf",
+    "integrity": "sha512-ba5718f9mDj8mUcwGOQCi2EbiPToX83YloWYD0VGMZ3cr35A7fHNyVHxqmjHrGGKbZxcHC7//T+sfBdbNKfFYA==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-2.0.3.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "2.0.4": {
+   "name": "fixture-widget",
+   "version": "2.0.4",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-widget@2.0.4",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "c11d32acf7c2809f4c2790e4230be023d27b53ce",
+    "integrity": "sha512-tQ2+pJNP5e8kXX5SeOSGTUu4ATpwX0clD4nnRtdgGxEUrXRVN0ZNAzGXScN+y6vqHYalKW0VNsMYz3eYAwkedw==",
+    "tarball": "https://npm.invalid/fixture-widget/-/fixture-widget-2.0.4.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  }
+ },
+ "time": {
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-04-10T00:00:00.000Z",
+  "1.0.0": "2026-01-01T00:00:00.000Z",
+  "1.0.1": "2026-01-02T00:00:00.000Z",
+  "1.0.2": "2026-01-03T00:00:00.000Z",
+  "1.0.3": "2026-01-04T00:00:00.000Z",
+  "1.0.4": "2026-01-05T00:00:00.000Z",
+  "1.0.5": "2026-01-06T00:00:00.000Z",
+  "1.0.6": "2026-01-07T00:00:00.000Z",
+  "1.0.7": "2026-01-08T00:00:00.000Z",
+  "1.0.8": "2026-01-09T00:00:00.000Z",
+  "1.0.9": "2026-01-10T00:00:00.000Z",
+  "1.0.10": "2026-01-11T00:00:00.000Z",
+  "1.0.11": "2026-01-12T00:00:00.000Z",
+  "1.0.12": "2026-01-13T00:00:00.000Z",
+  "1.0.13": "2026-01-14T00:00:00.000Z",
+  "1.0.14": "2026-01-15T00:00:00.000Z",
+  "1.0.15": "2026-01-16T00:00:00.000Z",
+  "1.0.16": "2026-01-17T00:00:00.000Z",
+  "1.0.17": "2026-01-18T00:00:00.000Z",
+  "1.0.18": "2026-01-19T00:00:00.000Z",
+  "1.0.19": "2026-01-20T00:00:00.000Z",
+  "1.0.20": "2026-01-21T00:00:00.000Z",
+  "1.0.21": "2026-01-22T00:00:00.000Z",
+  "1.0.22": "2026-01-23T00:00:00.000Z",
+  "1.0.23": "2026-01-24T00:00:00.000Z",
+  "1.0.24": "2026-01-25T00:00:00.000Z",
+  "1.0.25": "2026-01-26T00:00:00.000Z",
+  "1.0.26": "2026-01-27T00:00:00.000Z",
+  "1.0.27": "2026-01-28T00:00:00.000Z",
+  "1.0.28": "2026-01-29T00:00:00.000Z",
+  "1.0.29": "2026-01-30T00:00:00.000Z",
+  "1.0.30": "2026-01-31T00:00:00.000Z",
+  "1.0.31": "2026-02-01T00:00:00.000Z",
+  "1.0.32": "2026-02-02T00:00:00.000Z",
+  "1.0.33": "2026-02-03T00:00:00.000Z",
+  "1.0.34": "2026-02-04T00:00:00.000Z",
+  "1.0.35": "2026-02-05T00:00:00.000Z",
+  "1.0.36": "2026-02-06T00:00:00.000Z",
+  "1.0.37": "2026-02-07T00:00:00.000Z",
+  "1.0.38": "2026-02-08T00:00:00.000Z",
+  "1.0.39": "2026-02-09T00:00:00.000Z",
+  "1.0.40": "2026-02-10T00:00:00.000Z",
+  "1.0.41": "2026-02-11T00:00:00.000Z",
+  "1.0.42": "2026-02-12T00:00:00.000Z",
+  "1.0.43": "2026-02-13T00:00:00.000Z",
+  "1.0.44": "2026-02-14T00:00:00.000Z",
+  "1.0.45": "2026-02-15T00:00:00.000Z",
+  "1.0.46": "2026-02-16T00:00:00.000Z",
+  "1.0.47": "2026-02-17T00:00:00.000Z",
+  "1.0.48": "2026-02-18T00:00:00.000Z",
+  "1.0.49": "2026-02-19T00:00:00.000Z",
+  "1.0.50": "2026-02-20T00:00:00.000Z",
+  "1.0.51": "2026-02-21T00:00:00.000Z",
+  "1.0.52": "2026-02-22T00:00:00.000Z",
+  "1.0.53": "2026-02-23T00:00:00.000Z",
+  "1.0.54": "2026-02-24T00:00:00.000Z",
+  "1.0.55": "2026-02-25T00:00:00.000Z",
+  "1.0.56": "2026-02-26T00:00:00.000Z",
+  "1.0.57": "2026-02-27T00:00:00.000Z",
+  "1.0.58": "2026-02-28T00:00:00.000Z",
+  "1.0.59": "2026-03-01T00:00:00.000Z",
+  "1.0.60": "2026-03-02T00:00:00.000Z",
+  "1.0.61": "2026-03-03T00:00:00.000Z",
+  "1.0.62": "2026-03-04T00:00:00.000Z",
+  "1.0.63": "2026-03-05T00:00:00.000Z",
+  "1.0.64": "2026-03-06T00:00:00.000Z",
+  "1.0.65": "2026-03-07T00:00:00.000Z",
+  "1.0.66": "2026-03-08T00:00:00.000Z",
+  "1.0.67": "2026-03-09T00:00:00.000Z",
+  "1.0.68": "2026-03-10T00:00:00.000Z",
+  "1.0.69": "2026-03-11T00:00:00.000Z",
+  "1.0.70": "2026-03-12T00:00:00.000Z",
+  "1.0.71": "2026-03-13T00:00:00.000Z",
+  "1.0.72": "2026-03-14T00:00:00.000Z",
+  "1.0.73": "2026-03-15T00:00:00.000Z",
+  "1.0.74": "2026-03-16T00:00:00.000Z",
+  "1.0.75": "2026-03-17T00:00:00.000Z",
+  "1.0.76": "2026-03-18T00:00:00.000Z",
+  "1.0.77": "2026-03-19T00:00:00.000Z",
+  "1.0.78": "2026-03-20T00:00:00.000Z",
+  "1.0.79": "2026-03-21T00:00:00.000Z",
+  "1.0.80": "2026-03-22T00:00:00.000Z",
+  "1.0.81": "2026-03-23T00:00:00.000Z",
+  "1.0.82": "2026-03-24T00:00:00.000Z",
+  "1.0.83": "2026-03-25T00:00:00.000Z",
+  "1.0.84": "2026-03-26T00:00:00.000Z",
+  "1.0.85": "2026-03-27T00:00:00.000Z",
+  "1.0.86": "2026-03-28T00:00:00.000Z",
+  "1.0.87": "2026-03-29T00:00:00.000Z",
+  "1.0.88": "2026-03-30T00:00:00.000Z",
+  "1.0.89": "2026-03-31T00:00:00.000Z",
+  "2.0.0-rc.1": "2026-04-01T00:00:00.000Z",
+  "2.0.0-rc.2": "2026-04-02T00:00:00.000Z",
+  "2.0.0-rc.3": "2026-04-03T00:00:00.000Z",
+  "2.0.0-rc.4": "2026-04-04T00:00:00.000Z",
+  "2.0.0-rc.5": "2026-04-05T00:00:00.000Z",
+  "2.0.0": "2026-04-06T00:00:00.000Z",
+  "2.0.1": "2026-04-07T00:00:00.000Z",
+  "2.0.2": "2026-04-08T00:00:00.000Z",
+  "2.0.3": "2026-04-09T00:00:00.000Z",
+  "2.0.4": "2026-04-10T00:00:00.000Z"
+ },
+ "maintainers": [
+  {
+   "name": "fixture-bot",
+   "email": "bot@example.invalid"
+  }
+ ],
+ "homepage": "https://example.invalid/fixture-widget",
+ "keywords": [
+  "fixture",
+  "harmless"
+ ],
+ "repository": {
+  "type": "git",
+  "url": "git+https://example.invalid/fixture-widget.git"
+ },
+ "bugs": {
+  "url": "https://example.invalid/fixture-widget/issues"
+ },
+ "license": "MIT",
+ "readme": "# fixture-widget\n\nA harmless fixture.\n",
+ "readmeFilename": "README.md",
+ "users": {}
+}

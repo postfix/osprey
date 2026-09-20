@@ -1,0 +1,35 @@
+# Package Firewall sample configuration (SPEC §4).
+#
+# Configuration changes require a restart; blocklist changes do not.
+
+listen = "127.0.0.1:8080"
+public_url = "https://packages.example.org"
+data_dir = "/var/lib/package-firewall"
+# The snapshot your blocklist producer writes and replaces atomically. It is not
+# the `blocklist.sample.json` in this repository: that sample carries a deliberately
+# distant `expires_at` so it always validates, while a producer's real snapshot
+# carries a short window. Without a valid snapshot the service starts, answers
+# /health/live but not /health/ready, and refuses every package request.
+blocklist_file = "/etc/package-firewall/blocklist.json"
+
+cooldown_seconds = 86400
+metadata_ttl_seconds = 300
+# How old a cached project snapshot may become since its last FULL fetch, whatever
+# upstream keeps answering `304` to (SPEC §10). Each project's own ceiling is this
+# value less a deterministic offset of up to a tenth, so projects fetched together do
+# not all expire at once; the offset only ever shortens, so this stays a true
+# maximum. An over-age snapshot is never served: if the full fetch fails the request
+# is refused. Must not be below `metadata_ttl_seconds`. Set 0 to disable the ceiling
+# — which restores exactly the unbounded staleness it exists to close.
+metadata_max_age_seconds = 86400
+blocklist_poll_seconds = 5
+
+cache_max_bytes = 107374182400        # 100 GiB, including temporary downloads
+memory_cache_max_bytes = 268435456    # 256 MiB cache budget, not total process RSS
+max_artifact_bytes = 5368709120       # 5 GiB
+max_metadata_bytes = 67108864         # 64 MiB after decompression
+max_blocklist_bytes = 134217728       # 128 MiB
+max_upstream_requests = 32
+max_artifact_downloads = 8
+max_active_requests = 1024
+max_references_per_project = 20000

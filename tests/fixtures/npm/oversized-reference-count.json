@@ -1,0 +1,2517 @@
+{
+ "_id": "fixture-swarm",
+ "_rev": "41-0000000000000000",
+ "name": "fixture-swarm",
+ "description": "A package whose reference count exceeds the configured cap.",
+ "dist-tags": {
+  "latest": "1.0.39"
+ },
+ "versions": {
+  "1.0.0": {
+   "name": "fixture-swarm",
+   "version": "1.0.0",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.0",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "fb880f6b211ecc7bffba65e2fc7c8921864397a6",
+    "integrity": "sha512-5CTFDidXrz10vP+5zU1oSgwTeUSZfBn1AlqXrshWt9n/hiTNIJxQV4Yct1T+DCiWv7DCJJwkhAn9V4jBHpCiaA==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.0.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.1": {
+   "name": "fixture-swarm",
+   "version": "1.0.1",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.1",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "08247313b6e25c1aa81b61440ca53c4e5cc5c68d",
+    "integrity": "sha512-c1pB9mA3wQgVmNckCCr79rB8x2G45FsC2BUp9kMj+Fhfnnmoyn3uKKv8GsQlG2Rm9BXBlf82hQ7BVuGyy+qwnQ==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.1.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.2": {
+   "name": "fixture-swarm",
+   "version": "1.0.2",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.2",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "4340f01c67c33f38c0b3794cac29715cc2cd08a3",
+    "integrity": "sha512-Is3YnfxBgr3AgWJKMPWSPLLfKhW/x598J8FghOPjQARMwpxeQmWOk8EDzWhyJFJRqk7uplT/OCQjbkoILQr+bQ==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.2.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.3": {
+   "name": "fixture-swarm",
+   "version": "1.0.3",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.3",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "5df35735079bdbf28b48614db0dd20161cfb1064",
+    "integrity": "sha512-BW89beWJbkVKCm6nwm3TnyyqkI8RCJjQ5AnEaiowhbw9vn8K+yepVrPpz5qdl8q6CdRwZrPA/zW+FPYVHHgsFw==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.3.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.4": {
+   "name": "fixture-swarm",
+   "version": "1.0.4",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.4",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "4375b554bde31daa7b63a47ad50f1faeeacc12c6",
+    "integrity": "sha512-P0ofkDDxChw1sbcL1J2QGHJm5EzYfEuzE0s+ZeWNNonkbRTuv9X6RvChKOuSAfBdfIRsu1O2VJCgNFdhhNbawg==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.4.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.5": {
+   "name": "fixture-swarm",
+   "version": "1.0.5",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.5",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "ec1cda6c0731b6702d8e495fbb092b8e3c2afd5f",
+    "integrity": "sha512-nYWJ7ece00JIyw29BXOq4fGfu5C0s2rElXGgg4ETTd0BBT4K4ZzkFuCR6265keH8cbJvYJSp40d02A2r9lqqgA==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.5.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.6": {
+   "name": "fixture-swarm",
+   "version": "1.0.6",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.6",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "2a6e7c3f85ec1f522bc5635c6969a793123c1c6b",
+    "integrity": "sha512-SiuVfTPKclYkPw+34Pci7fDl23IXTOOJN2U5ib3zBKBVaq+5PncnMIyik3BoIz9hu9Ume+MiENOdOGfUi/+e/w==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.6.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.7": {
+   "name": "fixture-swarm",
+   "version": "1.0.7",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.7",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "47220fe80806254ac8129bd4486625149a3bbfd1",
+    "integrity": "sha512-bfc7X0RIFJBEsXnEto6axrLt5w8hRmngTCCeqDxPMbei+dHbzdhKnqqu1cSWIVHG1a0IRr19xEMGF1vwPzhC3w==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.7.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.8": {
+   "name": "fixture-swarm",
+   "version": "1.0.8",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.8",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "f781f2aed94bffabfe8264b8b06d8aef79fa4897",
+    "integrity": "sha512-Kumw3ArvliNM5pmpmd2xx24Jwofw7Ciy9UwVWfcalsQ7C+VexsJ6pFldcpll0n2y9UvqPqkFbYeJlQucWQENMQ==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.8.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.9": {
+   "name": "fixture-swarm",
+   "version": "1.0.9",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.9",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "a543c4f5b74f90dcc703ccdbdd21c2cc27342e40",
+    "integrity": "sha512-9VGtFa/3+3jwNS3JZttv1Q9HZ+/qomaouhKIQKQqzq2ApBT7d14Gsf1Z/sA+nAxAuNv7FNraadNVXajxDr+KHw==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.9.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.10": {
+   "name": "fixture-swarm",
+   "version": "1.0.10",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.10",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "9e5f41e83dbcc88a9cbb93c44a1e62f6c2faab45",
+    "integrity": "sha512-Uw6Qd7jH14suC5T0KwOIBOmyHn0bqacEF1DckxGVoGiz3bYnicCnIiDDiRlGjwL8tZ+owXXK/7hrsyUXICwNKQ==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.10.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.11": {
+   "name": "fixture-swarm",
+   "version": "1.0.11",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.11",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "26c7ebe2daebb2dac4dce76f707ded338ebca63b",
+    "integrity": "sha512-QNF4kWcEC+6BrZiLWrQjQ/j91F9/ulCCs4pNEGPZMZ+7h32TP1Jx644nDleyEi6YMq7om3yefNWd7KAxGEvubg==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.11.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.12": {
+   "name": "fixture-swarm",
+   "version": "1.0.12",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.12",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "a1ad22905be850d1473f535e1ca3230c0a70a264",
+    "integrity": "sha512-tdRGKloAwRqjFN9J6x35w1jXxny/j6diCaFgUX+wtQx+nG/bcbUVSVsa0PzbsL1HkFA6NUG5MetdRMzo1E8sYg==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.12.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.13": {
+   "name": "fixture-swarm",
+   "version": "1.0.13",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.13",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "430669da7ed0e2e435f079e8f90d9a828e8ac0bb",
+    "integrity": "sha512-yu0Os/dpr7VlqkmqTVzhknIVLxn24L6z2W5VDLPrMAEaOqoDGXgztdLKVygxBvK/tx3b55Ip1AOWr/Sw6ZjGOg==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.13.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.14": {
+   "name": "fixture-swarm",
+   "version": "1.0.14",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.14",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "dd2a5742afd4eda072a015e294b22bfde11bc0ec",
+    "integrity": "sha512-WQBeWRS3ZpkxqkUon8iCCgw3z8hbDaVx9Qy4RRRgHhEgAtD/3gJzj7DVn3VWnT27FJ9XPd5iJdce8WmLQv7VSg==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.14.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.15": {
+   "name": "fixture-swarm",
+   "version": "1.0.15",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.15",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "8a34bf2e16bba578df7f2f0680540989ed71c20a",
+    "integrity": "sha512-/Jn+MX/ILYyCrJVi0+V/xIrxCvYZtPD9nN6LtdQ+OkV87CMWAWAWNSEnV10azgyBSTKUP0Y5OATa+cCrfL4P3A==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.15.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.16": {
+   "name": "fixture-swarm",
+   "version": "1.0.16",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.16",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "77a207ac83378b2faaf78f4d5c1939a5e705d893",
+    "integrity": "sha512-gIsSkK4YpINg23bq6S1Byhy1baBPZadROpo+/57TuJGVFEhvFWVyEWEydAh55vijS30b792pdgwUB8+LQjzOZQ==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.16.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.17": {
+   "name": "fixture-swarm",
+   "version": "1.0.17",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.17",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "d7946eddc747170796131c8c1cd514b9eebd243d",
+    "integrity": "sha512-8TLJB7t2IoT+KaaOOLWBcH8EPT9OUPegds/+nq/zyflS3qLpsH+0gGhgOd09PvQGb7+Ua0max5MhmzszYeUpzA==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.17.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.18": {
+   "name": "fixture-swarm",
+   "version": "1.0.18",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.18",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "af6f709a81ddb23351c4df73ef0efa9e0c8c980d",
+    "integrity": "sha512-Ln+cNMKoD6M6N+0ofrJzGZK2BKIeXGsK7Tu+Yp2/DY1eU5GGesFaax/XKOHvCzMtUhghPHxTlDRhVxwYJ+zRmg==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.18.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.19": {
+   "name": "fixture-swarm",
+   "version": "1.0.19",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.19",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "e4f91bcb5861f66f127ec908c4975958c26419b1",
+    "integrity": "sha512-i8SVWdg60qRtAWbxgXW7y5TSKmAqg+RoaBVtSWw6IZDDqdjOZZ6aGexTYScSoC1z33HN3bOQc0oLZBzbgVUG+A==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.19.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.20": {
+   "name": "fixture-swarm",
+   "version": "1.0.20",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.20",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "cbf74aa845487bad102ba0a57d2f5f2f93248944",
+    "integrity": "sha512-dYOB5Q8Ii0MNEIUuiYtVwK/mp6k+TDYF9Ts2opGBZ5k1R6PZMY7c8U/HD/MTNpgVvNeflz3v3ytCkcclixO5zw==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.20.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.21": {
+   "name": "fixture-swarm",
+   "version": "1.0.21",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.21",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "bb15e95b12885aa0a785d0e0e6fc89138f3b7db6",
+    "integrity": "sha512-0ZPY8Sj1Y7T9Pdo8a7hM5qQmM358+oQMuk5CP2h5qfu8ltaG5rqmNTlT8ID3276pa1cRH4loIPViFw1rDdeTBQ==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.21.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.22": {
+   "name": "fixture-swarm",
+   "version": "1.0.22",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.22",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "31568db5d256756053796e9c6807eec356fecf89",
+    "integrity": "sha512-bFSq5I9CJmk3+tS11e5clJW7T5TFFQtEfaKBE3ajeqZUzykUl+cDVZeiMHbQ4d/A5o93vP/yUcQRYLh7Mwq6dQ==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.22.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.23": {
+   "name": "fixture-swarm",
+   "version": "1.0.23",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.23",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "31a0f4c00fd853cdc0bfc91734ec3fbe11d7ab76",
+    "integrity": "sha512-Di7IM8KkthSpLdzqR/nmr73DRvZ1/0P2nrtz4bnMZ4HLP8xr1zLypvlse05SJRzCI9wPo2IrVTT148lJOREzsg==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.23.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.24": {
+   "name": "fixture-swarm",
+   "version": "1.0.24",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.24",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "b7feab066c423e6d5f92e6fd95689315ac1e2d2f",
+    "integrity": "sha512-ZWQcLlyTTb78gK2TzPyteLwSibS3Vzt1ZVO3pISZODk2dR4o7lyNN56ZBYg4eijF87Yww2/euFbyg8FYcGf1ZA==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.24.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.25": {
+   "name": "fixture-swarm",
+   "version": "1.0.25",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.25",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "6237809cf965ddec02c32be074abd07bf7d25c6e",
+    "integrity": "sha512-XC0fl6ayRqt2FhfjhvRUJ116ih6uj75r/35TCs//s57SK2yo6c6TtNuq+adllYIpN7U4EO7eLFj6p2zzsc2P3w==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.25.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.26": {
+   "name": "fixture-swarm",
+   "version": "1.0.26",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.26",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "d1e1f27e8ef956fdce20e696b86d675260b07559",
+    "integrity": "sha512-TVyaiyR2cgVqy+w5rRpn7Xc5dYNBNhzUeEiNMiWsePEOmmnK10tK6jibTAKZ35PpICk+AkxD8u8iHuGoQ7jOHA==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.26.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.27": {
+   "name": "fixture-swarm",
+   "version": "1.0.27",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.27",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "10018bf6fcd833c5c52d00b34cc116eaf66e4177",
+    "integrity": "sha512-frC1BcnWEPVWm4F/z4d2eU3qnek49eOn/CF1G73hFeEcEK7vVbVNZQvMezcp2qxEZombqGP01XWf3S+BQdlceA==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.27.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.28": {
+   "name": "fixture-swarm",
+   "version": "1.0.28",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.28",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "2c26b93b1d19a02588c7ad415f61434c92a6ddc5",
+    "integrity": "sha512-WqJ/xDHC1/v85JPsiiiXfg03uDkGhOrq367bHYkB2Z8wJD3pigWBeiWUrYZeaBm1DrWPMazLP/Fjvdq8JUeWgA==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.28.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.29": {
+   "name": "fixture-swarm",
+   "version": "1.0.29",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.29",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "544c85c3799fd0255dd90e19aa7762b123486143",
+    "integrity": "sha512-Sw25IEoz3JS3XhoSY9Wk14FOxNdqvhOHhpt5SOUpnHCtE1HbRZuHqZNNFLHjT8WE0Fq1boDtSQInatfPbye1OA==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.29.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.30": {
+   "name": "fixture-swarm",
+   "version": "1.0.30",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.30",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "6724819cdee443a1c243aa1838ce061b66c120db",
+    "integrity": "sha512-C2aO18+64RUytu34R5JX1isT0ccw6pc3pRG/DiXkT2xTEoFtTu14cjTujivam9mucZhfxJGr7yJEyVdh4zq+SQ==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.30.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.31": {
+   "name": "fixture-swarm",
+   "version": "1.0.31",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.31",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "9f3c77d07e4119897fce44236df074f6808440de",
+    "integrity": "sha512-Q6mjBjq647w5HhxYQ51CXj5ZiaUBRrbxayTXBKIOVgX2NtxILXwpikqHhZJ7Kt9wX3/HvOLElX7xzwZR81/Cdg==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.31.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.32": {
+   "name": "fixture-swarm",
+   "version": "1.0.32",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.32",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "00c6807fd12e8af4ca4ff8fd8d3b982ea33473f4",
+    "integrity": "sha512-9e5dyynErW/oZ+fK7/e5VDBjpRhrZeApOgetweqyL4n2+fHLKyeIWCwzPuFfcddplFZWEpREswGKnuqVC58QJQ==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.32.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.33": {
+   "name": "fixture-swarm",
+   "version": "1.0.33",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.33",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "0ff35477cce41255f5a6c0a2d2620f344eed1131",
+    "integrity": "sha512-aoRqXeGS0WEMLGFIoMNOeWup8sm5WmQ3El/e0x+RrxWuwji2BjvUS/oMyPPzkVTAcZNL6B59WAwOcaJFDtSMdg==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.33.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.34": {
+   "name": "fixture-swarm",
+   "version": "1.0.34",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.34",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "5a2502031d24d158a9178fe07e01c8ef9359c4dc",
+    "integrity": "sha512-eAO5a925PdADF+7E/kC3rNLDa6ObQe5DfsNUqtSq0JlPKRMyOICZWY4o8ADiAkGpyUmEptIgrQmb2qu0iGmEiw==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.34.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.35": {
+   "name": "fixture-swarm",
+   "version": "1.0.35",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.35",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "61291c02ae44a38a4cd0557709dcb803065183b5",
+    "integrity": "sha512-61IbtnV6nbFtE26elUTFm9SXHgGfYThMYOwSPd4QDmirlwLEJUthnPNJTV3spMP0zELfoC4bx9/MaAUzGtzqig==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.35.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.36": {
+   "name": "fixture-swarm",
+   "version": "1.0.36",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.36",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "96ec348cb50202c87e6641b2b3b0b07994bc8be3",
+    "integrity": "sha512-yRbIpyJ8K/TRlg7kJC5lhQtyOmxEUw3l3VqJWzI98MVYc3/lUiBbhH0rmBlJakRRqqwnbqufH+zGOPLPZ5sgXw==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.36.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.37": {
+   "name": "fixture-swarm",
+   "version": "1.0.37",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.37",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "824bad8454811940e0bec60865975c027f343b99",
+    "integrity": "sha512-H39RvV/JlN1psjRHgwTjVii5i2STfAIdfjzvwMzH9KmTy2ZLzd5Jtn0ur+UGiPwc0YU34PWZWWNPTSwQYXR6dw==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.37.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.38": {
+   "name": "fixture-swarm",
+   "version": "1.0.38",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.38",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "4e9005222107d5f695150b5f9d34ae060044e871",
+    "integrity": "sha512-GXZkiK3LYj3EF28bKeF1POw+zNjRWj54q4/SstoTcvLUQAkbf6Mpe+QWWckbfc09Myx2UVzoAP8TPTzJsLzx5Q==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.38.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  },
+  "1.0.39": {
+   "name": "fixture-swarm",
+   "version": "1.0.39",
+   "description": "A harmless fixture package.",
+   "main": "index.js",
+   "bin": {
+    "widget": "./bin/widget.js"
+   },
+   "directories": {
+    "lib": "lib"
+   },
+   "dependencies": {
+    "left-pad": "^1.3.0",
+    "safe-buffer": "~5.2.1"
+   },
+   "devDependencies": {
+    "tap": "^16.0.0"
+   },
+   "optionalDependencies": {
+    "fsevents": "^2.3.2"
+   },
+   "peerDependencies": {
+    "react": ">=16.8.0 <19.0.0"
+   },
+   "peerDependenciesMeta": {
+    "react": {
+     "optional": false
+    }
+   },
+   "engines": {
+    "node": ">=18.0.0"
+   },
+   "os": [
+    "linux",
+    "darwin"
+   ],
+   "cpu": [
+    "x64",
+    "arm64"
+   ],
+   "license": "MIT",
+   "_hasShrinkwrap": false,
+   "_id": "fixture-swarm@1.0.39",
+   "_npmUser": {
+    "name": "fixture-bot",
+    "email": "bot@example.invalid"
+   },
+   "maintainers": [
+    {
+     "name": "fixture-bot",
+     "email": "bot@example.invalid"
+    }
+   ],
+   "dist": {
+    "shasum": "1dfc1117d512739d01034bd8ddbe071ac4ab3905",
+    "integrity": "sha512-SdooHZhf/lUekUqwvoxFdqug9FLQT+9AZVZvBOUNDlgQU1eUAd9yHb1rFWSWubWntNbcS2Uuh+HLrdHR0e1KJg==",
+    "tarball": "https://npm.invalid/fixture-swarm/-/fixture-swarm-1.0.39.tgz",
+    "fileCount": 12,
+    "unpackedSize": 4096
+   }
+  }
+ },
+ "time": {
+  "created": "2026-01-01T00:00:00.000Z",
+  "modified": "2026-02-09T00:00:00.000Z",
+  "1.0.0": "2026-01-01T00:00:00.000Z",
+  "1.0.1": "2026-01-02T00:00:00.000Z",
+  "1.0.2": "2026-01-03T00:00:00.000Z",
+  "1.0.3": "2026-01-04T00:00:00.000Z",
+  "1.0.4": "2026-01-05T00:00:00.000Z",
+  "1.0.5": "2026-01-06T00:00:00.000Z",
+  "1.0.6": "2026-01-07T00:00:00.000Z",
+  "1.0.7": "2026-01-08T00:00:00.000Z",
+  "1.0.8": "2026-01-09T00:00:00.000Z",
+  "1.0.9": "2026-01-10T00:00:00.000Z",
+  "1.0.10": "2026-01-11T00:00:00.000Z",
+  "1.0.11": "2026-01-12T00:00:00.000Z",
+  "1.0.12": "2026-01-13T00:00:00.000Z",
+  "1.0.13": "2026-01-14T00:00:00.000Z",
+  "1.0.14": "2026-01-15T00:00:00.000Z",
+  "1.0.15": "2026-01-16T00:00:00.000Z",
+  "1.0.16": "2026-01-17T00:00:00.000Z",
+  "1.0.17": "2026-01-18T00:00:00.000Z",
+  "1.0.18": "2026-01-19T00:00:00.000Z",
+  "1.0.19": "2026-01-20T00:00:00.000Z",
+  "1.0.20": "2026-01-21T00:00:00.000Z",
+  "1.0.21": "2026-01-22T00:00:00.000Z",
+  "1.0.22": "2026-01-23T00:00:00.000Z",
+  "1.0.23": "2026-01-24T00:00:00.000Z",
+  "1.0.24": "2026-01-25T00:00:00.000Z",
+  "1.0.25": "2026-01-26T00:00:00.000Z",
+  "1.0.26": "2026-01-27T00:00:00.000Z",
+  "1.0.27": "2026-01-28T00:00:00.000Z",
+  "1.0.28": "2026-01-29T00:00:00.000Z",
+  "1.0.29": "2026-01-30T00:00:00.000Z",
+  "1.0.30": "2026-01-31T00:00:00.000Z",
+  "1.0.31": "2026-02-01T00:00:00.000Z",
+  "1.0.32": "2026-02-02T00:00:00.000Z",
+  "1.0.33": "2026-02-03T00:00:00.000Z",
+  "1.0.34": "2026-02-04T00:00:00.000Z",
+  "1.0.35": "2026-02-05T00:00:00.000Z",
+  "1.0.36": "2026-02-06T00:00:00.000Z",
+  "1.0.37": "2026-02-07T00:00:00.000Z",
+  "1.0.38": "2026-02-08T00:00:00.000Z",
+  "1.0.39": "2026-02-09T00:00:00.000Z"
+ },
+ "maintainers": [
+  {
+   "name": "fixture-bot",
+   "email": "bot@example.invalid"
+  }
+ ],
+ "homepage": "https://example.invalid/fixture-widget",
+ "keywords": [
+  "fixture",
+  "harmless"
+ ],
+ "repository": {
+  "type": "git",
+  "url": "git+https://example.invalid/fixture-widget.git"
+ },
+ "bugs": {
+  "url": "https://example.invalid/fixture-widget/issues"
+ },
+ "license": "MIT",
+ "readme": "# fixture-widget\n\nA harmless fixture.\n",
+ "readmeFilename": "README.md",
+ "users": {}
+}

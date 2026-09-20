@@ -1,0 +1,570 @@
+//! Slice 2's witness for the two validation commands (SPEC §4) and for the
+//! configuration rules behind them.
+//!
+//! Three things are asserted here that no unit test can: that the rules reach the
+//! command an operator actually runs, that a refusal names a reason rather than
+//! "invalid TOML", and that neither command writes anything. The readiness tests at
+//! the end cover the other half of the slice — a snapshot loaded at startup, and
+//! `/health/ready` following its validity while `/health/live` does not. The named
+//! `readiness_false_at_expiry_liveness_true` belongs to the poller slice, which is
+//! where the reload path that test also exercises is built.
+
+mod common;
+
+use std::fs;
+use std::path::{Path, PathBuf};
+use std::process::{Command, Output};
+
+use common::{TestClock, TestServer, sample_config};
+use package_firewall::config::{Config, ConfigError};
+use package_firewall::policy::{Ecosystem, blocklist};
+use package_firewall::store::cache::ProjectKey;
+
+/// Cargo builds the binary for this test and hands us its path; the exit codes SPEC
+/// §4 specifies belong to the command, not to a library call.
+const BINARY: &str = env!("CARGO_BIN_EXE_package-firewall");
+
+/// Each fixture with the reason its refusal must name. The same table drives the
+/// library check and the command check, so the two cannot report different things.
+const INVALID_CONFIGS: &[(&str, &str)] = &[
+    ("unknown_key.toml", "unknown key `cooldown_second`"),
+    ("missing_key.toml", "missing key `data_dir`"),
+    ("syntax.toml", "invalid TOML"),
+    ("listen_not_an_address.toml", "invalid `listen`"),
+    ("public_url_not_https.toml", "invalid `public_url`"),
+    ("public_url_with_path.toml", "invalid `public_url`"),
+    ("public_url_with_query.toml", "invalid `public_url`"),
+    ("relative_data_dir.toml", "invalid `data_dir`"),
+    ("relative_blocklist_file.toml", "invalid `blocklist_file`"),
+    (
+        "zero_blocklist_poll_seconds.toml",
+        "invalid `blocklist_poll_seconds`",
+    ),
+    ("zero_cache_max_bytes.toml", "invalid `cache_max_bytes`"),
+    (
+        "zero_memory_cache_max_bytes.toml",
+        "invalid `memory_cache_max_bytes`",
+    ),
+    (
+        "zero_max_metadata_bytes.toml",
+        "invalid `max_metadata_bytes`",
+    ),
+    (
+        "zero_max_blocklist_bytes.toml",
+        "invalid `max_blocklist_bytes`",
+    ),
+    (
+        "zero_max_upstream_requests.toml",
+        "invalid `max_upstream_requests`",
+    ),
+    (
+        "zero_max_artifact_downloads.toml",
+        "invalid `max_artifact_downloads`",
+    ),
+    (
+        "zero_max_active_requests.toml",
+        "invalid `max_active_requests`",
+    ),
+    (
+        "zero_max_references_per_project.toml",
+        "invalid `max_references_per_project`",
+    ),
+    (
+        "artifact_larger_than_cache.toml",
+        "invalid `max_artifact_bytes`",
+    ),
+];
+
+const INVALID_BLOCKLISTS: &[(&str, &str)] = &[
+    ("syntax.json", "invalid JSON"),
+    (
+        "unsupported_schema_version.json",
+        "unsupported schema_version 2",
+    ),
+    (
+        "unsupported_algorithm.json",
+        "unsupported hash algorithm `sha1`",
+    ),
+    ("malformed_digest.json", "malformed sha256 digest"),
+    ("malformed_record.json", "malformed record"),
+    ("unknown_record_field.json", "invalid JSON"),
+    ("missing_field.json", "invalid JSON"),
+    ("expired.json", "the snapshot has expired"),
+    (
+        "generated_in_the_future.json",
+        "generated_at is in the future",
+    ),
+    (
+        "inverted_window.json",
+        "generated_at is not before expires_at",
+    ),
+];
+
+fn config_fixture(name: &str) -> PathBuf {
+    Path::new("tests/fixtures/config").join(name)
+}
+
+fn blocklist_fixture(name: &str) -> PathBuf {
+    Path::new("tests/fixtures/blocklist").join(name)
+}
+
+fn now_micros() -> i64 {
+    jiff::Timestamp::now().as_microsecond()
+}
+
+fn run(args: &[&str]) -> Output {
+    Command::new(BINARY)
+        .args(args)
+        .output()
+        .expect("the binary runs")
+}
+
+fn stderr_of(output: &Output) -> String {
+    String::from_utf8_lossy(&output.stderr).into_owned()
+}
+
+#[test]
+fn the_shipped_samples_are_valid() {
+    Config::load(Path::new("config.sample.toml")).expect("the sample configuration is valid");
+    let snapshot = blocklist::load_file(
+        Path::new("blocklist.sample.json"),
+        blocklist::DEFAULT_MAX_BLOCKLIST_BYTES,
+        now_micros(),
+    )
+    .expect("the sample blocklist is valid");
+    assert_eq!(snapshot.entry_count(), 3);
+}
+
+#[test]
+fn an_unknown_key_is_named_rather_than_reported_as_invalid_toml() {
+    match Config::load(&config_fixture("unknown_key.toml")) {
+        Err(ConfigError::UnknownKey(key)) => assert_eq!(key, "cooldown_second"),
+        other => panic!("expected the misspelled key to be named, got {other:?}"),
+    }
+}
+
+#[test]
+fn a_missing_key_is_named_rather_than_reported_as_invalid_toml() {
+    match Config::load(&config_fixture("missing_key.toml")) {
+        Err(ConfigError::MissingKey(key)) => assert_eq!(key, "data_dir"),
+        other => panic!("expected the absent key to be named, got {other:?}"),
+    }
+}
+
+/// Deletes each key of the shipped sample in turn. Every key is either required and
+/// named when it goes missing, or documented here as one with a default — so the
+/// required-key list in `src/config.rs` cannot drift from the file an operator
+/// copies.
+#[test]
+fn deleting_any_sample_key_is_reported_as_that_key_missing() {
+    let text = fs::read_to_string("config.sample.toml").expect("the sample is readable");
+    let key_of = |line: &str| {
+        let line = line.trim();
+        if line.is_empty() || line.starts_with('#') {
+            return None;
+        }
+        line.split('=').next().map(|key| key.trim().to_owned())
+    };
+
+    let keys: Vec<String> = text.lines().filter_map(key_of).collect();
+    assert_eq!(keys.len(), 17, "the sample carries every documented key");
+
+    /// The keys `src/config.rs` gives a default, which a file may leave out.
+    const WITH_DEFAULTS: &[&str] = &["max_references_per_project", "metadata_max_age_seconds"];
+
+    for key in &keys {
+        let without: Vec<&str> = text
+            .lines()
+            .filter(|line| key_of(line).as_ref() != Some(key))
+            .collect();
+        let without = without.join("\n");
+
+        match Config::from_toml_str(&without) {
+            Err(ConfigError::MissingKey(missing)) => assert_eq!(&missing, key),
+            Ok(_) => assert!(
+                WITH_DEFAULTS.contains(&key.as_str()),
+                "only a key with a documented default may be left out, and `{key}` has none"
+            ),
+            other => panic!("deleting `{key}` should name it as missing, got {other:?}"),
+        }
+    }
+}
+
+#[test]
+fn every_invalid_config_fixture_is_refused_with_its_reason() {
+    for (fixture, reason) in INVALID_CONFIGS {
+        let err = Config::load(&config_fixture(fixture))
+            .expect_err(&format!("{fixture} must be refused"))
+            .to_string();
+        assert!(
+            err.contains(reason),
+            "{fixture}: expected a refusal naming `{reason}`, got `{err}`"
+        );
+    }
+}
+
+#[test]
+fn every_invalid_blocklist_fixture_is_refused_with_its_reason() {
+    for (fixture, reason) in INVALID_BLOCKLISTS {
+        let err = blocklist::load_file(
+            &blocklist_fixture(fixture),
+            blocklist::DEFAULT_MAX_BLOCKLIST_BYTES,
+            now_micros(),
+        )
+        .expect_err(&format!("{fixture} must be refused"))
+        .to_string();
+        assert!(
+            err.contains(reason),
+            "{fixture}: expected a refusal naming `{reason}`, got `{err}`"
+        );
+    }
+
+    // SPEC §8: an intentionally empty, valid snapshot is allowed and means only
+    // cooldown protection is active. It is not a malformed file.
+    let empty = blocklist::load_file(
+        &blocklist_fixture("empty_but_valid.json"),
+        blocklist::DEFAULT_MAX_BLOCKLIST_BYTES,
+        now_micros(),
+    )
+    .expect("an empty snapshot is valid");
+    assert_eq!(empty.entry_count(), 0);
+}
+
+#[test]
+fn check_config_exits_zero_on_the_sample_and_names_a_reason_otherwise() {
+    let ok = run(&["check-config", "config.sample.toml"]);
+    assert!(
+        ok.status.success(),
+        "check-config on the sample must exit 0: {}",
+        stderr_of(&ok)
+    );
+
+    // SPEC §4 spells the command with `--config`; the slice's witness uses the
+    // positional form. Both reach the same validation.
+    let with_flag = run(&["check-config", "--config", "config.sample.toml"]);
+    assert!(with_flag.status.success());
+
+    for (fixture, reason) in INVALID_CONFIGS {
+        let path = config_fixture(fixture);
+        let output = run(&["check-config", path.to_str().expect("a UTF-8 path")]);
+        assert!(
+            !output.status.success(),
+            "{fixture}: check-config must exit non-zero"
+        );
+        let stderr = stderr_of(&output);
+        assert!(
+            stderr.contains(reason),
+            "{fixture}: expected stderr to name `{reason}`, got `{stderr}`"
+        );
+    }
+
+    let absent = run(&["check-config", "tests/fixtures/config/not-here.toml"]);
+    assert!(!absent.status.success());
+    assert!(stderr_of(&absent).contains("cannot read"));
+}
+
+#[test]
+fn check_blocklist_exits_zero_on_a_valid_snapshot_and_names_a_reason_otherwise() {
+    let ok = run(&["check-blocklist", "blocklist.sample.json"]);
+    assert!(
+        ok.status.success(),
+        "check-blocklist on the sample must exit 0: {}",
+        stderr_of(&ok)
+    );
+
+    let empty = blocklist_fixture("empty_but_valid.json");
+    let empty = run(&["check-blocklist", empty.to_str().expect("a UTF-8 path")]);
+    assert!(
+        empty.status.success(),
+        "a valid empty snapshot is accepted, never treated as malformed"
+    );
+
+    for (fixture, reason) in INVALID_BLOCKLISTS {
+        let path = blocklist_fixture(fixture);
+        let output = run(&["check-blocklist", path.to_str().expect("a UTF-8 path")]);
+        assert!(
+            !output.status.success(),
+            "{fixture}: check-blocklist must exit non-zero"
+        );
+        let stderr = stderr_of(&output);
+        assert!(
+            stderr.contains(reason),
+            "{fixture}: expected stderr to name `{reason}`, got `{stderr}`"
+        );
+    }
+
+    let absent = run(&["check-blocklist", "tests/fixtures/blocklist/not-here.json"]);
+    assert!(!absent.status.success());
+    assert!(stderr_of(&absent).contains("cannot read"));
+}
+
+/// SPEC §4: the validation commands do not modify state. The configuration under
+/// test points its `data_dir` and `blocklist_file` inside the temporary directory,
+/// so a command that created either would be caught here.
+#[test]
+fn the_check_commands_write_nothing() {
+    let dir = tempfile::tempdir().expect("a temporary directory");
+    let root = dir.path();
+    let config_path = root.join("config.toml");
+    let sample = fs::read_to_string("config.sample.toml").expect("the sample is readable");
+    let config = sample
+        .replace(
+            "/var/lib/package-firewall",
+            &root.join("data").display().to_string(),
+        )
+        .replace(
+            "/etc/package-firewall/blocklist.json",
+            &root.join("blocklist.json").display().to_string(),
+        );
+    fs::write(&config_path, config).expect("the test configuration is written");
+
+    let entries_before = listing(root);
+
+    for args in [
+        vec!["check-config".to_owned(), path_arg(&config_path)],
+        vec![
+            "check-blocklist".to_owned(),
+            path_arg(&root.join("blocklist.json")),
+        ],
+        vec![
+            "check-config".to_owned(),
+            path_arg(&absolute(&config_fixture("syntax.toml"))),
+        ],
+    ] {
+        let output = Command::new(BINARY)
+            .args(&args)
+            .current_dir(root)
+            .output()
+            .expect("the binary runs");
+        // check-config on a valid file succeeds; the other two refuse. Either way
+        // nothing may appear on disk.
+        assert!(output.status.code().is_some(), "{args:?} exits normally");
+        assert_eq!(
+            listing(root),
+            entries_before,
+            "{args:?} changed the directory contents"
+        );
+    }
+
+    assert!(
+        !root.join("data").exists(),
+        "check-config must not create data_dir"
+    );
+    assert!(
+        !root.join("blocklist.json").exists(),
+        "check-blocklist must not create the file it was asked about"
+    );
+}
+
+fn listing(root: &Path) -> Vec<String> {
+    let mut names: Vec<String> = fs::read_dir(root)
+        .expect("the directory is readable")
+        .map(|entry| {
+            entry
+                .expect("an entry")
+                .file_name()
+                .to_string_lossy()
+                .into_owned()
+        })
+        .collect();
+    names.sort();
+    names
+}
+
+fn absolute(path: &Path) -> PathBuf {
+    std::env::current_dir()
+        .expect("a working directory")
+        .join(path)
+}
+
+fn path_arg(path: &Path) -> String {
+    path.to_str().expect("a UTF-8 path").to_owned()
+}
+
+/// The blocklist `serve` loads at startup, with a window the test controls.
+fn windowed_snapshot(generated_at: &str, expires_at: &str) -> String {
+    format!(
+        r#"{{"schema_version":1,"revision":11,"generated_at":"{generated_at}",
+             "expires_at":"{expires_at}","blocked_packages":[],"blocked_hashes":[]}}"#
+    )
+}
+
+#[tokio::test]
+async fn a_valid_snapshot_at_startup_makes_the_service_ready() {
+    let dir = tempfile::tempdir().expect("a temporary directory");
+    let path = dir.path().join("blocklist.json");
+    fs::write(
+        &path,
+        windowed_snapshot("2026-09-17T00:00:00Z", "2026-09-18T00:00:00Z"),
+    )
+    .expect("the snapshot is written");
+
+    let mut config = sample_config();
+    config.blocklist_file = path;
+    let clock = TestClock::at_rfc3339("2026-09-17T12:00:00Z");
+    let server = TestServer::start_with(config, clock).await;
+
+    assert_eq!(server.status("/health/live").await, 200);
+    assert_eq!(
+        server.status("/health/ready").await,
+        200,
+        "a valid snapshot is in force, so the service is ready"
+    );
+    assert_eq!(
+        server.status("/npm/left-pad").await,
+        404,
+        "with a policy in force the npm route answers from the decision, not with \
+         POLICY_UNAVAILABLE"
+    );
+
+    server.shutdown().await;
+}
+
+#[tokio::test]
+async fn readiness_turns_false_at_expiry_while_liveness_stays_true() {
+    let dir = tempfile::tempdir().expect("a temporary directory");
+    let path = dir.path().join("blocklist.json");
+    fs::write(
+        &path,
+        windowed_snapshot("2026-09-17T00:00:00Z", "2026-09-18T00:00:00Z"),
+    )
+    .expect("the snapshot is written");
+
+    let mut config = sample_config();
+    config.blocklist_file = path;
+    let clock = TestClock::at_rfc3339("2026-09-17T23:59:59Z");
+    let server = TestServer::start_with(config, clock.clone()).await;
+
+    assert_eq!(server.status("/health/ready").await, 200);
+
+    // Expiry is exclusive: at exactly `expires_at` the snapshot is no longer in
+    // force. No poll and no restart is involved — the window is compared against the
+    // clock on the request itself.
+    clock.set_rfc3339("2026-09-18T00:00:00Z");
+
+    assert_eq!(
+        server.status("/health/ready").await,
+        503,
+        "an expired snapshot is not a policy"
+    );
+    assert_eq!(
+        server.status("/health/live").await,
+        200,
+        "SPEC §8: liveness remains healthy at expiry"
+    );
+    assert_eq!(
+        server.status("/npm/left-pad").await,
+        503,
+        "delivery stops at expiry as well"
+    );
+
+    server.shutdown().await;
+}
+
+#[tokio::test]
+async fn a_missing_blocklist_file_leaves_the_service_running_and_unready() {
+    let dir = tempfile::tempdir().expect("a temporary directory");
+    let mut config = sample_config();
+    config.blocklist_file = dir.path().join("absent.json");
+
+    let server =
+        TestServer::start_with(config, TestClock::at_rfc3339("2026-09-17T12:00:00Z")).await;
+
+    assert_eq!(
+        server.status("/health/live").await,
+        200,
+        "an unreadable blocklist is not a reason to refuse to start"
+    );
+    assert_eq!(server.status("/health/ready").await, 503);
+    assert_eq!(server.status("/npm/left-pad").await, 503);
+
+    server.shutdown().await;
+}
+
+// ---------------------------------------------------------------------------
+// Slice 15: the maximum-age ceiling (SPEC rev 3 §4)
+// ---------------------------------------------------------------------------
+
+/// The shipped sample with its `metadata_max_age_seconds` line removed, and
+/// optionally replaced. Written against the real sample rather than a fixture of its
+/// own so these three cannot drift from the file an operator copies.
+fn sample_with_ceiling(replacement: Option<&str>) -> String {
+    let text = fs::read_to_string("config.sample.toml").expect("the sample is readable");
+    let mut kept: Vec<&str> = text
+        .lines()
+        .filter(|line| !line.trim_start().starts_with("metadata_max_age_seconds"))
+        .collect();
+    assert_eq!(
+        kept.len(),
+        text.lines().count() - 1,
+        "the sample states the ceiling exactly once"
+    );
+    if let Some(line) = replacement {
+        kept.push(line);
+    }
+    kept.join("\n")
+}
+
+/// SPEC rev 3 §4: a ceiling beneath the revalidation interval would expire every copy
+/// before it could ever be revalidated — a configuration that looks stricter and is
+/// in fact a self-inflicted outage.
+#[test]
+fn a_ceiling_below_the_ttl_is_rejected() {
+    // The sample's `metadata_ttl_seconds` is 300.
+    let err = Config::from_toml_str(&sample_with_ceiling(Some("metadata_max_age_seconds = 299")))
+        .expect_err("a ceiling one second beneath the TTL is refused");
+    assert!(
+        matches!(
+            &err,
+            ConfigError::Invalid {
+                key: "metadata_max_age_seconds",
+                ..
+            }
+        ),
+        "the refusal names the key an operator can fix, got `{err}`"
+    );
+    assert!(
+        err.to_string().contains("metadata_ttl_seconds"),
+        "and the key it is measured against, got `{err}`"
+    );
+
+    // The rule is "below", not "at or below": equal is a legitimate choice.
+    let equal = Config::from_toml_str(&sample_with_ceiling(Some("metadata_max_age_seconds = 300")))
+        .expect("a ceiling equal to the TTL is valid");
+    assert_eq!(equal.metadata_max_age_seconds, 300);
+}
+
+/// Zero is the off switch, so it is exempt from the rule above rather than caught by
+/// it — every TTL is above zero.
+#[test]
+fn a_zero_ceiling_is_accepted_and_disables_the_rule() {
+    let config = Config::from_toml_str(&sample_with_ceiling(Some("metadata_max_age_seconds = 0")))
+        .expect("zero disables the ceiling rather than failing the below-the-TTL check");
+    assert_eq!(config.metadata_max_age_seconds, 0);
+    assert_eq!(
+        package_firewall::store::effective_max_age_micros(
+            &ProjectKey::new(Ecosystem::Npm, "anything"),
+            config.metadata_max_age_seconds
+        ),
+        None,
+        "and no project then has a ceiling at all"
+    );
+}
+
+/// The key is optional, because files written against SPEC revision 2 do not carry
+/// it. They inherit a bound rather than the unbounded staleness the ceiling closes.
+#[test]
+fn an_absent_ceiling_key_takes_the_default() {
+    let config = Config::from_toml_str(&sample_with_ceiling(None))
+        .expect("a configuration with no opinion about the ceiling is still valid");
+    assert_eq!(
+        config.metadata_max_age_seconds, 86_400,
+        "an absent key is one day, not zero: a file that predates the key must not \
+         silently opt out of the control"
+    );
+    assert_eq!(
+        sample_config().metadata_max_age_seconds,
+        86_400,
+        "and the shipped sample states the same value explicitly"
+    );
+}
