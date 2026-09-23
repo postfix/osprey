@@ -6,3 +6,6 @@
 
 # Scratch space for local experiments; never committed.
 /local
+
+# Gate QA scratch files.
+docs/plans/*/.gate-*

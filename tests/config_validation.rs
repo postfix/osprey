@@ -19,6 +19,7 @@ use common::{TestClock, TestServer, sample_config};
 use package_firewall::config::{Config, ConfigError};
 use package_firewall::policy::{Ecosystem, blocklist};
 use package_firewall::store::cache::ProjectKey;
+use url::Url;
 
 /// Cargo builds the binary for this test and hands us its path; the exit codes SPEC
 /// §4 specifies belong to the command, not to a library call.
@@ -567,4 +568,230 @@ fn an_absent_ceiling_key_takes_the_default() {
         86_400,
         "and the shipped sample states the same value explicitly"
     );
+}
+
+// ---------------------------------------------------------------------------
+// Decision log delivery, slice 1: the two `log_file_*` keys (TP-5a)
+// ---------------------------------------------------------------------------
+
+/// The shipped sample with `lines` appended, so these cannot drift from the file an
+/// operator copies.
+fn sample_with(lines: &[&str]) -> String {
+    let mut text = fs::read_to_string("config.sample.toml").expect("the sample is readable");
+    for line in lines {
+        text.push('\n');
+        text.push_str(line);
+    }
+    text
+}
+
+/// A size with nowhere to write it is an operator who believes delivery is on and is
+/// getting nothing. Refused by name rather than ignored.
+#[test]
+fn tp5a_log_file_max_bytes_requires_path() {
+    let err = Config::from_toml_str(&sample_with(&["log_file_max_bytes = 1048576"]))
+        .expect_err("a size without a path is refused");
+    assert!(
+        matches!(
+            &err,
+            ConfigError::Invalid {
+                key: "log_file_max_bytes",
+                ..
+            }
+        ),
+        "the refusal names the key an operator can fix, got `{err}`"
+    );
+    assert!(
+        err.to_string().contains("log_file_path"),
+        "and the key it depends on, got `{err}`"
+    );
+
+    // The same size *with* a path is the ordinary configuration, so the rule is the
+    // pairing and not the key itself.
+    let config = Config::from_toml_str(&sample_with(&[
+        "log_file_path = \"/var/log/package-firewall/decisions.ndjson\"",
+        "log_file_max_bytes = 1048576",
+    ]))
+    .expect("a size alongside a path is valid");
+    assert_eq!(config.log_file_max_bytes.get(), 1_048_576);
+}
+
+/// Zero is not "unbounded": it is a file that can never hold a record.
+#[test]
+fn tp5a_log_file_max_bytes_rejects_zero() {
+    let err = Config::from_toml_str(&sample_with(&[
+        "log_file_path = \"/var/log/package-firewall/decisions.ndjson\"",
+        "log_file_max_bytes = 0",
+    ]))
+    .expect_err("a zero size is refused");
+    assert!(
+        matches!(
+            &err,
+            ConfigError::Invalid {
+                key: "log_file_max_bytes",
+                ..
+            }
+        ),
+        "the refusal names the key an operator can fix, got `{err}`"
+    );
+}
+
+/// Absent means off, and the size an absent-but-configured file inherits is the one
+/// `config.sample.toml` documents.
+#[test]
+fn both_log_file_keys_are_optional_and_the_size_has_a_default() {
+    let bare = sample_config();
+    assert_eq!(bare.log_file_path, None, "delivery is off by default");
+
+    let configured = Config::from_toml_str(&sample_with(&[
+        "log_file_path = \"/var/log/package-firewall/decisions.ndjson\"",
+    ]))
+    .expect("a path on its own is valid");
+    assert_eq!(
+        configured.log_file_max_bytes.get(),
+        100 * 1024 * 1024,
+        "a path with no stated size inherits 100 MiB, so the pair costs at most 200 MiB"
+    );
+}
+
+// ---------------------------------------------------------------------------
+// Decision log delivery, slice 2: the two `siem_*` keys (TP-5b, TP-6)
+// ---------------------------------------------------------------------------
+
+/// A credential header with no collector to send it to is the same mistake as a size
+/// with no file: the operator believes delivery is on and is getting nothing.
+#[test]
+fn tp5b_siem_auth_header_requires_siem_url() {
+    let err = Config::from_toml_str(&sample_with(&["siem_auth_header = \"X-Collector-Token\""]))
+        .expect_err("a credential header without a collector is refused");
+    assert!(
+        matches!(
+            &err,
+            ConfigError::Invalid {
+                key: "siem_auth_header",
+                ..
+            }
+        ),
+        "the refusal names the key an operator can fix, got `{err}`"
+    );
+    assert!(
+        err.to_string().contains("siem_url"),
+        "and the key it depends on, got `{err}`"
+    );
+
+    // The same header *with* a collector is the ordinary configuration, so the rule is
+    // the pairing and not the key itself.
+    let config = Config::from_toml_str(&sample_with(&[
+        "siem_url = \"https://siem.example.org/ingest\"",
+        "siem_auth_header = \"X-Collector-Token\"",
+    ]))
+    .expect("a credential header alongside a collector is valid");
+    assert_eq!(config.siem_auth_header.as_str(), "x-collector-token");
+
+    // And a collector on its own sends the credential under the documented default.
+    let defaulted = Config::from_toml_str(&sample_with(&[
+        "siem_url = \"https://siem.example.org/ingest\"",
+    ]))
+    .expect("a collector on its own is valid");
+    assert_eq!(
+        defaulted.siem_auth_header.as_str(),
+        "authorization",
+        "a collector with no stated header inherits Authorization"
+    );
+
+    // A name no HTTP message could carry is refused by name too.
+    let err = Config::from_toml_str(&sample_with(&[
+        "siem_url = \"https://siem.example.org/ingest\"",
+        "siem_auth_header = \"not a header name\"",
+    ]))
+    .expect_err("a header name with spaces in it is refused");
+    assert!(
+        matches!(
+            &err,
+            ConfigError::Invalid {
+                key: "siem_auth_header",
+                ..
+            }
+        ),
+        "the refusal names the key an operator can fix, got `{err}`"
+    );
+}
+
+/// The credential and every decision record travel this URL. Plaintext is allowed only
+/// where the traffic cannot leave the machine.
+#[test]
+fn tp6_siem_url_scheme_rule() {
+    for accepted in [
+        "https://siem.example.org/ingest",
+        "http://127.0.0.1:8088/ingest",
+        "http://localhost:8088/ingest",
+    ] {
+        let line = format!("siem_url = \"{accepted}\"");
+        let config = Config::from_toml_str(&sample_with(&[&line]))
+            .unwrap_or_else(|err| panic!("{accepted} is a valid collector: {err}"));
+        assert_eq!(
+            config.siem_url.as_ref().map(Url::as_str),
+            Some(accepted),
+            "and it is kept as written"
+        );
+    }
+
+    let err = Config::from_toml_str(&sample_with(&["siem_url = \"http://collector.example/ingest\""]))
+        .expect_err("plaintext to a host that is not this machine is refused");
+    assert!(
+        matches!(&err, ConfigError::Invalid { key: "siem_url", .. }),
+        "the refusal names the key an operator can fix, got `{err}`"
+    );
+
+    let err = Config::from_toml_str(&sample_with(&["siem_url = \"not a url\""]))
+        .expect_err("a collector that is not a URL is refused");
+    assert!(
+        matches!(&err, ConfigError::Invalid { key: "siem_url", .. }),
+        "the refusal names the key an operator can fix, got `{err}`"
+    );
+}
+
+// ---------------------------------------------------------------------------
+// Decision log delivery, slice 3: `log_consumer_identification` (TP-5c)
+// ---------------------------------------------------------------------------
+
+/// Peer addresses acquired for a console the product calls non-durable are data
+/// collected for no stated purpose. The opt-in is refused unless something durable is
+/// configured to receive them.
+#[test]
+fn tp5c_consumer_identification_requires_a_sink() {
+    let err = Config::from_toml_str(&sample_with(&["log_consumer_identification = true"]))
+        .expect_err("recording peer addresses with nowhere to put them is refused");
+    assert!(
+        matches!(
+            &err,
+            ConfigError::Invalid {
+                key: "log_consumer_identification",
+                ..
+            }
+        ),
+        "the refusal names the key an operator can fix, got `{err}`"
+    );
+    // The whole reason, not only the key: the console already receives every peer
+    // address, so what the refusal buys is a second destination the operator chose,
+    // and a reason claiming otherwise must not come back.
+    let ConfigError::Invalid { reason, .. } = &err else {
+        unreachable!("matched above");
+    };
+    assert_eq!(
+        reason,
+        "requires log_file_path or siem_url, so recorded peer addresses reach a durable \
+         destination the operator chose",
+        "the refusal says what it actually protects"
+    );
+
+    // Either sink on its own is a destination, so the rule is the pairing and not the
+    // key itself.
+    for sink in [
+        "log_file_path = \"/var/log/package-firewall/decisions.ndjson\"",
+        "siem_url = \"https://siem.example.org/ingest\"",
+    ] {
+        Config::from_toml_str(&sample_with(&[sink, "log_consumer_identification = true"]))
+            .unwrap_or_else(|err| panic!("`{sink}` is a destination for them: {err}"));
+    }
 }

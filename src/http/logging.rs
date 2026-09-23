@@ -11,21 +11,37 @@
 //! client is told and the ID the decision line carries are the same string by
 //! construction rather than by two call sites agreeing.
 //!
-//! Nothing a client sends reaches a log line. The fields below come from the request
-//! target and from this process's own decision; headers, bodies and upstream URLs do
-//! not appear, so a credential cannot arrive in one.
+//! No client-supplied header, body or connection value reaches a log line. The fields
+//! below come from the request target and from this process's own decision; headers,
+//! bodies and upstream URLs do not appear, so a credential cannot arrive in one. The
+//! request target is itself client-supplied: `package` and `version` have always been
+//! derived from the request path, bounded by [`Target::of`].
+//!
+//! `consumer` is the one value taken from the connection, and only when an operator
+//! sets `log_consumer_identification`: the peer address of the accepted TCP
+//! connection, which this process observes rather than the caller claims — never a
+//! forwarding header, never the port.
+//!
+//! Two retained analyzer specs are tripwires for this, not proofs of it:
+//! `.smtc/analyzers/client-data-reaches-delivery-sink.yaml` passes at zero
+//! `headers`/`body`/`from_request`-style reads of an inbound request, and
+//! `.smtc/analyzers/consumer-identity-extension-read.yaml` passes at exactly one
+//! inbound `extensions()` read — the `ConnectInfo` read in [`decide`].
 
+use std::net::SocketAddr;
 use std::sync::atomic::{AtomicU8, AtomicU64, Ordering};
 use std::sync::{Arc, LazyLock, Mutex};
 use std::time::{Duration, Instant};
 
 use axum::body::HttpBody;
-use axum::extract::{Request, State};
+use axum::extract::{ConnectInfo, Request, State};
 use axum::http::header;
 use axum::middleware::Next;
 use axum::response::Response;
 
 use crate::App;
+use crate::clock::Clock;
+use crate::delivery::{self, Decision, Record, Sinks, Summary};
 use crate::http::error::ApiError;
 use crate::policy::Ecosystem;
 
@@ -136,6 +152,22 @@ pub async fn decide(State(app): State<Arc<App>>, request: Request, next: Next) -
     let target = Target::of(request.uri().path());
     let method = request.method().clone();
 
+    // Read here and nowhere else: `next.run(request)` below consumes the request, so
+    // afterwards there is no request left to ask. The extension exists only when the
+    // server was built with connect-info, which happens only when the opt-in is on;
+    // the port is deliberately dropped, because the peer address is the whole of the
+    // consumer identity this product will ever record.
+    let consumer = app
+        .config
+        .log_consumer_identification
+        .then(|| {
+            request
+                .extensions()
+                .get::<ConnectInfo<SocketAddr>>()
+                .map(|ConnectInfo(peer)| peer.ip())
+        })
+        .flatten();
+
     let context = Arc::new(RequestContext {
         id: next_id(),
         cache: AtomicU8::new(CacheStatus::Unattempted.code()),
@@ -169,23 +201,54 @@ pub async fn decide(State(app): State<Arc<App>>, request: Request, next: Next) -
         _ => target.ecosystem,
     };
 
-    tracing::info!(
-        request_id = %context.id,
-        method = %method,
+    // The record is built first and the line is rendered from it, so the fields an
+    // operator sees on stdout and the fields a sink delivers are the same fields by
+    // construction rather than by two call sites agreeing.
+    let decision = Decision {
+        timestamp: delivery::rfc3339(app.clock.now_utc_micros()),
+        request_id: context.id.clone(),
+        method: method.to_string(),
         ecosystem,
-        package = target.package.as_deref().unwrap_or(""),
-        version = target.version.as_deref().unwrap_or(""),
-        status = status.as_u16(),
+        package: target.package.unwrap_or_default(),
+        version: target.version.unwrap_or_default(),
+        status: status.as_u16(),
         result,
-        reason = %reason,
-        blocklist_revision = app.blocklist_revision().unwrap_or(0),
-        cache = CacheStatus::from_code(context.cache.load(Ordering::Relaxed)).as_str(),
-        duration_micros = elapsed.as_micros() as u64,
+        reason,
+        blocklist_revision: app.blocklist_revision().unwrap_or(0),
+        cache: CacheStatus::from_code(context.cache.load(Ordering::Relaxed)).as_str(),
+        duration_micros: elapsed.as_micros() as u64,
         bytes,
+        consumer,
+    };
+
+    tracing::info!(
+        request_id = %decision.request_id,
+        method = %decision.method,
+        ecosystem = decision.ecosystem,
+        package = decision.package.as_str(),
+        version = decision.version.as_str(),
+        status = decision.status,
+        result = decision.result,
+        reason = %decision.reason,
+        blocklist_revision = decision.blocklist_revision,
+        cache = decision.cache,
+        duration_micros = decision.duration_micros,
+        bytes = decision.bytes,
+        // `Option` records nothing at all when it is `None`, so the line an operator
+        // who opted out reads keeps exactly the twelve keys it has always had.
+        consumer = decision.consumer.map(tracing::field::display),
         "request decided"
     );
 
-    summarise(elapsed, bytes, error.is_some());
+    app.delivery.offer(Record::RequestDecided(decision));
+
+    summarise(
+        elapsed,
+        bytes,
+        error.is_some(),
+        &app.delivery,
+        app.clock.as_ref(),
+    );
     response
 }
 
@@ -291,7 +354,7 @@ static COUNTERS: LazyLock<Mutex<Counters>> = LazyLock::new(|| {
     })
 });
 
-fn summarise(elapsed: Duration, bytes: u64, was_error: bool) {
+fn summarise(elapsed: Duration, bytes: u64, was_error: bool, sinks: &Sinks, clock: &dyn Clock) {
     let window = Duration::from_millis(SUMMARY_MILLIS.load(Ordering::Relaxed));
 
     // Poisoning cannot lose a window: the guarded value is five integers and an
@@ -308,27 +371,84 @@ fn summarise(elapsed: Duration, bytes: u64, was_error: bool) {
         return;
     }
 
-    let (requests, errors, total_bytes, micros) = (
-        counters.requests,
-        counters.errors,
-        counters.bytes,
-        counters.micros,
-    );
+    let summary = close_window(&mut counters, open_for, sinks, clock);
+    drop(counters);
+    emit(summary, sinks);
+}
+
+/// Closes the current window regardless of how much of it has elapsed.
+///
+/// Called once from `Running::shutdown`, after the HTTP server has joined — so no
+/// further records can be produced — and before the drain token is cancelled, so the
+/// summary is already queued when the sinks begin draining.
+pub(crate) fn flush_summary(sinks: &Sinks, clock: &dyn Clock) {
+    let mut counters = COUNTERS.lock().unwrap_or_else(|poisoned| poisoned.into_inner());
+    let open_for = counters.opened.elapsed();
+    let summary = close_window(&mut counters, open_for, sinks, clock);
+    drop(counters);
+    emit(summary, sinks);
+}
+
+/// Reports what was lost during the drain itself.
+///
+/// [`flush_summary`] reads and resets the drop counters *before* the drain starts, so
+/// a record dropped inside the drain window would otherwise increment a counter
+/// nobody ever reads again. By the time this runs the sinks have returned, so this
+/// last line reaches the console only — stated rather than hidden. A clean shutdown
+/// writes nothing.
+pub(crate) fn flush_drop_tail(sinks: &Sinks) {
+    let drops = sinks.drops();
+    if drops.file != 0 || drops.siem != 0 {
+        tracing::warn!(
+            dropped_file = drops.file,
+            dropped_siem = drops.siem,
+            "decision records were dropped while delivery was draining and could not be delivered"
+        );
+    }
+}
+
+/// Reads the window out of `counters` and resets it. The drop counts are read inside
+/// the same critical section, so one window's counts cannot be split across two.
+///
+/// The one place a summary reads the time, so the periodic and the shutdown summary
+/// are stamped the same way: when the window is closed.
+fn close_window(
+    counters: &mut Counters,
+    open_for: Duration,
+    sinks: &Sinks,
+    clock: &dyn Clock,
+) -> Summary {
+    let drops = sinks.drops();
+    let summary = Summary {
+        timestamp: delivery::rfc3339(clock.now_utc_micros()),
+        requests: counters.requests,
+        errors: counters.errors,
+        bytes: counters.bytes,
+        mean_duration_micros: counters.micros / counters.requests.max(1),
+        window_micros: open_for.as_micros() as u64,
+        dropped_file: drops.file,
+        dropped_siem: drops.siem,
+    };
     counters.requests = 0;
     counters.errors = 0;
     counters.bytes = 0;
     counters.micros = 0;
     counters.opened = Instant::now();
-    drop(counters);
+    summary
+}
 
+fn emit(summary: Summary, sinks: &Sinks) {
     tracing::info!(
-        requests,
-        errors,
-        bytes = total_bytes,
-        mean_duration_micros = micros / requests.max(1),
-        window_micros = open_for.as_micros() as u64,
+        requests = summary.requests,
+        errors = summary.errors,
+        bytes = summary.bytes,
+        mean_duration_micros = summary.mean_duration_micros,
+        window_micros = summary.window_micros,
+        dropped_file = summary.dropped_file,
+        dropped_siem = summary.dropped_siem,
         "request summary"
     );
+    sinks.offer(Record::RequestSummary(summary));
 }
 
 /// Shortens the summary window. **Compiled only under `test-support`.**

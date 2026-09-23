@@ -1,0 +1,95 @@
+# Guards the design rule stated at src/http/logging.rs:14: "Nothing a client sends
+# reaches a log line." The decision-log-delivery feature (docs/plans/decision-log-
+# delivery/03-program-design.md) added delivery::Sinks::offer, which ships a
+# decision record off the machine -- the first sink whose output actually leaves
+# the process. The threat this guards (T-INVARIANT-FIRST-BREACH, same doc) is a
+# LATER edit adding a header- or body-derived field to the record.
+#
+# WHAT THIS CHECK IS: a forbidden-call inventory (kind: structural_pattern), not a
+# taint/reachability query. It never traces where a value goes after it is read --
+# it fails the moment a call site matching one of the accessor names below, with a
+# receiver matching the list below, exists anywhere in this repository, full stop.
+# It is an inventory of the names it is given, not of every inbound-request
+# accessor there is: `request.extensions()` is one such accessor and is NOT in
+# that list -- see WHAT IT DOES NOT CATCH. This was deliberate: two dataflow-based
+# attempts were tried and rejected first.
+#   - taint_query (backward/default direction) is function-granular in this SMTC
+#     build: it marks a whole function "tainted" if the function's call-graph
+#     slice contains any source-matching call site anywhere in it, not the actual
+#     value that reaches the sink. http::logging::decide() legitimately calls
+#     `response.headers()` / `response.body()` (for the `bytes` field) AND
+#     (transitively) calls `offer`, so backward taint_query produces a permanent
+#     false positive at src/delivery/mod.rs regardless of scope, receiver_type, or
+#     sanitizer filters -- all three of those filters were empirically confirmed
+#     to be no-ops for taint_query in this build (a filter value engineered to
+#     match nothing still let the finding through unchanged).
+#   - taint_query with `constraints: {direction: forward}` does real per-value
+#     dataflow and correctly returns zero on this repository, but has a proven
+#     false negative on the realistic breach shape: binding a header value to a
+#     named local, using it, then moving it into an enum-wrapped sink call --
+#     exactly what `Decision { .. }` / `Record::RequestDecided(decision)` /
+#     `sinks.offer(...)` does here. Confirmed on synthetic fixtures; deleted after
+#     use.
+#
+# The structural_pattern's `receiver_type` filter, unlike taint_query's, is real:
+# it is backed by find_call_sites_bulk with a resolved-type-or-receiver-text
+# fallback (crates/engine/src/lib.rs, `call_site_satisfies`), and was verified to
+# discriminate `request.headers()` from `response.headers()` on a two-call
+# synthetic fixture before being trusted here.
+#
+# WHAT IT CATCHES: any call named `headers`, `into_body`, `to_bytes`, `body`, or
+# `from_request*` (axum's FromRequest/FromRequestParts extractor trait, used by
+# typed header/body extractors) whose receiver expression contains "request",
+# "req", or "parts" -- covering both a direct `request.headers()` read and a
+# typical axum extractor shape. It fires regardless of what happens to the value
+# afterward (no dataflow to get wrong), including through a named local and an
+# enum-wrapped sink call.
+#
+# WHAT IT DOES NOT CATCH: a client-controlled value that reaches the record by
+# some route other than these accessor names/receivers -- e.g. a value read via a
+# differently-named local (`fn handler(r: Request)` calling `r.headers()` would
+# still match "r" only if "r" is added to the receiver_type list; it currently is
+# not, to avoid matching unrelated single-letter locals), or a route that doesn't
+# go through a `.headers()`/`.body()`/`from_request*` call at all (e.g. reading a
+# raw header byte range via some other API this repository doesn't use today).
+# Widen the receiver_type list if a real handler uses another parameter name.
+#
+# Specifically NOT caught, and owned by a sibling spec instead:
+# `request.extensions()`. The extension map is an inbound-request accessor like
+# any other -- it is the standard place a tower/axum layer deposits a
+# header-derived value, so reading it back is a real route from `X-Forwarded-For`
+# into a delivered record -- but `extensions` cannot be added to the name list
+# above without firing on the ONE approved read this product performs
+# (`request.extensions().get::<ConnectInfo<SocketAddr>>()` in `decide`,
+# src/http/logging.rs:156), which would destroy this spec's zero-findings pass
+# condition. That accessor is therefore guarded by
+# .smtc/analyzers/consumer-identity-extension-read.yaml, whose pass condition is
+# exactly ONE finding rather than zero. Read that file before reading its output:
+# a 1 there is the pass, and anything else is the signal.
+#
+# Validated against:
+#   - /tmp/osprey-tp14-control (owned by the main agent, not modified): fires at
+#     the `request.headers()` call site.
+#   - a synthetic safe fixture with the three shapes that fooled the ORIGINAL
+#     version of this spec -- outbound `response.headers()` used for a byte
+#     count, an upstream client's `response.headers()` ETag read, and
+#     `String::into_bytes()` -- returns zero, confirmed non-vacuous (the same
+#     call names, without the receiver filter, matched 3 call sites in that same
+#     fixture).
+#   - the real product root: zero findings, confirmed non-vacuous (the same
+#     call names, without the receiver filter, match 3 real call sites in this
+#     repository -- `request.header(...)` calls on outbound reqwest builders in
+#     src/upstream/reqwest_transport.rs and tests/common/mod.rs, which the
+#     receiver_type filter is why "header" the exact-match setter name was
+#     dropped from the list, keeping only "headers", the zero-arg getter).
+#   - a synthetic fixture shaped exactly like a future breach (a header value
+#     bound to a named local, then moved into an enum-wrapped
+#     `sinks.offer(Record::RequestDecided(decision))` call) -- fires. This is the
+#     shape that defeated the forward-direction taint_query attempt.
+name: client-data-reaches-delivery-sink
+kind: structural_pattern
+severity: high
+call_sites:
+  calls:
+    name: ["headers", "into_body", "to_bytes", "from_request*", "body"]
+    receiver_type: ["request|req|parts"]

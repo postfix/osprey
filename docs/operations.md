@@ -427,6 +427,152 @@ upstream.
 Set the level with `RUST_LOG`; the default is `info`. There is no metrics service in
 this release — counters and timing summaries are emitted to stdout periodically.
 
+### Delivering decisions to a file
+
+stdout is kept by the host rather than by this process: under systemd it lands in the
+journal, and under a container runtime in a node-level log file, with whatever
+retention the host gives them. Two optional configuration keys append every decision
+to a file this process owns as well, as one JSON object per line (NDJSON). Both are absent by default: with
+no `log_file_path` this process opens no file, starts no delivery task, and writes
+exactly the stdout line it writes today.
+
+| Key | Default | Meaning |
+| --- | --- | --- |
+| `log_file_path` | absent — delivery is off | The file decisions are appended to. |
+| `log_file_max_bytes` | `104857600` (100 MiB) | The size at which the live file is rolled over. Refused without `log_file_path`, and refused as zero. |
+
+Each line carries the same fields as the stdout decision line — twelve, or thirteen
+with `consumer` when `log_consumer_identification` is on — plus an
+`"event"` field naming which record it is — `request_decided` for a decision,
+`request_summary` for the periodic counter summary. The summary lines also carry
+`dropped_file` and `dropped_siem`: the number of records that could not be delivered
+in that window. A record is never discarded silently; if delivery cannot keep up, the
+loss is counted and reported. Delivery never slows or fails a request — a record that
+cannot be handed over is dropped, and the request is answered regardless.
+
+Every record in the file and at the SIEM collector carries a `timestamp` as its first
+field: UTC RFC 3339 with exactly six fractional digits and a `Z` suffix, for example
+`2026-09-21T14:13:20.000000Z`. It is the time the record was built — for a decision,
+when the response was ready; for a summary, when its window was closed. A collector's
+own receipt time can lag behind it by the two-second batch window plus any retries, so
+sort and correlate on `timestamp`, not on arrival. The stdout decision line has no
+`timestamp` field, because the console formatter already stamps every line it writes.
+
+**Disk use is bounded at twice `log_file_max_bytes`.** When the live file reaches the
+cap it is renamed to `<log_file_path>.1`, replacing any previous `.1`, and a fresh
+file is started. **One generation is kept and no more**; an operator who needs longer
+history ships the records to their own log system rather than accumulating them here.
+
+Two obligations come with the key, and neither is enforced by this process:
+
+- **Exactly one process may write `log_file_path`.** There is no interprocess lock.
+  Two instances pointed at the same file interleave and lose records.
+- **Do not hand the file to an external `logrotate`, or anything else that renames or
+  truncates it.** This process does its own rollover and keeps an open handle; a
+  rotator moving the file out from under it sends later records to the rotated copy
+  until the next write error reopens the path, which is silent data loss dressed up
+  as working rotation. Set `log_file_max_bytes` instead.
+
+### Delivering decisions to a SIEM collector
+
+Two further optional keys ship the same records to an HTTP collector. Both are absent
+by default: with no `siem_url` this process builds no HTTP client, starts no delivery
+task and connects nowhere.
+
+| Key | Default | Meaning |
+| --- | --- | --- |
+| `siem_url` | absent — delivery is off | The collector records are `POST`ed to. Must use `https` unless the host is a loopback address or `localhost`; anything else is refused at startup. |
+| `siem_auth_header` | `Authorization` | The header the credential is sent under. Refused without `siem_url`, and refused if it is not a valid HTTP header name. |
+
+**The credential is never written in the configuration file.** It is read once at
+startup from the environment variable `OSPREY_SIEM_AUTH`, kept only as a
+redacted-in-`Debug` header value, and never stored on the configuration or written to
+any log line — only the header *name* appears in the startup line. With the variable
+unset, delivery is unauthenticated. With it set to something that is not a legal HTTP
+header value, the process refuses to start and says so without echoing the value.
+
+Records are batched at **256 records or two seconds**, whichever comes first, and sent
+as one `POST` of newline-delimited JSON with `Content-Type: application/x-ndjson` —
+the same objects the file sink writes. **Redirects are never followed**: a `3xx` from
+the collector sends the batch nowhere, by design, so a compromised collector cannot
+point this process, credential attached, at a host nobody configured.
+
+A transport error, a `5xx` or a `429` is retried three times, at 100 ms, 500 ms and
+2 s. Any other non-2xx answer is not retried: a stale credential or a rejected payload
+fails identically on every attempt. Each attempt is bounded at three seconds, and at
+shutdown the drain is bounded at five, so a collector that goes silent cannot hold up
+a restart.
+
+Every record that could not be delivered is counted and reported in the
+`dropped_siem` field of the `request_summary` record, alongside `dropped_file` — in
+the log file, in the collector's own feed, and on stdout. Records lost during the
+final drain are reported once on stdout as the process exits, because by then the
+sinks themselves have stopped.
+
+**Known limitation: a rejected batch is lost whole.** When the collector refuses a
+batch, all of its records are dropped and counted — up to 256 at a time — rather than
+the one record it objected to. A record shape the collector keeps rejecting therefore
+repeats that loss on every batch containing it. This is a deliberate choice: isolating
+the offending record means either a burst of up to 256 individual `POST`s at a
+collector that is already failing, or a bisection ladder, and both make a bad moment
+worse. **An operator who needs completeness configures `log_file_path`**, which has no
+equivalent failure mode.
+
+### Recording who asked
+
+One further optional key adds the peer IP of the asking connection to every delivered
+record, as a `consumer` field. It is off by default, and with it off no record carries
+the field at all — neither in the log file, nor at the collector, nor on stdout.
+
+| Key | Default | Meaning |
+| --- | --- | --- |
+| `log_consumer_identification` | `false` — nothing is recorded | Adds `consumer`, the peer IP of the connection, to every decision record and to the stdout decision line. Refused at startup unless `log_file_path` or `siem_url` is set. That checks only that a destination is configured, not that records arrive there — see below. |
+
+**This records who is installing packages. Read the facts below before turning it
+on.**
+
+- **What is recorded is the peer IP of the accepted TCP connection, and nothing the
+  caller supplies.** Not `X-Forwarded-For`, not `User-Agent`, not any other header — a
+  caller cannot choose, spoof or blank what appears here. The port is never recorded.
+- **Every delivered record pairs that peer IP with the time of the request.** The
+  record's `timestamp` says when the address asked, to the microsecond, in the log
+  file and at the collector alike.
+- **Behind a proxy, NAT or load balancer it identifies that hop, not the machine that
+  ran the install.** If everything reaches this process through one ingress, every
+  record carries that ingress's address and the field tells you nothing about the
+  developer or the build agent behind it.
+- **The addresses also appear on the stdout decision line**, and stdout is kept on
+  disk by the host under systemd (the journal) or a container runtime (a node-level
+  log file, often shipped off the node by a cluster agent). Its permissions and
+  retention belong to the host, not to this process.
+- **Turning it off erases nothing already written.** Addresses already recorded stay
+  in four places: `log_file_path`, its `.1` rollover, the collector, and the host's
+  console log. There is no purge path; removing them from all four is the operator's
+  job, on the operator's own retention schedule.
+- **The log file is created readable by its owner alone (`0600`).** That applies only
+  when this process creates it: a file that already exists keeps its mode, and if it is
+  accessible to the group or to other users the process logs one warning naming the
+  path and mode, and carries on. It does not change the mode of a file it did not
+  create — tighten it yourself with `chmod 600` before turning this on, since a
+  deployment that ran earlier releases will already have a file created `0644`.
+- **With it on, an unopenable `log_file_path` stops startup.** The file is opened once
+  at startup; a missing directory or a path the service user cannot write refuses to
+  start, rather than collecting addresses with nowhere durable to put them. With it
+  off, the same failure logs one error naming `log_file_path` and the process keeps
+  serving, counting every record it cannot write as dropped.
+- **With it on, the process can still collect addresses that reach no destination.**
+  A deployment with only `siem_url` is never checked at startup: a collector that
+  does not resolve, or one that refuses every batch (a permanent `403`, say), leaves
+  the process recording addresses and counting every record as dropped. The file sink
+  can fall into the same state after startup, when its volume is unmounted or full or
+  the file is deleted. Neither state can be detected at startup; the signal is the
+  per-sink drop count, `dropped_file` and `dropped_siem`, in the periodic
+  `request_summary` record and on the stdout `request summary` line. Watch for them
+  staying above zero.
+- **`check_config` validates keys, not destinations.** It writes nothing, so it cannot
+  open the log file, and it can report a configuration as valid that then fails at
+  boot because `log_file_path` cannot be opened.
+
 ## 9. Failure responses
 
 | What happened | Status |

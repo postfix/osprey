@@ -9,8 +9,9 @@ use std::net::SocketAddr;
 use std::num::{NonZeroU32, NonZeroU64};
 use std::path::{Path, PathBuf};
 
+use reqwest::header::{self, HeaderName};
 use serde::Deserialize;
-use url::Url;
+use url::{Host, Url};
 
 /// The validated configuration. The `NonZero*` types make "zero polling intervals
 /// and zero capacity limits are invalid" a type error rather than a check someone
@@ -43,6 +44,23 @@ pub struct Config {
     pub max_artifact_downloads: NonZeroU32,
     pub max_active_requests: NonZeroU32,
     pub max_references_per_project: NonZeroU32,
+    /// Where decision records are appended as NDJSON, if anywhere. Absent means off:
+    /// no file is opened and no delivery task is spawned.
+    pub log_file_path: Option<PathBuf>,
+    /// The effective ceiling on that file, defaulted at validation. Disk use is
+    /// bounded at twice this, because one rollover generation is kept.
+    pub log_file_max_bytes: NonZeroU64,
+    /// The collector decision records are `POST`ed to, if anywhere. Absent means off:
+    /// no HTTP client is constructed and no delivery task is spawned.
+    pub siem_url: Option<Url>,
+    /// The header the credential is sent under, defaulted at validation. Only the
+    /// *name* lives here: the value is read from `OSPREY_SIEM_AUTH` inside
+    /// `delivery::build` and never placed on this struct, which derives `Debug`.
+    pub siem_auth_header: HeaderName,
+    /// Whether a delivered record carries the peer address of the connection that
+    /// asked. False unless an operator turns it on, and refused unless at least one
+    /// sink is configured to receive what it records.
+    pub log_consumer_identification: bool,
 }
 
 /// The default for the one key SPEC §4 does not list. It is a Gate 3 addition
@@ -54,6 +72,10 @@ const DEFAULT_MAX_REFERENCES_PER_PROJECT: u32 = 20_000;
 /// `config.sample.toml` ships. A file with no opinion inherits a bound rather than
 /// the unbounded staleness the ceiling exists to close.
 const DEFAULT_METADATA_MAX_AGE_SECONDS: u64 = 86_400;
+
+/// What a decision log file costs when the operator names one and says nothing about
+/// its size: 100 MiB live, so 200 MiB including the one rollover generation.
+const DEFAULT_LOG_FILE_MAX_BYTES: NonZeroU64 = NonZeroU64::new(100 * 1024 * 1024).unwrap();
 
 /// The file as written, before validation. Unknown keys are rejected so a typo in
 /// an operator's configuration is an error rather than a silently ignored line.
@@ -79,6 +101,12 @@ struct RawConfig {
     max_active_requests: u32,
     #[serde(default = "default_max_references_per_project")]
     max_references_per_project: u32,
+    log_file_path: Option<PathBuf>,
+    log_file_max_bytes: Option<u64>,
+    siem_url: Option<String>,
+    siem_auth_header: Option<String>,
+    #[serde(default)]
+    log_consumer_identification: bool,
 }
 
 fn default_max_references_per_project() -> u32 {
@@ -114,7 +142,15 @@ const REQUIRED_KEYS: &[&str] = &[
 ];
 
 /// Keys with a default, which a file may leave out.
-const OPTIONAL_KEYS: &[&str] = &["max_references_per_project", "metadata_max_age_seconds"];
+const OPTIONAL_KEYS: &[&str] = &[
+    "max_references_per_project",
+    "metadata_max_age_seconds",
+    "log_file_path",
+    "log_file_max_bytes",
+    "siem_url",
+    "siem_auth_header",
+    "log_consumer_identification",
+];
 
 impl Config {
     pub fn from_toml_str(text: &str) -> Result<Config, ConfigError> {
@@ -198,6 +234,71 @@ impl RawConfig {
             ));
         }
 
+        // A size with nowhere to write is an operator who thinks delivery is on and
+        // is getting nothing, which is worth a refusal rather than a silent no-op.
+        if self.log_file_max_bytes.is_some() && self.log_file_path.is_none() {
+            return Err(invalid(
+                "log_file_max_bytes",
+                "has no effect without log_file_path".to_owned(),
+            ));
+        }
+        let log_file_max_bytes = match self.log_file_max_bytes {
+            Some(value) => NonZeroU64::new(value).ok_or_else(|| {
+                invalid("log_file_max_bytes", "must be greater than zero".to_owned())
+            })?,
+            None => DEFAULT_LOG_FILE_MAX_BYTES,
+        };
+
+        // Same rule, same reason: a credential header with no collector to send it to
+        // is an operator who believes delivery is on and is getting nothing.
+        if self.siem_auth_header.is_some() && self.siem_url.is_none() {
+            return Err(invalid(
+                "siem_auth_header",
+                "has no effect without siem_url".to_owned(),
+            ));
+        }
+        let siem_url = match &self.siem_url {
+            Some(text) => {
+                let url = Url::parse(text)
+                    .map_err(|_| invalid("siem_url", "must be a valid URL".to_owned()))?;
+                // The credential and every decision record travel this URL. Plaintext
+                // is allowed only where the traffic cannot leave the machine.
+                if url.scheme() != "https" && !is_loopback(&url) {
+                    return Err(invalid(
+                        "siem_url",
+                        "must use https unless the host is loopback".to_owned(),
+                    ));
+                }
+                Some(url)
+            }
+            None => None,
+        };
+        let siem_auth_header = match &self.siem_auth_header {
+            Some(name) => HeaderName::from_bytes(name.as_bytes()).map_err(|_| {
+                invalid(
+                    "siem_auth_header",
+                    "must be a valid HTTP header name".to_owned(),
+                )
+            })?,
+            None => header::AUTHORIZATION,
+        };
+
+        // Peer addresses recorded with no sink configured would reach only the
+        // console — which the host keeps on disk under systemd or a container runtime,
+        // but which is not a destination the operator chose. Refused by name rather
+        // than silently collected.
+        if self.log_consumer_identification
+            && self.log_file_path.is_none()
+            && self.siem_url.is_none()
+        {
+            return Err(invalid(
+                "log_consumer_identification",
+                "requires log_file_path or siem_url, so recorded peer addresses reach a \
+                 durable destination the operator chose"
+                    .to_owned(),
+            ));
+        }
+
         Ok(Config {
             listen,
             public_url,
@@ -231,7 +332,23 @@ impl RawConfig {
                 "max_references_per_project",
                 self.max_references_per_project,
             )?,
+            log_file_path: self.log_file_path,
+            log_file_max_bytes,
+            siem_url,
+            siem_auth_header,
+            log_consumer_identification: self.log_consumer_identification,
         })
+    }
+}
+
+/// Whether `url`'s host is this machine. `localhost` counts by name as well as by
+/// address, because that is what an operator running a collector in a sidecar writes.
+fn is_loopback(url: &Url) -> bool {
+    match url.host() {
+        Some(Host::Ipv4(addr)) => addr.is_loopback(),
+        Some(Host::Ipv6(addr)) => addr.is_loopback(),
+        Some(Host::Domain(name)) => name == "localhost",
+        None => false,
     }
 }
 

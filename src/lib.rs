@@ -8,6 +8,9 @@ pub mod artifacts;
 pub mod clock;
 pub mod concurrency;
 pub mod config;
+/// Where a decision record goes once it exists. Crate-internal: this feature adds no
+/// public Rust surface.
+pub(crate) mod delivery;
 pub mod http;
 pub mod npm;
 pub mod policy;
@@ -74,6 +77,9 @@ pub struct App {
     /// The bounded work SPEC §10 requires: active requests, artifact downloads, and
     /// the two response deadlines.
     pub limits: Limits,
+    /// The destinations a copy of each decision record is offered to. Empty unless
+    /// an operator configured one.
+    pub(crate) delivery: delivery::Sinks,
 }
 
 impl App {
@@ -96,6 +102,18 @@ impl App {
 
     pub fn store(&self) -> &StoreHandle {
         &self.store
+    }
+
+    /// Whether decision-log delivery has any sink at all. **Compiled only under
+    /// `test-support`.**
+    ///
+    /// Same reasoning as `Limits::set_response_timeouts`: the "an operator who
+    /// configures nothing opens nothing" promise has to be readable by a witness,
+    /// and `Sinks` is crate-internal precisely so that a consumer of this crate
+    /// cannot reach the delivery path.
+    #[cfg(feature = "test-support")]
+    pub fn delivery_is_empty(&self) -> bool {
+        self.delivery.is_empty()
     }
 
     /// Binds the configured address and starts serving. Returns once the listener
@@ -137,6 +155,11 @@ impl App {
         content.remove_temp_files();
         let limits = Limits::new(&deps.config);
 
+        // The drain token is not the shutdown token: the sinks must outlive the
+        // requests that are still being answered when shutdown begins.
+        let drain = CancellationToken::new();
+        let (delivery, delivery_tasks) = delivery::build(&deps.config, drain.clone())?;
+
         let app = Arc::new(App {
             config: deps.config,
             clock: deps.clock,
@@ -147,6 +170,7 @@ impl App {
             content,
             downloads: DownloadCoordinator::new(),
             limits,
+            delivery,
         });
 
         restore_blocklist(&app).await;
@@ -164,15 +188,35 @@ impl App {
         let local_addr = listener.local_addr().map_err(StartupError::Serve)?;
 
         let shutdown = CancellationToken::new();
-        let tasks = tasks::spawn(Arc::clone(&app), shutdown.clone(), watcher);
+        let tasks = tasks::spawn(
+            Arc::clone(&app),
+            shutdown.clone(),
+            watcher,
+            delivery_tasks,
+        );
 
         let signal = shutdown.clone();
         let server = tokio::spawn({
             let app = Arc::clone(&app);
             async move {
-                axum::serve(listener, http::router(app))
+                // `into_make_service_with_connect_info` changes the service type, so
+                // each arm owns its whole expression rather than assigning to one
+                // variable. The peer address is offered to the router only when an
+                // operator has asked for it to be recorded.
+                let consumer_identification = app.config.log_consumer_identification;
+                let router = http::router(app);
+                if consumer_identification {
+                    axum::serve(
+                        listener,
+                        router.into_make_service_with_connect_info::<SocketAddr>(),
+                    )
                     .with_graceful_shutdown(async move { signal.cancelled().await })
                     .await
+                } else {
+                    axum::serve(listener, router)
+                        .with_graceful_shutdown(async move { signal.cancelled().await })
+                        .await
+                }
             }
         });
 
@@ -180,6 +224,7 @@ impl App {
             local_addr,
             app,
             shutdown,
+            drain,
             server,
             tasks,
             store_task,
@@ -232,6 +277,9 @@ pub struct Running {
     pub local_addr: SocketAddr,
     app: Arc<App>,
     shutdown: CancellationToken,
+    /// Cancelled only after the HTTP server has joined, so a sink still delivers the
+    /// records of the requests that were in flight when shutdown began.
+    drain: CancellationToken,
     server: JoinHandle<std::io::Result<()>>,
     tasks: Tasks,
     /// `None` when the database could not be recovered, so there is no task to wait
@@ -245,6 +293,13 @@ impl Running {
     /// read it from here rather than from a back door in the application itself.
     pub fn app(&self) -> &Arc<App> {
         &self.app
+    }
+
+    /// How many background loops this server is running. **Compiled only under
+    /// `test-support`.**
+    #[cfg(feature = "test-support")]
+    pub fn background_task_count(&self) -> usize {
+        self.tasks.count()
     }
 
     /// Asks the server to stop accepting and waits for in-flight requests to finish.
@@ -261,7 +316,14 @@ impl Running {
             Err(_) => Ok(()),
         };
 
+        // No further records can be produced now that the server has joined, so the
+        // window is closed and queued before the sinks are told to finish.
+        http::logging::flush_summary(&self.app.delivery, self.app.clock.as_ref());
+        self.drain.cancel();
+
         self.tasks.join().await;
+        // The only window in which every sink has finished and `App` still exists.
+        http::logging::flush_drop_tail(&self.app.delivery);
         drop(self.app);
         if let Some(task) = self.store_task {
             let _ = task.await;
@@ -281,6 +343,11 @@ pub enum StartupError {
         source: std::io::Error,
     },
     Serve(std::io::Error),
+    /// Decision-log delivery could not be set up. The text is a fixed `&'static str`
+    /// on purpose: it is printed by `check_config` (`src/main.rs`) and by the startup
+    /// log, and the rejection it most often reports is a malformed `OSPREY_SIEM_AUTH`.
+    /// Nothing that could carry part of that value can be put here.
+    Delivery(&'static str),
 }
 
 impl fmt::Display for StartupError {
@@ -289,6 +356,7 @@ impl fmt::Display for StartupError {
             StartupError::DataDir(err) => write!(f, "{err}"),
             StartupError::Bind { addr, source } => write!(f, "cannot bind {addr}: {source}"),
             StartupError::Serve(source) => write!(f, "server stopped: {source}"),
+            StartupError::Delivery(reason) => write!(f, "{reason}"),
         }
     }
 }
@@ -298,6 +366,7 @@ impl std::error::Error for StartupError {
         match self {
             StartupError::DataDir(err) => Some(err),
             StartupError::Bind { source, .. } | StartupError::Serve(source) => Some(source),
+            StartupError::Delivery(_) => None,
         }
     }
 }
