@@ -145,17 +145,34 @@ async fn serve(config_path: &Path) -> ExitCode {
 
     tracing::info!(addr = %running.local_addr, "listening");
 
-    if let Err(err) = tokio::signal::ctrl_c().await {
-        tracing::error!(error = %err, "cannot listen for the shutdown signal");
-        return ExitCode::FAILURE;
+    match wait_for_shutdown_signal().await {
+        Ok(signal) => tracing::info!(signal, "shutting down"),
+        Err(err) => {
+            tracing::error!(error = %err, "cannot listen for the shutdown signal");
+            return ExitCode::FAILURE;
+        }
     }
 
-    tracing::info!("shutting down");
+
     match running.shutdown().await {
         Ok(()) => ExitCode::SUCCESS,
         Err(err) => {
             tracing::error!(error = %err, "unclean shutdown");
             ExitCode::FAILURE
         }
+    }
+}
+
+/// Resolves when the service is asked to stop, naming the signal that asked.
+///
+/// `SIGTERM` is what a service manager sends — systemd's `stop` and a container
+/// runtime's `stop` both do — so it must reach the same graceful path as `SIGINT`.
+/// Its default disposition kills the process outright, which would leave every
+/// queued decision record undelivered and skip the shutdown summary.
+async fn wait_for_shutdown_signal() -> std::io::Result<&'static str> {
+    let mut terminate = tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate())?;
+    tokio::select! {
+        result = tokio::signal::ctrl_c() => result.map(|()| "SIGINT"),
+        _ = terminate.recv() => Ok("SIGTERM"),
     }
 }
