@@ -1,0 +1,87 @@
+[package]
+name = "package-firewall"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.96.0"
+license = "Apache-2.0"
+description = "A filtering proxy for npm and PyPI that withholds packages until they are eligible."
+publish = false
+
+[lib]
+name = "package_firewall"
+path = "src/lib.rs"
+
+[[bin]]
+name = "package-firewall"
+path = "src/main.rs"
+
+# SPEC §12's acceptance table is stated in p95 latencies, throughput ratios and a
+# "within two polling intervals" deadline. None of those is a mean with a confidence
+# interval, which is what a sampling harness reports, so each bench is its own `main`
+# that measures the stated quantity and prints it against the stated target.
+# `harness = false` is what hands `main` to the bench binary.
+[[bench]]
+name = "warm_metadata"
+harness = false
+
+[[bench]]
+name = "artifact_throughput"
+harness = false
+
+[[bench]]
+name = "blocklist_swap"
+harness = false
+
+[features]
+# Test-only controls compiled out of every default build. `Limits::set_response_timeouts`
+# is behind this: the two SPEC §9 response deadlines are the only bound on how long a
+# slow reader holds a file pin and a request permit, so a public setter for them is a
+# control surface no consumer of this crate should be handed. The self dev-dependency
+# below turns it on for `cargo test` without a flag on any witness command.
+test-support = []
+
+[dependencies]
+arc-swap = "1.9.2"
+async-trait = "0.1.92"
+axum = "0.8.9"
+bytes = "1.12.1"
+clap = { version = "4.6.7", features = ["derive"] }
+fs4 = "1.1.0"
+futures-util = "0.3.34"
+hex = "0.4.3"
+jiff = "0.2.37"
+lru = "0.18.4"
+nodejs-semver = "5.0.0"
+pep440_rs = "0.7.3"
+# No TLS feature: reqwest 0.13 defaults to rustls, and `rustls-tls` was renamed to
+# `rustls` (Gate 3 dependency note 3). The three decompression codecs are opt-in in
+# 0.13 and are enabled deliberately (note 2); `deflate` is deliberately left off.
+reqwest = { version = "0.13.5", features = ["stream", "gzip", "brotli", "zstd"] }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"
+sha1 = "0.11.0"
+sha2 = "0.11.0"
+ssri = "9.2.0"
+tempfile = "3.27.0"
+tokio = { version = "1.53.1", features = ["rt-multi-thread", "macros", "fs", "net", "sync", "time", "signal"] }
+tokio-util = "0.7.19"
+toml = "1.1.6"
+tower = "0.5.3"
+tower-http = { version = "0.7.1", features = ["trace", "limit"] }
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["json", "env-filter"] }
+turso = "0.7.2"
+url = "2.5.8"
+
+[dev-dependencies]
+# No `criterion`. The Gate 3 dependency table named it for the SPEC §12 benchmarks,
+# but §12's targets are p95 latencies, a throughput ratio and a "within two polling
+# intervals" deadline, and criterion reports means with confidence intervals and no
+# percentiles — it cannot express the targets it was named for. The three `[[bench]]`
+# targets above are `harness = false` mains that measure and print those quantities
+# directly, so nothing depends on it.
+#
+# This crate, as its own tests see it. Cargo unifies the two, so the library the test
+# binaries link carries `test-support` while `cargo build` does not.
+package-firewall = { path = ".", features = ["test-support"] }
+wiremock = "0.6.5"

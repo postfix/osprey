@@ -1,0 +1,74 @@
+# Package Firewall sample configuration (SPEC §4).
+#
+# Configuration changes require a restart; blocklist changes do not.
+
+listen = "127.0.0.1:8080"
+public_url = "https://packages.example.org"
+data_dir = "/var/lib/package-firewall"
+# The snapshot your blocklist producer writes and replaces atomically. It is not
+# the `blocklist.sample.json` in this repository: that sample carries a deliberately
+# distant `expires_at` so it always validates, while a producer's real snapshot
+# carries a short window. Without a valid snapshot the service starts, answers
+# /health/live but not /health/ready, and refuses every package request.
+blocklist_file = "/etc/package-firewall/blocklist.json"
+
+cooldown_seconds = 86400
+metadata_ttl_seconds = 300
+# How old a cached project snapshot may become since its last FULL fetch, whatever
+# upstream keeps answering `304` to (SPEC §10). Each project's own ceiling is this
+# value less a deterministic offset of up to a tenth, so projects fetched together do
+# not all expire at once; the offset only ever shortens, so this stays a true
+# maximum. An over-age snapshot is never served: if the full fetch fails the request
+# is refused. Must not be below `metadata_ttl_seconds`. Set 0 to disable the ceiling
+# — which restores exactly the unbounded staleness it exists to close.
+metadata_max_age_seconds = 86400
+blocklist_poll_seconds = 5
+
+cache_max_bytes = 107374182400        # 100 GiB, including temporary downloads
+memory_cache_max_bytes = 268435456    # 256 MiB cache budget, not total process RSS
+max_artifact_bytes = 5368709120       # 5 GiB
+max_metadata_bytes = 67108864         # 64 MiB after decompression
+max_blocklist_bytes = 134217728       # 128 MiB
+max_upstream_requests = 32
+max_artifact_downloads = 8
+max_active_requests = 1024
+max_references_per_project = 20000
+
+# Decision log delivery (§8 of docs/operations.md). Both keys are absent by default:
+# with no `log_file_path` this process opens no file and starts no delivery task, and
+# the stdout decision line is unchanged.
+#
+# Every decision is appended to this file as one JSON object per line, in addition to
+# stdout. Exactly one process may write it, and it must not be handed to an external
+# `logrotate` — this process renames the file itself.
+# log_file_path = "/var/log/package-firewall/decisions.ndjson"
+# The live file is rolled to `<log_file_path>.1` when it reaches this size, replacing
+# any previous `.1`. One generation is kept, so the pair costs at most twice this.
+# Has no effect without `log_file_path`, and is refused rather than ignored.
+# log_file_max_bytes = 104857600        # 100 MiB live, 200 MiB with the rollover
+
+# The collector decisions are also POSTed to, batched as newline-delimited JSON at 256
+# records or two seconds, whichever comes first. Absent by default: with no `siem_url`
+# no HTTP client is built and no delivery task is started. Must use `https` unless the
+# host is a loopback address or `localhost`.
+# siem_url = "https://siem.example.org/services/collector/raw"
+# The header the credential is sent under. The credential itself is never written here:
+# it is read from the environment variable `OSPREY_SIEM_AUTH` at startup, and delivery
+# is unauthenticated when that variable is unset. Has no effect without `siem_url`, and
+# is refused rather than ignored.
+# siem_auth_header = "Authorization"
+
+# Whether every delivered record also carries the peer IP of the connection that asked,
+# as a `consumer` field. Off by default, and with it off no record carries the field at
+# all. Privacy note: this records who is installing packages. What is recorded is the
+# peer address of the accepted TCP connection — never a port, and never anything the
+# caller supplies. Behind a forwarding hop, NAT or load balancer it identifies that
+# hop, not the machine that ran the install — see §8 of docs/operations.md. Turning it
+# off later erases nothing already written — in the log file, its `.1`, the collector,
+# or the host's console log, since the address is on the stdout decision line too.
+# The log file is created 0600; a pre-existing file keeps its mode and a group- or
+# world-accessible one is warned about once. With this on, a `log_file_path` that
+# cannot be opened stops startup.
+# Refused at startup without `log_file_path` or `siem_url`, so the addresses it records
+# reach a durable destination the operator chose.
+# log_consumer_identification = false

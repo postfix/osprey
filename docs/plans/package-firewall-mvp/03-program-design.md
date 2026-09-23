@@ -1,0 +1,1190 @@
+# Program Design: Package Firewall MVP
+
+**Revision record — reopened 2026-09-18.** This gate was approved on 2026-09-17 while leaving two implementation-affecting dependency facts unresolved and delegated to the implementer: reqwest 0.13's TLS backend and feature name, and the `nodejs-semver` versus `node-semver` lineage. That was a defect in the gate. A gate resolves such a fact from pinned source, current primary documentation, or a throwaway compile probe, or it blocks; it does not hand the decision to the implementer, who executes decisions rather than making them. Slice 1's dispatch was stopped before it wrote any source, both facts are now resolved with evidence in dependency notes 3 and 4, the five previously unpinned crates are pinned below, and the gate is re-presented for approval.
+
+Sources: `01-product.md` and `02-architecture.md` (both approved 2026-09-17), `SPEC.md` revision 2. Every file below is new — the repository at `1acede7` contains no source, so no existing declaration is changed and no existing symbol is renamed or deleted.
+
+**Source analysis at this gate:** none is applicable. `sf-impact`, `sf-dataflow`, `sf-protocol-check` and `sf-codebase-intel` analyse declarations and paths that exist in the repository now; there are none. Every flow and ordering below is therefore recorded as *intended*, with its post-implementation check named in `## Test plan` and carried into the Gate 4 slice rows.
+
+**Refinement of the Gate 2 module table.** Gate 2 approved eight modules. This design adds two leaves with no dependencies of their own — `clock` (the injected time source; `policy` must not read a clock, so the trait cannot live there) and `tasks` (the two background loops Gate 2 described as "background work inside the same process"). One-way dependencies are unchanged: `clock` is depended on by `store`, `npm`, `pypi`, `artifacts`, `http`, `tasks`; nothing depends on `tasks`.
+
+## Dependencies
+
+One Cargo package, `package-firewall`, Apache-2.0 (matching the repository `LICENSE`). Versions below are the newest published releases as read from the crates.io API on 2026-09-17; each is written as a caret requirement and `Cargo.lock` is the real pin. Every licence is permissive and compatible with shipping under Apache-2.0 — MIT, Apache-2.0, or a dual/triple permissive choice. Observed local toolchain: `rustc`/`cargo` 1.96.0, which is what `rust-toolchain.toml` pins.
+
+| Crate | Requirement | Licence | Job |
+| --- | --- | --- | --- |
+| `tokio` | `1.53.1` (features `rt-multi-thread`, `macros`, `fs`, `net`, `sync`, `time`, `signal`) | MIT | Runtime, semaphores, channels |
+| `axum` | `0.8.9` | MIT | Routes, extractors, responses |
+| `tower` | `0.5.3` | MIT | Layer composition |
+| `tower-http` | `0.7.1` (`trace`, `limit`) | MIT | Request-ID and tracing layers |
+| `reqwest` | `0.13.5` (`stream`, `gzip`, `brotli`, `zstd` — no TLS feature; see note 3) | MIT OR Apache-2.0 | Upstream HTTPS |
+| `rustls` | transitive, `0.23.45` via reqwest's default `default-tls`, with the `aws-lc-rs` provider and `rustls-platform-verifier` | Apache-2.0 OR ISC OR MIT | TLS; see note 3 for the build and runtime consequences |
+| `serde` | `1.0.229` (`derive`) | MIT OR Apache-2.0 | Config, upstream JSON, blocklist |
+| `serde_json` | `1.0.151` | MIT OR Apache-2.0 | npm/PyPI documents |
+| `toml` | `1.1.6` | MIT OR Apache-2.0 | Config file |
+| `turso` | `0.7.2` — **pre-1.0** | MIT | Embedded database (engine internals in `turso_core`, same version, MIT) |
+| `sha2` | `0.11.0` | MIT OR Apache-2.0 | SHA-256, SHA-512 |
+| `sha1` | `0.11.0` | MIT OR Apache-2.0 | Legacy npm integrity only |
+| `tracing` / `tracing-subscriber` | `0.1.44` / `0.3.23` (`json`, `env-filter`) | MIT | Structured stdout logs |
+| `arc-swap` | `1.9.2` | MIT OR Apache-2.0 | Blocklist snapshot publication |
+| `url` | `2.5.8` | MIT OR Apache-2.0 | Upstream and public URL handling |
+| `jiff` | `0.2.37` | Unlicense OR MIT | RFC 3339 parsing, UTC microseconds |
+| `nodejs-semver` | `5.0.0` | Apache-2.0 | npm version precedence and ranges (see note 4) |
+| `pep440_rs` | `0.7.3` | Apache-2.0 OR BSD-2-Clause | PEP 440 parsing and equality |
+| `ssri` | `9.2.0` | Apache-2.0 | npm SRI integrity fields |
+| `clap` | `4.6.7` (`derive`) | MIT OR Apache-2.0 | Three commands |
+| `fs4` | `1.1.0` | MIT OR Apache-2.0 | Exclusive data-directory lock, and `available_space` for the startup headroom check |
+| `tempfile` | `3.27.0` | MIT OR Apache-2.0 | Temp download files, test data dirs |
+| `hex` | `0.4.3` | MIT OR Apache-2.0 | Digest hex encode/decode |
+| **dev** `wiremock` | `0.6.5` | MIT OR Apache-2.0 | Only where a real socket is needed; the default fake registry is an injected `Transport` |
+| **dev** `criterion` | `0.8.2` | Apache-2.0 OR MIT | Benchmarks (SPEC §12) |
+
+Five supporting crates were left unpinned in the first draft of this gate and are **now pinned here**, read from the crates.io API on 2026-09-18 and confirmed by a resolved `Cargo.lock`. Leaving them to the implementer was a defect in this gate, not a delegation: a version and licence choice is a design decision, and the implementer executes decisions rather than making them.
+
+| Crate | Requirement | Licence | Job |
+| --- | --- | --- | --- |
+| `tokio-util` | `0.7.19` | MIT | `CancellationToken` for shutdown and waiter cancellation |
+| `async-trait` | `0.1.92` | MIT OR Apache-2.0 | The `dyn Transport` and `dyn Clock` seams |
+| `lru` | `0.18.4` | MIT | Reference implementation consulted for the bounded caches; the sharded second-chance caches in this design are ours |
+| `bytes` | `1.12.1` | MIT | Shared buffers |
+| `futures-util` | `0.3.34` | MIT OR Apache-2.0 | Body streaming |
+
+Every licence above is permissive and compatible with shipping under Apache-2.0. None is load-bearing for a design decision; if any turns out to be unmaintained, the alternative is a hand-rolled equivalent in the module that needs it.
+
+Rejected alternatives, for the record: `node-semver` 2.2.0 (same lineage as `nodejs-semver`, last published 2025-02-07 and quiet since); `time` 0.3.55 and `chrono` 0.4.45 in favour of `jiff`; `fd-lock` 4.0.4 in favour of `fs4`, because `fs4` also answers filesystem free space and the reservation path benefits from failing before a download rather than during one; `httpmock` 0.8.3 and `divan` 0.1.21 as the less common of their pairs; `pep508_rs` 0.9.2, which this MVP has no requirement-expression parsing to justify.
+
+Five dependency notes that change code rather than taste:
+
+1. **Python distribution filenames are parsed in this crate, not by a dependency.** Verified against crates.io: `wheel-filename` and `distribution-filename` are not published under those names; `uv-distribution-filename` 0.0.82 is exactly this functionality but its own description calls it an internal component crate of `uv`, at 0.0.x with no stability guarantee; `python-pkginfo` parses metadata *inside* an archive, not filenames. So `src/pypi/filename.rs` implements PEP 427/625 filename splitting directly and delegates only the *version* to `pep440_rs`. SPEC §7's "maintained distribution-filename parser" is therefore satisfied for the version half only; the filename half is ours, which is why it gets its own large-corpus test and the explicit "unsupported filename is excluded and logged, never guessed" rule. `uv-distribution-filename` is MIT OR Apache-2.0, so borrowing its logic is permitted if we want to.
+2. **Two `reqwest::Client` instances, not one.** SPEC §11 requires connect 5 s, metadata total 30 s, artifact idle 30 s, artifact total 15 min. In reqwest's async client `timeout` (total deadline), `read_timeout` (per-read, resets) and `connect_timeout` are `ClientBuilder` settings, so one client cannot carry both the 30 s metadata deadline and the 15 min artifact deadline. `upstream` builds `metadata_client` (connect 5 s, timeout 30 s, decompression on) and `artifact_client` (connect 5 s, read_timeout 30 s, timeout 15 min, decompression off via the `no_gzip`/`no_brotli`/`no_zstd` builder calls, satisfying SPEC §9's "disable HTTP content decoding"). Two clients means two connection pools; that is accepted.
+
+**The decompression codecs are opt-in in reqwest 0.13 and are enabled deliberately.** Verified on 2026-09-18 with `cargo add reqwest@0.13.5 --dry-run`, which lists `gzip`, `brotli`, `deflate` and `zstd` as *disabled* by default. So the metadata client's "decompression on" is only true because this design adds `gzip`, `brotli` and `zstd` to reqwest's feature list — without them the `no_*` builder calls on the artifact client would be disabling something that was never on, and the metadata path would silently transfer uncompressed bodies. `deflate` is deliberately not enabled: no upstream in scope advertises it, and every enabled codec is another decompression bomb surface behind the 64 MiB post-decompression cap. The artifact client must therefore call `no_gzip`, `no_brotli` and `no_zstd` — exactly the three that are on.
+3. **reqwest 0.13's TLS is settled here, not in slice 1.** Resolved on 2026-09-18 from reqwest's own changelog (`seanmonstar/reqwest`, "v0.13.0 Breaking changes") and confirmed by a throwaway compile probe that performed a real HTTPS request with `features = ["stream"]` and nothing else — `PROBE https status = 200 OK` against `https://index.crates.io/config.json`. The facts, each one implementation-affecting:
+   - **rustls is the default backend**, replacing native-tls. No TLS feature is added, and adding one is an error: `cargo add reqwest@0.13.5 --features rustls-tls` returns `error: unrecognized feature for crate reqwest: rustls-tls`, because **`rustls-tls` was renamed to `rustls`** in 0.13. The resolved graph carries `rustls 0.23.45`, `hyper-rustls 0.27.9` and `tokio-rustls 0.26.5`, with no `native-tls` or `openssl` anywhere.
+   - **The rustls crypto provider defaults to `aws-lc-rs`, not `ring`** — the probe pulls `aws-lc-rs 1.18.1` and `aws-lc-sys 0.45.0`. That is a C build: the container build stage in slice 10 needs `cmake`, a C compiler and `perl`, all present on this machine. `rustls-no-provider` exists if a different provider is ever wanted; this design keeps the default and pays the build dependency rather than diverging from reqwest's tested path.
+   - **Certificate roots come from `rustls-platform-verifier`**, not a bundled root set — the rustls roots features were removed in 0.13. On Linux it reads the system trust store and honours `SSL_CERT_FILE`, so the slice 10 runtime image must install `ca-certificates`; an empty trust store is a total upstream outage, not a degraded mode. `tls_certs_only(roots)` is the documented escape if a deployment ever needs its own roots.
+   - `ClientBuilder::dns_resolver` with a `reqwest::dns::Resolve` implementation, `redirect::Policy::custom` with `attempt.url()`, and the three timeout setters remain the documented mechanisms this design depends on. Two further 0.13 changes are recorded because they touch call sites: `query` and `form` are now opt-in crate features — this design uses neither, building URLs with `PathSegmentsMut::push` — and the TLS builder methods were renamed with the old names soft-deprecated (`tls_backend_rustls()` over `use_rustls_tls()`).
+4. **`nodejs-semver` 5.0.0 over `node-semver` 2.2.0 is now an established fact, not a judgement.** Resolved on 2026-09-18 from primary sources: `nodejs-semver`'s own README states "This project has been forked from [node-semver](https://github.com/felipesere/node-semver-rs) since September of 2023, but a lot has changed", so it is an explicit fork rather than an unrelated crate. `nodejs-semver` 5.0.0 was published 2026-06-20 with repository commits through 2026-06-21 (owner `cijiugechu`); `node-semver` 2.2.0 was published 2025-02-07 with no commits since (owner `zkat`, repository `felipesere/node-semver-rs`). Both are Apache-2.0. The maintained fork is the dependency.
+
+   Two limitations are recorded rather than assumed away. The fork statement is one-sided — the upstream repository does not acknowledge it — and neither crate's prerelease-precedence or range-matching correctness was independently verified; no documented gap was found, which is not the same as a clean bill of health. Because npm version precedence is load-bearing for the `latest` fallback rule, this design does not rest on the crate's reputation: `npm_metadata::npm_version_precedence_matches_a_published_corpus` asserts ordering and prerelease precedence against a corpus taken from npm's own semver specification, so a divergence in the crate fails a test rather than silently mis-ordering releases.
+
+5. **Nested-JSON stack exhaustion is handled by `serde_json`'s default recursion limit, which this crate never lifts.** Verified against serde_json's documentation: a depth limit is enforced by default, and removing it requires *both* the `unbounded_depth` crate feature and an explicit `Deserializer::disable_recursion_limit()` call. This design enables neither, so deeply nested upstream JSON or a deeply nested blocklist returns a parse error rather than overflowing the stack — a `502 UpstreamInvalid` for upstream documents, a rejected candidate for the blocklist. (serde_json's numeric default is 128; that figure is from its source rather than the documentation read here, and nothing in this design depends on the exact number.) This closes the first `UNKNOWN` the threat model raised. Byte caps alone would not have: 64 MiB is ample room for pathological depth.
+
+Also from the reqwest API: it exposes **no** response-size cap, and decompression has no cap either. So `max_metadata_bytes` (64 MiB *after* decompression) and `max_artifact_bytes` cannot be enforced by the client — both are enforced by our own counted read loop over `bytes_stream()`, aborting the moment the running total exceeds the cap. `Response::bytes()` is never called on an upstream response anywhere in this design.
+
+## Files
+
+Repository root:
+
+| File | Why it exists |
+| --- | --- |
+| `Cargo.toml` | The one package; `[lib]` for the injectable application, `[[bin]] package-firewall` for the CLI. Tests use the lib, never a spawned binary. |
+| `Cargo.lock` | Committed: SPEC §13 delivers it, and the pre-1.0 `turso` pin is only real if it is locked. |
+| `rust-toolchain.toml` | Pins the toolchain channel so `cargo build`, `cargo test`, `cargo clippy` mean the same thing for every witness on every machine. |
+| `.gitignore` | Replaces the Go template (Gate 2 constraint 1): `/target`, `.smtc-cache/`, `/local`. |
+| `Dockerfile` | SPEC §3 ships a container image; SPEC §13 requires clean-container startup to work. |
+| `config.sample.toml`, `blocklist.sample.json` | SPEC §13 deliverables, and the fixtures `check-config` / `check-blocklist` tests run against. |
+| `docs/operations.md` | The operations README. Owns OPS-01's operator-facing half: state/WAL capacity is *not* covered by `cache_max_bytes`, backup and restore of a stopped `state/`, recovery failure. |
+
+`src/` — one directory per approved module:
+
+| File | Why it exists |
+| --- | --- |
+| `src/main.rs` | clap parsing for the three commands, tracing subscriber installation, exit codes. Builds the production `AppDeps` — the only place `SystemClock`, `ReqwestTransport` and `OriginSet::production()` are named. No policy or protocol logic. |
+| `src/lib.rs` | Module tree, `AppDeps`, `App::start`, `Running`. The single constructor seam TEST-01 requires. |
+| `src/clock.rs` | `Clock` trait (wall micros + monotonic `Instant`), `SystemClock`, and the backward-jump detector SPEC §5 requires. A leaf so `policy` can stay clock-free. |
+| `src/config.rs` | `RawConfig` (serde, unknown keys rejected) → validated `Config`. Holds every rejection rule, so `check-config` and `serve` cannot diverge. |
+| `src/policy/mod.rs` | `Decision`, `Candidate`, `evaluate` — the pure rule block of SPEC §5, no I/O and no clock. Built and tested first (SPEC §13 ordering). |
+| `src/policy/blocklist.rs` | `BlocklistSnapshot` parsing, whole-candidate validation, immutable lookup sets, and `PolicyHandle` (the `ArcSwap` publication point). Shared by the poller and `check-blocklist`. |
+| `src/policy/digest.rs` | `HashAlgorithm`, `Digest`, hex and SRI-base64 decoding to the same digest bytes (SPEC §8), case normalisation, constant-length validation. |
+| `src/store/mod.rs` | `StoreHandle`, the `StoreCommand` enum, and the single storage task owning the one `turso` connection. Every SQL statement in the crate is behind this file (Gate 2 constraint 2). |
+| `src/store/schema.rs` | DDL, `SCHEMA_VERSION`, the recorded `turso` crate version, and the startup mismatch refusal. |
+| `src/store/rows.rs` | Row types and their column mappings: `ProjectRow`, `ReferenceRow`, `ContentRow`, `BlocklistRow`, `ProjectRefresh`. |
+| `src/store/cache.rs` | `MemoryCaches` — the three bounded LRUs with byte accounting, and the rendered-response reuse predicate. This is what keeps a warm request off the database. |
+| `src/store/lock.rs` | The exclusive data-directory lock file (SPEC §10), taken before the database is opened. |
+| `src/store/startup.rs` | Open, recover, verify `synchronous=FULL` and the schema row, remove temp files, clear mappings to missing files, reclaim unreferenced content, load a still-valid persisted blocklist. Separate from `mod.rs` because it is the file fault-injection tests target. |
+| `src/upstream/mod.rs` | The `Transport` trait — the injected seam — plus `UpstreamError` and the counted, capped read loop both callers use. |
+| `src/upstream/reqwest_transport.rs` | The production `Transport`: the two clients described above, the same-origin redirect policy, and the size-capped streaming reads. |
+| `src/upstream/origins.rs` | `OriginSet`: the three fixed origins, `production()`, and the URL admission check (scheme, host, port, no credentials). |
+| `src/upstream/resolver.rs` | The `reqwest::dns::Resolve` implementation that rejects loopback, private and link-local resolutions before a connection is made. The mechanism behind SPEC §11's address rule. |
+| `src/npm/mod.rs` | Fetch-or-reuse of a project snapshot, decision fan-out over versions, and rendering entry points for full, abbreviated and single-version responses. |
+| `src/npm/name.rs` | Route-component validation and percent-decoding for unscoped and scoped names, including npm's `%2f` form. |
+| `src/npm/document.rs` | The package-document shape: `versions`, `time`, `dist-tags`, and the untouched remainder, so unknown upstream fields survive filtering unedited. |
+| `src/npm/tags.rs` | The tag rules of SPEC §6 in one place, because the `latest` fallback is the one npm rule most likely to be argued about. |
+| `src/npm/render.rs` | Full and abbreviated serialisation from one snapshot, tarball URL rewriting, and pruning of the publication-time map. |
+| `src/pypi/mod.rs` | Fetch-or-reuse, per-file decisions, and the known-project index. |
+| `src/pypi/name.rs` | PEP 503 normalisation and route validation. |
+| `src/pypi/filename.rs` | Filename → (project, PEP 440 version). Owns the "cannot establish identity ⇒ exclude and log" rule. |
+| `src/pypi/render.rs` | Simple API HTML and JSON from one filtered file list, with HTML escaping of filenames and attributes, and content negotiation. |
+| `src/artifacts/mod.rs` | `serve_artifact` — the SPEC §9 pseudocode, including the locally-conclusive-denial-first order (PERF-01) and the final pre-response policy check (the revocation boundary). |
+| `src/artifacts/reference.rs` | `ReferenceId` and its length-prefixed encoding, hex form, and parsing. |
+| `src/artifacts/download.rs` | `DownloadCoordinator`: one shared fetch per reference, hashing in one pass, integrity and pin comparison, waiter ownership and cancellation (FLOW-01). |
+| `src/artifacts/content.rs` | Content-cache paths, the flush → fsync → rename → dirsync → commit order (REL-01), open-file pins, capacity reservation, and approximate-LRU eviction. |
+| `src/artifacts/stream.rs` | Range handling and the downstream response body with the 30 s write-idle and 15 min lifetime limits; releases pins and permits on drop. |
+| `src/http/mod.rs` | The explicit router (no catch-all), layer stack, and graceful shutdown. |
+| `src/http/error.rs` | `ApiError` → status, JSON body, `Retry-After`. The single place SPEC §11's failure table is encoded. |
+| `src/http/npm_routes.rs`, `src/http/pypi_routes.rs`, `src/http/artifact_routes.rs`, `src/http/health.rs` | One file per endpoint group from SPEC §11; handlers validate, delegate, and map errors only. |
+| `src/http/limits.rs` | `Limits`: the three semaphores and the content-byte budget; overload is refused, never queued. |
+| `src/http/logging.rs` | Request IDs and the one structured decision log line SPEC §11 specifies, plus the periodic counter summary. |
+| `src/tasks/mod.rs` | Spawns and owns the background loops; hands each a `CancellationToken`. |
+| `src/tasks/blocklist_poller.rs` | SPEC §8's reload procedure: change detection, capped read, whole-candidate validation off the request path, revision and window rules, commit, then atomic publish. |
+| `src/tasks/maintenance.rs` | Batched access-time updates, eviction passes, and the WAL checkpoint — all on the low-priority store queue, never inside an HTTP handler. |
+
+`tests/` and `benches/`:
+
+| File | Why it exists |
+| --- | --- |
+| `tests/common/mod.rs` | The harness: `TestClock` (settable, with monotonic control), `FakeRegistry` (a `Transport` implementation, plus a `wiremock` variant for the real-client tests), fixture builders, and a temp data directory. Test-only code lives here and not behind a cargo feature, so the release binary cannot contain a bypass. |
+| `tests/config_validation.rs`, `tests/persistence_recovery.rs`, `tests/blocklist_snapshot.rs`, `tests/npm_metadata.rs`, `tests/pypi_metadata.rs`, `tests/artifacts_verification.rs`, `tests/artifacts_concurrency.rs`, `tests/blocklist_revocation.rs`, `tests/http_contract.rs`, `tests/origin_guard.rs` | One file per behaviour group in `## Test plan`, listed in the order the slices create them. Each file is created by the slice that can make all of its tests pass — no file mixes tests from two slices, so `cargo test --test <file>` is always a complete, honest check at the end of the slice that added it. `blocklist_snapshot.rs` (snapshot validity, rollback, expiry, restart) belongs to the metadata slices; `blocklist_revocation.rs` (blocks discovered from computed digests, and previously-issued URLs) needs `DownloadCoordinator`, `pin_computed_digests` and the `digest_generation` bump, so it belongs to the artifact slice. |
+| `tests/e2e_npm.rs`, `tests/e2e_pip.rs` | Real `npm` and `pip` against a listening instance; `#[ignore]` by default because they need those clients installed, and run explicitly in the client-integration slice. |
+| `benches/warm_metadata.rs`, `benches/artifact_throughput.rs`, `benches/blocklist_swap.rs` | SPEC §12's measured-and-reported targets. |
+
+Pure-policy unit tests live in `#[cfg(test)]` modules inside `src/policy/`; everything that needs an `App` lives in `tests/`.
+
+## Types & signatures
+
+### `clock`
+
+```rust
+pub trait Clock: Send + Sync + 'static {
+    /// UTC microseconds since the Unix epoch.
+    fn now_utc_micros(&self) -> i64;
+    fn now_monotonic(&self) -> std::time::Instant;
+}
+
+pub struct SystemClock;
+impl Clock for SystemClock { /* .. */ }
+
+/// Detects the backward wall-clock jump SPEC §5 requires us to react to.
+pub struct JumpWatch { last_utc_micros: AtomicI64 }
+impl JumpWatch {
+    /// Returns true when `now` is more than `tolerance` behind the highest value seen.
+    pub fn observe(&self, now_utc_micros: i64, tolerance_micros: i64) -> bool;
+}
+```
+
+### `config`
+
+```rust
+pub struct Config {
+    pub listen: SocketAddr,
+    pub public_url: Url,
+    pub data_dir: PathBuf,
+    pub blocklist_file: PathBuf,
+    pub cooldown_seconds: u64,          // 0 disables the age rule only
+    pub metadata_ttl_seconds: u64,
+    pub metadata_max_age_seconds: u64,  // 0 disables the ceiling — see SPEC rev 3 §10
+    pub blocklist_poll_seconds: NonZeroU64,
+    pub cache_max_bytes: NonZeroU64,
+    pub memory_cache_max_bytes: NonZeroU64,
+    pub max_artifact_bytes: NonZeroU64,
+    pub max_metadata_bytes: NonZeroU64,
+    pub max_blocklist_bytes: NonZeroU64,
+    pub max_upstream_requests: NonZeroU32,
+    pub max_artifact_downloads: NonZeroU32,
+    pub max_active_requests: NonZeroU32,
+    pub max_references_per_project: NonZeroU32,   // added at Gate 3 — see TM-1
+}
+
+impl Config {
+    pub fn from_toml_str(text: &str) -> Result<Config, ConfigError>;
+    pub fn load(path: &Path) -> Result<Config, ConfigError>;
+}
+
+pub enum ConfigError {
+    Read { path: PathBuf, source: io::Error },
+    Syntax(toml::de::Error),
+    UnknownKey(String),
+    MissingKey(&'static str),
+    Invalid { key: &'static str, reason: String },
+}
+```
+
+`Invalid` is returned for: a `public_url` carrying a path, query or fragment; a non-HTTPS `public_url`; `max_artifact_bytes > cache_max_bytes`; a relative `data_dir` or `blocklist_file`; a nonzero `metadata_max_age_seconds` below `metadata_ttl_seconds`; and any zero where a `NonZero*` type appears above. The `NonZero*` types make "zero polling intervals and zero capacity limits are invalid" a type error rather than a check someone can forget, while `cooldown_seconds`, `metadata_ttl_seconds` and `metadata_max_age_seconds` stay plain `u64` because zero is meaningful for all three.
+
+`metadata_max_age_seconds` cannot be a `NonZeroU64` even though zero disables it, because the ceiling-below-TTL check needs both values and a type cannot express a cross-field relation. The check is therefore explicit, and it exists because a ceiling beneath the revalidation interval would expire every copy before it could ever be revalidated — a configuration that looks stricter and is in fact a self-inflicted outage.
+
+**`max_references_per_project` (default 20 000) is a Gate 3 addition to SPEC §4's key set**, adopted from threat TM-1. A project refresh commits every reference for one project in a single transaction (REL-01 requires that), and the storage task's priority bias is checked *between* transactions — so without a count cap, one pathological upstream document delays every other store operation, including an urgent blocklist commit, for the length of that one transaction. A document exceeding the cap is rejected as `502 UpstreamInvalid` and logged with its name and reference count. This is consistent with SPEC §12's "size limits are operational limits and can reject unusually large projects; do not hide that tradeoff" — it makes an unusually large project unavailable rather than making the whole instance slow. It needs your sign-off because it adds an operator-visible configuration key the specification does not list.
+
+### `policy`
+
+```rust
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum Ecosystem { Npm, PyPi }
+
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
+pub enum HashAlgorithm { Sha256, Sha512, Sha1 }
+
+#[derive(Clone, PartialEq, Eq, Hash, Debug)]
+pub struct Digest { pub algorithm: HashAlgorithm, pub bytes: Box<[u8]> }
+
+impl Digest {
+    pub fn parse_hex(algorithm: HashAlgorithm, hex: &str) -> Result<Digest, InvalidDigest>;
+    /// npm `sha512-<base64>` / SRI entries decode to the same digest bytes (SPEC §8).
+    pub fn parse_sri_entry(entry: &str) -> Result<Digest, InvalidDigest>;
+    pub fn to_hex_lowercase(&self) -> String;
+}
+
+/// Where the age of a candidate comes from. `Malformed` and `Unknown` are distinct
+/// because SPEC §5 denies the first and forbids serving the second before it is persisted.
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum PublicationTime {
+    Upstream(i64),
+    FirstSeen(i64),   // already committed to storage
+    Malformed,        // upstream supplied a value we could not parse
+    Unknown,          // no upstream value and no committed first-seen yet
+}
+
+pub struct Candidate<'a> {
+    pub ecosystem: Ecosystem,
+    pub name: &'a str,              // normalised
+    pub version: &'a str,           // upstream spelling
+    pub publication: PublicationTime,
+    pub advertised_digests: &'a [Digest],
+    pub pinned_digests: &'a [Digest],
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum Decision {
+    Unavailable,                            // no valid blocklist
+    Deny(DenyReason),
+    Hold { eligible_at_micros: i64 },
+    Allow,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum DenyReason {
+    BlockedPackage, BlockedVersion, BlockedDigest,
+    MalformedTimestamp, FutureTimestamp, NoTimestamp,
+}
+
+/// The whole of SPEC §5, in that exact order, with one `now` and one snapshot.
+pub fn evaluate(
+    snapshot: Option<&BlocklistSnapshot>,
+    now_utc_micros: i64,
+    cooldown_seconds: u64,
+    candidate: &Candidate<'_>,
+) -> Decision;
+```
+
+`evaluate` checks in this order and returns on the first hit: no snapshot or expired snapshot → `Unavailable`; package blocked → `Deny(BlockedPackage)`; version blocked → `Deny(BlockedVersion)`; any advertised **or pinned** digest blocked → `Deny(BlockedDigest)`; `Malformed` → `Deny(MalformedTimestamp)`; `Unknown` → `Deny(NoTimestamp)`; timestamp after `now` → `Deny(FutureTimestamp)`; `now < t + cooldown` → `Hold { t + cooldown }`; else `Allow`. Deadlines use checked arithmetic and saturate to `i64::MAX`, which stays a `Hold`.
+
+`Deny(NoTimestamp)` is a defensive branch: every caller resolves `Unknown` into a committed `FirstSeen` before evaluating (see the call stacks). It exists so that a future caller that forgets cannot make an untimed artifact eligible, and it has its own unit test.
+
+```rust
+pub struct BlocklistSnapshot {
+    pub revision: u64,
+    pub generated_at_micros: i64,
+    pub expires_at_micros: i64,
+    pub raw: Arc<[u8]>,                     // the exact validated bytes, for persistence
+    packages: HashSet<(Ecosystem, String)>,
+    versions: HashMap<(Ecosystem, String), Vec<BlockedVersion>>,
+    digests: HashSet<Digest>,
+}
+
+struct BlockedVersion { raw: String, canonical: String }
+
+impl BlocklistSnapshot {
+    /// Validates the entire candidate: schema version, revision, the
+    /// `generated_at <= now < expires_at` and `generated_at < expires_at` window,
+    /// every record, and every digest. Rejects unsupported algorithms and
+    /// malformed records rather than skipping them.
+    pub fn parse_and_validate(bytes: &[u8], now_utc_micros: i64) -> Result<Self, BlocklistError>;
+    pub fn is_valid_at(&self, now_utc_micros: i64) -> bool;
+    pub fn blocks_package(&self, e: Ecosystem, name: &str) -> bool;
+    pub fn blocks_version(&self, e: Ecosystem, name: &str, version: &str) -> bool;
+    pub fn blocks_digest(&self, d: &Digest) -> bool;
+    pub fn entry_count(&self) -> usize;
+}
+
+pub enum BlocklistError {
+    TooLarge { limit: u64 },
+    Syntax(serde_json::Error),
+    UnsupportedSchemaVersion(u64),
+    UnsupportedAlgorithm(String),
+    MalformedDigest { algorithm: String },
+    MalformedRecord { index: usize, reason: String },
+    Window { reason: &'static str },
+    NotNewer { accepted: u64, candidate: u64 },
+    ChangedWithoutRevisionBump { revision: u64 },
+}
+
+/// The publication point. `load` is the ordering point SPEC §9 names as the
+/// revocation boundary: a request that loads after a publish must see it.
+pub struct PolicyHandle { inner: ArcSwapOption<BlocklistSnapshot> }
+impl PolicyHandle {
+    pub fn load(&self) -> Option<Arc<BlocklistSnapshot>>;
+    pub fn publish(&self, snapshot: Arc<BlocklistSnapshot>);
+    pub fn revision(&self) -> Option<u64>;
+}
+```
+
+**`versions` is a `HashMap<key, Vec<..>>`, not the flat hash set SPEC §8 describes.** SPEC §7 requires PyPI version blocks to match by parsed PEP 440 equality including equivalent spellings (`1.0`, `1.0.0`, `1.0.0.post0` questions), which a string hash set cannot do. The map keeps §8's one-hash-lookup property for the overwhelmingly common miss — no entry for that package at all — and only then compares canonical forms over the short blocked list for that one package. npm versions are compared by exact string first and by parsed `nodejs-semver` equality second.
+
+### `store`
+
+```rust
+pub struct StoreHandle { critical: mpsc::Sender<StoreCommand>, maintenance: mpsc::Sender<StoreCommand> }
+
+enum StoreCommand {
+    GetProject { ecosystem: Ecosystem, name: String, reply: oneshot::Sender<StoreResult<Option<ProjectRow>>> },
+    ListKnownProjects { ecosystem: Ecosystem, reply: oneshot::Sender<StoreResult<Vec<String>>> },
+    /// Snapshot + reference upserts + new first-seen values in ONE transaction (REL-01).
+    CommitProjectRefresh { refresh: Box<ProjectRefresh>, reply: oneshot::Sender<StoreResult<Generation>> },
+    GetReference { id: ReferenceId, reply: oneshot::Sender<StoreResult<Option<ReferenceRow>>> },
+    /// Permanent (STATE-01): written even when policy now blocks the bytes.
+    PinComputedDigests { id: ReferenceId, sha256: [u8; 32], sha512: [u8; 64], size: u64,
+                         reply: oneshot::Sender<StoreResult<PinOutcome>> },
+    PublishContent { key: ContentKey, sha512: [u8; 64], size: u64, id: ReferenceId,
+                     reply: oneshot::Sender<StoreResult<()>> },
+    ClearContentKey { key: ContentKey, reply: oneshot::Sender<StoreResult<()>> },
+    CommitBlocklist { snapshot: Arc<BlocklistSnapshot>, reply: oneshot::Sender<StoreResult<()>> },
+    LoadBlocklist { reply: oneshot::Sender<StoreResult<Option<BlocklistRow>>> },
+    // maintenance queue only:
+    TouchContent { keys: Vec<(ContentKey, i64)> },
+    EvictDownTo { budget_bytes: u64, reply: oneshot::Sender<StoreResult<u64>> },
+    Checkpoint { reply: oneshot::Sender<StoreResult<()>> },
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum PinOutcome { Established, MatchedExisting, Conflict }
+
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug)]
+pub struct Generation(pub u64);
+
+impl StoreHandle {
+    pub async fn get_project(&self, e: Ecosystem, name: &str) -> StoreResult<Option<ProjectRow>>;
+    pub async fn commit_project_refresh(&self, r: ProjectRefresh) -> StoreResult<Generation>;
+    pub async fn get_reference(&self, id: ReferenceId) -> StoreResult<Option<ReferenceRow>>;
+    pub async fn pin_computed_digests(&self, id: ReferenceId, sha256: [u8; 32], sha512: [u8; 64], size: u64)
+        -> StoreResult<PinOutcome>;
+    pub async fn publish_content(&self, key: ContentKey, sha512: [u8; 64], size: u64, id: ReferenceId)
+        -> StoreResult<()>;
+    pub async fn commit_blocklist(&self, s: Arc<BlocklistSnapshot>) -> StoreResult<()>;
+    pub fn touch_content(&self, keys: Vec<(ContentKey, i64)>);   // best effort, never awaited by a handler
+}
+
+pub enum StoreError { Busy, Closed, Database(turso::Error), Corrupt(String) }
+pub type StoreResult<T> = Result<T, StoreError>;
+```
+
+Two queues, one task. The task uses a biased `select!` that drains `critical` before it looks at `maintenance`, which is how "give pending blocklist commits priority over ordinary queued cache maintenance, without interrupting an active transaction" is implemented: the bias is checked between transactions, never inside one. Both queues are bounded; a full `critical` queue returns `StoreError::Busy`, which maps to `503`. `StoreError::Database` and `Corrupt` set readiness false.
+
+```rust
+pub struct ProjectRefresh {
+    pub ecosystem: Ecosystem,
+    pub name: String,
+    pub payload: Arc<[u8]>,                     // exact upstream bytes
+    pub validators: UpstreamValidators,         // etag / last-modified, never forwarded downstream
+    pub validated_at_micros: i64,
+    pub fetched_at_micros: i64,                 // last FULL fetch; a 304 carries the stored value forward
+    pub references: Vec<ReferenceUpsert>,
+    pub first_seen: Vec<(ReferenceId, i64)>,    // only for references with no upstream timestamp
+}
+
+pub struct ProjectRow {
+    pub ecosystem: Ecosystem, pub name: String,
+    pub payload: Arc<[u8]>, pub validators: UpstreamValidators,
+    pub validated_at_micros: i64,
+    pub fetched_at_micros: i64,
+    pub generation: Generation,
+    pub digest_generation: u64,
+}
+
+pub struct ReferenceRow {
+    pub id: ReferenceId,
+    pub ecosystem: Ecosystem, pub name: String, pub version: String, pub filename: String,
+    pub upstream_url: Url,
+    pub expected: Vec<Digest>,
+    pub publication_micros: Option<i64>,
+    pub first_seen_micros: Option<i64>,
+    pub pinned_sha256: Option<[u8; 32]>,
+    pub pinned_sha512: Option<[u8; 64]>,
+    pub pinned_size: Option<u64>,
+    pub content_key: Option<ContentKey>,
+}
+```
+
+`ReferenceRow::publication_time()` collapses those fields into `PublicationTime` with upstream winning over first-seen (SPEC §5: "If a valid upstream timestamp later appears, use it").
+
+```rust
+/// Sharded, and a hit does NOT reorder a recency list — see the note below.
+pub struct MemoryCaches {
+    projects: ShardedCache<(Ecosystem, String), ProjectSnapshot>,
+    references: ShardedCache<ReferenceId, ReferenceRow>,
+    rendered: ShardedCache<RenderKey, RenderedResponse>,
+    /// Confirmed-absent upstream names, TTL = metadata_ttl (TM-4). Memory only,
+    /// never persisted: a restart may re-ask upstream, which is harmless.
+    absent: ShardedCache<(Ecosystem, String), AbsentMark>,
+}
+
+pub struct ShardedCache<K, V> { shards: [RwLock<Shard<K, V>>; SHARDS], budget_bytes: u64 }
+const SHARDS: usize = 16;
+
+struct Shard<K, V> { entries: HashMap<K, Entry<V>>, used_bytes: u64, hand: usize }
+struct Entry<V> { value: Arc<V>, bytes: u64, referenced: AtomicBool }
+
+impl<K: Hash + Eq, V> ShardedCache<K, V> {
+    /// Warm path: shard by hash, take the READ lock, clone the `Arc`, and set
+    /// `referenced` with a relaxed store. No list mutation, no write lock.
+    pub fn get(&self, key: &K) -> Option<Arc<V>>;
+    /// Cold path only: takes the write lock for that one shard and evicts within it.
+    pub fn insert(&self, key: K, value: Arc<V>, bytes: u64);
+}
+
+#[derive(Clone, PartialEq, Eq, Hash)]
+pub struct RenderKey { pub ecosystem: Ecosystem, pub name: String, pub representation: Representation }
+
+pub struct RenderedResponse {
+    pub body: Arc<[u8]>,
+    pub content_type: &'static str,
+    pub project_generation: Generation,
+    pub blocklist_revision: u64,
+    pub digest_generation: u64,
+    pub deadline_utc_micros: i64,
+    pub deadline_monotonic: Instant,
+}
+
+impl RenderedResponse {
+    /// All five conditions of SPEC §10, plus the monotonic deadline.
+    pub fn is_reusable(&self, project: Generation, revision: u64, digest_generation: u64,
+                       now_utc_micros: i64, now_monotonic: Instant) -> bool;
+}
+```
+
+**Why the caches are sharded and second-chance rather than strict LRU.** A strict LRU hit must move the entry to the front of a recency list, which is a *mutation*: it needs an exclusive lock, so every warm metadata request and every warm denial in the process would serialize on one mutex per cache. SPEC §12 asks for at least 1,000 warm responses/second at p95 ≤ 5 ms and a warm denial at p95 ≤ 2 ms, and a single exclusive lock on the hottest path is the wrong shape for that by construction — not a tuning problem to discover under benchmark. So a hit takes a per-shard read lock and sets an atomic `referenced` bit with a relaxed store; eviction is a second-chance (CLOCK) sweep over the shard that clears the bit and reclaims the first unreferenced entry. Recency is therefore approximate, which SPEC §10 already permits ("bounded" for memory caches, "approximate least-recently-used" for disk). Sixteen shards is a starting number, and `benches/warm_metadata.rs` is what decides whether it changes — the shard count is a tuning knob, but the lock shape is a design decision.
+
+```rust
+pub struct AbsentMark { pub observed_monotonic: Instant }
+```
+
+### `upstream`
+
+```rust
+#[async_trait]
+pub trait Transport: Send + Sync + 'static {
+    async fn fetch_metadata(&self, req: MetadataRequest) -> Result<MetadataResponse, UpstreamError>;
+    async fn open_artifact(&self, req: ArtifactRequest) -> Result<ArtifactBody, UpstreamError>;
+}
+
+pub struct MetadataRequest {
+    pub url: Url, pub accept: &'static str,
+    pub validators: Option<UpstreamValidators>,
+    pub max_bytes: u64,
+}
+pub enum MetadataResponse {
+    Fresh { body: Bytes, validators: UpstreamValidators },
+    NotModified { validators: UpstreamValidators },
+    Missing,                                   // upstream 404 / 410
+}
+
+pub struct ArtifactRequest { pub url: Url, pub max_bytes: u64 }
+pub struct ArtifactBody {
+    pub declared_length: Option<u64>,
+    pub stream: Pin<Box<dyn Stream<Item = Result<Bytes, UpstreamError>> + Send>>,
+}
+
+pub enum UpstreamError {
+    Timeout,
+    Transport(String),
+    Status(u16),
+    TooLarge { limit: u64 },
+    RejectedUrl(UrlRejection),
+    RejectedRedirect { to: Url },
+    RejectedAddress { addr: IpAddr },
+}
+
+pub struct OriginSet {
+    npm_metadata: Url,        // https://registry.npmjs.org
+    pypi_metadata: Url,       // https://pypi.org
+    pypi_artifacts: Url,      // https://files.pythonhosted.org
+    allow_private_addresses: bool,
+}
+impl OriginSet {
+    /// The only constructor `main.rs` calls. HTTPS, default ports, private addresses rejected.
+    pub fn production() -> OriginSet;
+    /// Tests only. Not reachable from config, CLI, or environment — TEST-01's no-bypass rule.
+    pub fn for_tests(npm: Url, pypi: Url, artifacts: Url) -> OriginSet;
+    pub fn admit(&self, url: &Url, kind: OriginKind) -> Result<(), UrlRejection>;
+}
+pub enum UrlRejection { Scheme, Host, Port, Credentials, ForeignOrigin, PathEscape }
+```
+
+`admit` runs before any request and on every redirect hop: scheme must be `https` (or `http` only when `allow_private_addresses` is set by `for_tests`), host must equal the configured origin's host, port must match, userinfo must be empty, and the path must stay under the origin's path. The `Resolve` implementation is the second gate — it rejects loopback, private and link-local answers unless `allow_private_addresses` is set. Both gates are constructor-controlled; neither reads config, an environment variable, or a flag.
+
+**Upstream URLs are never built with `Url::join`, and never by string concatenation.** `Url::join` resolves its argument as a reference, so an untrusted segment beginning `//` or carrying a scheme can replace the host — the classic footgun, and the second `UNKNOWN` the threat model raised. Instead every upstream URL starts as a clone of the `OriginSet` origin and each name-derived segment is appended with `url::PathSegmentsMut::push`, which percent-encodes the segment and cannot escape the path. `admit` then re-validates the finished URL, so construction and admission are two independent defences rather than one. `origin_guard::a_package_name_cannot_change_the_upstream_host` asserts this for names containing `//`, `..`, `:`, a full `https://` prefix, and an encoded slash.
+
+### `artifacts`
+
+```rust
+pub struct ReferenceId([u8; 32]);
+impl ReferenceId {
+    /// SHA-256 over a length-prefixed encoding of the exact reference (SPEC §9):
+    /// for each part, a u32 big-endian byte length followed by the bytes, in the fixed
+    /// order ecosystem tag, normalised name, upstream version, filename, upstream URL,
+    /// then the count of expected digests and each (algorithm tag, digest bytes) sorted
+    /// by (algorithm, bytes). A lookup key — not a content hash, not an authorization token.
+    pub fn compute(r: &ArtifactReference) -> ReferenceId;
+    pub fn to_hex(&self) -> String;
+    pub fn parse_hex(s: &str) -> Result<ReferenceId, InvalidReferenceId>;
+}
+
+pub struct ArtifactReference {
+    pub ecosystem: Ecosystem, pub name: String, pub version: String,
+    pub filename: String, pub upstream_url: Url, pub expected: Vec<Digest>,
+}
+
+pub struct ContentKey([u8; 32]);   // the verified SHA-256 of the bytes
+
+pub async fn serve_artifact(
+    app: &App, id: ReferenceId, filename: &str, method: Method, range: Option<ByteRange>,
+) -> Result<ArtifactResponse, ApiError>;
+
+pub struct ArtifactResponse {
+    pub status: StatusCode,                 // 200 or 206
+    pub total_length: u64,
+    pub range: Option<ByteRange>,
+    body: Option<PinnedBody>,               // private: None for HEAD
+}
+
+/// Proof that the final policy check ran and returned `Allow`. The ONLY way to
+/// obtain one is `Authorized::from_decision`, which accepts nothing else, and the
+/// only way to build a response body is to hand one over. Not `Clone`, not `Copy`,
+/// and it carries the snapshot revision it was granted under so a stale witness
+/// cannot be smuggled across a blocklist change.
+pub struct Authorized { blocklist_revision: u64, _private: () }
+
+impl Authorized {
+    pub fn from_decision(d: Decision, blocklist_revision: u64) -> Option<Authorized>;
+}
+
+impl ArtifactResponse {
+    /// Consumes the witness. There is no other constructor for a response with a body.
+    pub fn with_body(auth: Authorized, file: PinnedFile, range: Option<ByteRange>,
+                     total_length: u64) -> ArtifactResponse;
+    /// HEAD: still requires the witness, still has no body.
+    pub fn head_only(auth: Authorized, total_length: u64) -> ArtifactResponse;
+}
+
+pub struct DownloadCoordinator {
+    inflight: Mutex<HashMap<ReferenceId, Weak<DownloadSlot>>>,
+    permits: Arc<Semaphore>,                 // max_artifact_downloads
+}
+pub struct DownloadSlot {
+    waiters: AtomicUsize,
+    publishing: AtomicBool,                  // once true, the bounded publication always finishes
+    outcome: watch::Receiver<Option<Arc<Result<VerifiedContent, DownloadError>>>>,
+}
+impl DownloadCoordinator {
+    /// Joins an in-flight download for this reference or starts the only one.
+    pub async fn fetch(&self, app: &App, row: &ReferenceRow) -> Result<VerifiedContent, DownloadError>;
+}
+pub struct VerifiedContent { pub key: ContentKey, pub sha512: [u8; 64], pub size: u64 }
+pub enum DownloadError {
+    Upstream(UpstreamError),
+    IntegrityMismatch { expected: Digest, computed: Digest },
+    PinConflict { pinned: [u8; 32], computed: [u8; 32] },
+    SizeMismatch { declared: u64, actual: u64 },
+    TooLarge { limit: u64 },
+    CapacityUnavailable,
+    BlockedAfterDownload(DenyReason),
+    Cancelled,
+    Storage(StoreError),
+}
+
+/// An open, verified file that eviction may not remove while it is held.
+pub struct PinnedFile { key: ContentKey, file: tokio::fs::File, size: u64, _pin: OpenPin }
+pub struct ContentStore { root: PathBuf, budget: ContentBudget, open_pins: Mutex<HashMap<ContentKey, usize>> }
+impl ContentStore {
+    pub fn path_for(&self, key: &ContentKey) -> PathBuf;
+    pub async fn open_verified(&self, key: &ContentKey, expected_size: u64) -> Result<PinnedFile, ContentError>;
+    pub async fn reserve(&self, bytes: u64) -> Result<Reservation, ContentError>;
+    /// flush → fsync(file) → rename → fsync(dir) → only then the caller commits the mapping (REL-01).
+    pub async fn publish(&self, temp: TempDownload, key: &ContentKey) -> Result<(), ContentError>;
+}
+```
+
+### `http`
+
+```rust
+pub enum ApiError {
+    Held { eligible_at_micros: i64, reason: &'static str },
+    Blocked { reason: &'static str },
+    NotFound,
+    InvalidInput(&'static str),
+    UnsupportedMethod,
+    UnsupportedRepresentation,
+    PolicyUnavailable,          // 503, missing or expired blocklist
+    CapacityExhausted,          // 503
+    Overloaded,                 // 503
+    StorageUnusable,            // 503
+    UpstreamFailure,            // 502
+    UpstreamInvalid,            // 502
+    IntegrityMismatch,          // 502
+    UpstreamTimeout,            // 504
+}
+
+impl ApiError {
+    pub fn status(&self) -> StatusCode;
+    pub fn error_code(&self) -> &'static str;   // stable machine-readable token
+}
+
+#[derive(Serialize)]
+pub struct ErrorBody {
+    pub error: &'static str,
+    pub reason: String,
+    pub request_id: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eligible_at: Option<String>,            // RFC 3339, cooldown only
+}
+
+pub fn router(app: Arc<App>) -> axum::Router;
+```
+
+Routes, exactly and only: `GET /npm/{package}`, `GET /npm/{package}/{version_or_tag}`, `GET /npm/-/ping`, `GET /pypi/simple/`, `GET /pypi/simple/{project}/`, `GET|HEAD /npm/artifacts/{reference_id}/{filename}`, `GET|HEAD /pypi/artifacts/{reference_id}/{filename}`, `GET /health/live`, `GET /health/ready`. Every other path is `404`, every other method on a known path is `405`. `/npm/-/ping` is registered before the `{package}` route so `-` cannot be read as a package name. The two artifact routes sit under their ecosystem root rather than at a top-level `/artifacts/` — see **Revision: artifact routing under the ecosystem root** at the end of this document for why, and for the SPEC §9 deviation it carries. Every response, including errors, carries `Cache-Control: no-store`; upstream validators are never forwarded and no downstream `304` is ever produced.
+
+## Call stack
+
+### Startup — `serve`
+
+```
+main::main
+ └─ cli::Command::Serve
+     ├─ config::Config::load(path)                               // fatal on error, exit 1
+     ├─ logging::install_subscriber()
+     └─ lib::App::start(AppDeps { config, clock: SystemClock,
+                                  transport: ReqwestTransport::new(&config)?,
+                                  origins: OriginSet::production() })
+         ├─ store::lock::acquire(data_dir)                       // exclusive; fatal if held
+         ├─ store::startup::open_and_recover(data_dir)
+         │   ├─ turso::Builder::new_local(state/firewall.db).build().await → db.connect()
+         │   ├─ PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; read both back  // mismatch ⇒ fatal
+         │   ├─ schema::ensure(SCHEMA_VERSION, TURSO_CRATE_VERSION)               // mismatch ⇒ fatal, never recreate
+         │   ├─ content::remove_temp_files()
+         │   ├─ content::clear_mappings_for_missing_files()
+         │   └─ content::reclaim_unreferenced()
+         ├─ store::spawn_task(connection)                        → StoreHandle
+         ├─ store::LoadBlocklist → PolicyHandle::publish(..)     // only if still valid at now
+         ├─ tasks::spawn(blocklist_poller, maintenance)
+         └─ http::router(app) → axum::serve(listener)            → Running { local_addr }
+```
+
+Recovery failure returns `StartupError::Recovery`, which `serve` reports and exits on; a recovery failure discovered later leaves the process alive with readiness false and every package response `503` (SPEC §10). The database is never recreated.
+
+### npm metadata — `GET /npm/{package}`
+
+```
+http::npm_routes::package
+ ├─ limits::active_permit()                                    // none ⇒ ApiError::Overloaded (503)
+ ├─ logging::new_request_id()
+ ├─ npm::name::PackageName::parse_route(raw)                   // invalid ⇒ 400
+ ├─ negotiate_representation(headers)                          // NpmFull | NpmAbbreviated
+ ├─ policy::PolicyHandle::load()                               // None or expired ⇒ 503 PolicyUnavailable
+ ├─ store::cache::rendered.get(RenderKey)
+ │   └─ RenderedResponse::is_reusable(gen, revision, digest_gen, now, mono) ⇒ respond (warm: zero queries)
+ └─ npm::resolve_project(app, &name, representation)
+     ├─ caches.absent.get(key) still within TTL ⇒ 404, no upstream call  // TM-4 negative cache
+     ├─ store::cache::projects.get(key) ─or─ store.get_project(key)     // cache miss only
+     ├─ effective = metadata_max_age - (hash(ProjectKey) % (metadata_max_age / 10))  // shortens only
+     ├─ over_age = max_age != 0 && now - fetched_at >= effective          // SPEC rev 3 §10 ceiling
+     ├─ if over_age || now - validated_at > metadata_ttl:
+     │   └─ npm::refresh_coalesced(name, over_age)              // one in-flight refresh per project
+     │       ├─ limits::upstream_permit()
+     │       ├─ validators = if over_age { None } else { stale.validators }  // over-age ⇒ upstream cannot answer 304
+     │       ├─ upstream::Transport::fetch_metadata(registry/{name}, validators, max_metadata_bytes)
+     │       │   └─ over_age && (transport error | NotModified) ⇒ refuse, never serve the over-age copy
+     │       │      // Missing stays 404 either way: a definitive upstream answer, not a failure to reach it
+     │       │   └─ counted read loop over bytes_stream()        // over cap ⇒ 502 UpstreamInvalid
+     │       │   └─ MetadataResponse::Missing ⇒ caches.absent.insert(key, now)  // TM-4, then 404
+     │       ├─ npm::document::parse(bytes)                      // invalid ⇒ 502 UpstreamInvalid
+     │       ├─ npm::document::references(&doc)                  // ReferenceId::compute per version
+     │       │   └─ count > max_references_per_project ⇒ 502 UpstreamInvalid, logged  // TM-1
+     │       ├─ for each reference with no upstream time: first_seen = now
+     │       └─ store.commit_project_refresh(ProjectRefresh{..})  // ONE transaction, then new Generation
+     │           └─ on StoreError ⇒ 503; the new generation is never published
+     ├─ for each version: policy::evaluate(&snapshot, now, cooldown, &candidate)
+     ├─ npm::tags::resolve_tags(dist_tags, eligible, ..)
+     ├─ npm::render::full|abbreviated(&doc, &decisions, &public_url)
+     ├─ deadline = min(validated_at + ttl, snapshot.expires_at, next_hold_eligible_at)
+     ├─ store::cache::rendered.insert(RenderKey, RenderedResponse{..})
+     └─ logging::decision_line(..)
+```
+
+If the project exists upstream but nothing survives filtering, the response is a policy denial (`403`), not an empty document; a genuine upstream absence is `404`. `GET /npm/{package}/{version-or-tag}` runs the identical path and then selects one version, applying the same checks — a held version is `403` with `eligible_at` and `Retry-After`.
+
+**The maximum-age ceiling (SPEC rev 3 §10).** `fetched_at_micros` records the last FULL fetch and is the only age the ceiling reads; a `304` carries the stored value forward unchanged while `validated_at_micros` advances. Once a snapshot is over-age the refresh sends no validators at all, so upstream is given no opportunity to answer `304` — this is deliberate: asking conditionally and then rejecting a `304` would still leave the firewall dependent on upstream choosing to send a body. An over-age snapshot is never served, so a transport failure, an unreachable upstream, or a `304` answering an unconditional request all refuse the request rather than falling back to the stored copy. That refusal is the existing SPEC rule against serving expired metadata during an upstream outage, reached by a second route; it is not a new failure mode and needs no new `ApiError` variant.
+
+**The ceiling does NOT apply to the TM-4 absent-name cache, and a first draft of this design was wrong to say it did.** `metadata_max_age_seconds` cannot be less than `metadata_ttl_seconds`, an absent mark already expires at exactly `metadata_ttl_seconds` measured on the monotonic clock (`src/npm/mod.rs:154-159`), and that expiry always rechecks upstream unconditionally with no validators and no `304` involved. The ceiling could therefore never bind on a mark before its own TTL already had, and `AbsentMark` carries only `observed_monotonic` — there is no wall-clock field for a ceiling to read. A test named for that behaviour could only ever have passed by coincidence with TM-4, which is the defect class this plan has now recorded three times. The claim and its test are removed rather than given a mechanism, because the property they described is already true and already witnessed.
+
+**Effective ceiling, and why it is not simply the configured value.** Each project's effective ceiling is `metadata_max_age_seconds` reduced by a deterministic offset of up to one tenth of it, derived from the project's own identity — the same hash already available from `ProjectKey` — so it is stable across restarts and identical on every instance. The offset only ever SHORTENS, so the configured value stays a true maximum and the guarantee the user asked for is not weakened. It exists because snapshots fetched together share an expiry instant: a bulk seed, a restore from backup, or ordinary warm-up clustering would otherwise make every ceiling lapse at once, converting a gradual staleness lapse into one simultaneous fleet-wide refusal bounded only by `max_upstream_requests`. A deterministic offset is chosen over randomness so the trip time is reproducible in a test and identical across instances serving the same project.
+
+Three consequences worth stating rather than discovering: an upstream outage lasting longer than the ceiling turns warm reads into refusals for every project whose ceiling lapses during it, which is the cost of the fail-closed choice; that same property is a genuine increase in attacker leverage, recorded below as TM-15-2, because an actor who can disrupt only the network path to upstream can now take warm projects offline by sustaining that disruption past one ceiling, where previously warm reads survived an upstream outage indefinitely; and the ceiling has no effect whatsoever on blocklist enforcement, which invalidates rendered responses on its own revision and never depends on upstream contact.
+
+**TM-15-1 (staleness), mitigated.** A dishonest or compromised upstream answers `304` indefinitely to freeze this firewall's view of a project. The ceiling forces a periodic unconditional full fetch that upstream cannot answer with `304`. Verification property: no persisted snapshot's `fetched_at_micros` survives past its effective ceiling without an unconditional fetch having been attempted.
+
+**TM-15-2 (denial of service through the fail-closed path), ACCEPTED with a named owner.** An actor able to disrupt only the network path between this firewall and the real upstream — not the firewall process — can, by sustaining that disruption past `metadata_max_age_seconds`, force every project whose ceiling lapses during the window to refuse, where before this revision warm reads survived an upstream outage indefinitely. The deterministic offset above spreads the lapse; it does not remove the exposure. This is the direct, intended cost of the user's fail-closed decision, and it is accepted rather than designed away. **Owner: operations.** `docs/operations.md` must state it plainly alongside OPS-01, together with the operator's two levers — raise `metadata_max_age_seconds`, or set it to zero to restore unbounded revalidation — and must say that setting zero reinstates exactly the unbounded-staleness exposure the ceiling exists to close. Slice 15 owns writing that section.
+
+### PyPI metadata — `GET /pypi/simple/{project}/`
+
+Same shape, with three differences: `pypi::name::ProjectName::normalize` runs before lookup and a non-canonical request path gets a local `301` to the canonical trailing-slash form; `pypi::filename::file_identity` establishes each file's `(project, version)` and a file whose identity cannot be established is excluded and logged rather than guessed; and `policy::evaluate` runs **per file** with that file's own upload time, so a new wheel never inherits an older sdist's age. `GET /pypi/simple/` is served from `store.list_known_projects(PyPi)` and is explicitly this instance's known set, not a PyPI mirror. An existing project with no eligible files returns a valid empty listing (pip then reports no matching distribution) — the empty-listing case differs from npm deliberately, because pip's failure message is already correct and a `403` would be worse.
+
+### Artifact — `GET|HEAD /{ecosystem}/artifacts/{reference_id}/{filename}`
+
+```
+http::artifact_routes::serve
+ ├─ limits::active_permit()
+ ├─ ReferenceId::parse_hex(raw)                                  // invalid ⇒ 400
+ └─ artifacts::serve_artifact(app, id, filename, method, range)
+     ├─ policy::PolicyHandle::load()                             // None/expired ⇒ 503   (PERF-01: first)
+     ├─ store::cache::references.get(id) ─or─ store.get_reference(id)   // None ⇒ 404
+     ├─ filename must equal row.filename                          // else 404
+     ├─ policy::evaluate(&snapshot, now, cooldown, &candidate_from_row)  // locally conclusive
+     │   └─ Deny(BlockedPackage|BlockedVersion|BlockedDigest) ⇒ 403 WITHOUT touching upstream
+     ├─ npm|pypi::ensure_fresh_project(row.ecosystem, row.name)   // refresh if TTL passed
+     │   └─ reference must still be advertised by that snapshot   // else 404 (removed upstream)
+     ├─ policy::evaluate(..) again, now with advertised + pinned digests
+     ├─ if row.content_key.is_some():
+     │   └─ content.open_verified(key, pinned_size)               // missing/size mismatch ⇒ clear mapping, fall through
+     ├─ else downloads.fetch(app, &row):
+     │   ├─ join the existing DownloadSlot, or:
+     │   ├─ limits::download_permit() + content.reserve(max_artifact_bytes)  // unavailable ⇒ 503
+     │   ├─ upstream::Transport::open_artifact(row.upstream_url)   // decoding OFF
+     │   ├─ stream → temp file, SHA-256 + SHA-512 + SHA-1 in ONE pass, counted against the cap
+     │   ├─ verify advertised integrity (ssri) and declared size  // mismatch ⇒ 502, temp removed
+     │   ├─ store.pin_computed_digests(..)                        // PinOutcome::Conflict ⇒ 502 INTEGRITY_MISMATCH,
+     │   │                                                        //   new bytes discarded, original pins retained (STATE-01)
+     │   ├─ policy::evaluate(.., pinned_digests = computed)        // blocked now ⇒ pins kept, bytes discarded,
+     │   │                                                        //   project digest_generation bumped ⇒ 403
+     │   ├─ slot.publishing = true                                // past here the publication always completes
+     │   ├─ content.publish(temp, key)                            // flush, fsync, rename, fsync dir (REL-01)
+     │   └─ store.publish_content(key, sha512, size, id)          // only now is the mapping committed
+     ├─ revalidate project membership if metadata expired during the download
+     ├─ policy::evaluate(..) FINAL, immediately before the response is created   // the revocation boundary
+     ├─ Authorized::from_decision(decision, snapshot.revision)?   // None ⇒ 403/503; no witness, no body
+     └─ stream::respond(auth, PinnedFile, range, method)          // consumes the witness; 200 | 206 | 416
+```
+
+Nothing writes a body byte before the final check. A waiter that disconnects decrements `slot.waiters` and releases its own permit only; when the count reaches zero and `publishing` is still false, the download is cancelled and its temp file and reservation are removed. Once `publishing` is true the bounded publication finishes and leaves a valid cache entry. `HEAD` runs every check, including a cold verification, and returns no body. Multiple ranges are ignored and the complete verified body is returned.
+
+### Blocklist reload
+
+```
+tasks::blocklist_poller (every blocklist_poll_seconds)
+ ├─ fs::metadata(blocklist_file) → (device, inode, mtime_nanos, len)   // TM-5 change detection
+ │   └─ plus an unconditional full re-read every 60 s as a backstop
+ ├─ read with max_blocklist_bytes cap                              // over cap ⇒ log, keep last good
+ ├─ sha256(bytes) == accepted snapshot's hash ⇒ no-op                // avoids revalidating unchanged bytes
+ ├─ BlocklistSnapshot::parse_and_validate(bytes, now)              // whole candidate, off the request path
+ │   ├─ revision must be strictly greater when content changed
+ │   ├─ identical revision AND identical bytes ⇒ no-op
+ │   ├─ changed bytes with unchanged revision ⇒ reject and log
+ │   └─ window: generated_at <= now < expires_at, generated_at < expires_at
+ ├─ store.commit_blocklist(snapshot)                               // critical queue, ahead of maintenance
+ └─ PolicyHandle::publish(snapshot)                                // commit BEFORE publish, always
+```
+
+Change detection includes the **inode**, not just mtime and length, because SPEC §8 requires the producer to replace the file atomically — an atomic replace is a rename, so the inode always changes even when a same-second replacement happens to have identical length. That closes TM-5 for every in-contract producer. A producer that rewrites the file in place instead is out of contract, and the 60-second unconditional re-read bounds how long such a write can go unnoticed. The accepted snapshot's SHA-256 is retained so an unchanged file is never revalidated.
+
+A rejected candidate leaves the previous snapshot in place and logs the error; it never substitutes an empty blocklist. A valid empty snapshot is accepted and means only the age rule is active. Expiry needs no poll: `PolicyHandle::load` compares `expires_at` with `now` on every request, so at expiry metadata and artifact delivery both `503` — including warm cache hits — while `/health/live` stays healthy and `/health/ready` turns unhealthy.
+
+### Maintenance
+
+```
+tasks::maintenance
+ ├─ drain batched TouchContent keys → store.touch_content(..)      // maintenance queue, never awaited by a handler
+ ├─ if used_bytes > cache_max_bytes: store.evict_down_to(budget)
+ │   └─ oldest access first; never an open file (open_pins consulted); mapping cleared then file removed
+ └─ periodic store.checkpoint()                                    // pinned engine's supported API, outside HTTP
+```
+
+## Test plan
+
+Pure-policy unit tests (in `src/policy/`), written and passing before anything else exists — SPEC §13's ordering:
+
+| Test | Asserts |
+| --- | --- |
+| `policy::cooldown_before_at_and_after_threshold` | `now < t+cd` holds; `now == t+cd` allows; `now > t+cd` allows. The boundary is inclusive-allow. |
+| `policy::zero_cooldown_disables_only_the_age_rule` | Cooldown 0 allows a just-published release but a blocked one is still denied. |
+| `policy::malformed_and_future_timestamps_deny` | `Malformed` ⇒ `Deny(MalformedTimestamp)`; a timestamp after `now` ⇒ `Deny(FutureTimestamp)`. |
+| `policy::unknown_timestamp_denies` | The defensive `Deny(NoTimestamp)` branch. |
+| `policy::check_order_is_unavailable_deny_hold_allow` | An expired snapshot beats a block; a block beats a hold; a pinned-digest block denies a release that age would allow. |
+| `policy::blocked_digest_matches_pinned_and_advertised` | A block on a digest we computed ourselves denies, even when upstream never advertised it. |
+| `policy::deadline_arithmetic_is_checked` | A near-`i64::MAX` timestamp saturates to a `Hold`, never overflows into `Allow`. |
+| `blocklist::pep440_equivalent_spellings_match` | A block on `1.0` denies `1.0.0`; on npm, `1.0.0` does not match `1.0`. |
+| `blocklist::sri_base64_and_hex_reach_the_same_digest` | `sha512-<base64>` and the hex form compare equal. |
+| `blocklist::rejects_unsupported_algorithm_and_malformed_records` | Whole-snapshot rejection, not per-record skipping. |
+| `blocklist::rejects_rollback_and_changed_content_at_same_revision` | Both rejections, with the previous snapshot retained. |
+| `blocklist::window_rules` | `generated_at > now`, `now >= expires_at`, and `generated_at >= expires_at` each reject. |
+| `blocklist::valid_empty_snapshot_is_accepted` | Accepted, and only cooldown then applies. |
+
+Behaviour tests, one group per SPEC §13 item:
+
+| SPEC §13 | File | Tests |
+| --- | --- | --- |
+| 1 | `persistence_recovery.rs` | `first_seen_survives_restart`, `first_seen_persisted_before_it_grants_eligibility`, `upstream_timestamp_supersedes_first_seen` |
+| 2 | `npm_metadata.rs` | `npm_version_precedence_matches_a_published_corpus`, `latest_falls_back_to_highest_eligible_stable_at_or_below_target`, `latest_omitted_when_no_eligible_candidate`, `eligible_tag_preserved_unchanged`, `custom_tag_on_excluded_version_is_omitted_not_guessed`, `eligible_prerelease_tag_unchanged`, `scoped_and_percent_encoded_names`, `exact_version_route_applies_same_checks`, `dependency_and_peer_fields_are_never_edited`, `excluded_versions_removed_from_time_map`, `abbreviated_derived_from_same_snapshot_as_full` |
+| 3 | `pypi_metadata.rs` | `html_and_json_list_the_same_files`, `name_normalisation_and_canonical_redirect`, `requires_python_and_yanked_preserved`, `wheel_filename_identity`, `new_wheel_does_not_inherit_old_sdist_age`, `unsupported_filename_excluded_and_logged`, `html_escapes_filenames_and_attributes`, `known_project_index_lists_only_seen_projects`, `existing_project_with_no_eligible_files_returns_empty_listing` |
+| 4 | `blocklist_snapshot.rs` | `package_wide_block`, `version_specific_block`, `sha256_block`, `sha512_block` |
+| 4 | `blocklist_revocation.rs` | `computed_sha256_block_absent_from_npm_sha512_metadata` — needs a completed verified download, so it lands in the artifact slice, not with the rest of item 4 |
+| 5 | `blocklist_revocation.rs` | `blocked_digest_disappears_from_next_metadata`, `first_download_failure_is_reported_without_a_fallback_promise` |
+| 6 | `artifacts_verification.rs` | `zero_body_bytes_before_cold_verification_completes`, `truncated_download_never_becomes_a_cache_hit`, `integrity_failure_never_becomes_a_cache_hit`, `blocked_bytes_never_become_a_cache_hit` |
+| 7 | `blocklist_revocation.rs` | `replacement_invalidates_rendered_metadata`, `previously_issued_url_is_refused_after_a_block`, `head_and_range_obey_the_same_policy` |
+| 8 | `blocklist_snapshot.rs` | `expiry_stops_delivery_including_warm_hits`, `malformed_replacement_retains_last_good`, `rollback_rejected`, `restart_uses_last_accepted_snapshot_while_valid`, `readiness_false_at_expiry_liveness_true` |
+| 9 | `artifacts_concurrency.rs` | `concurrent_cold_requests_cause_exactly_one_upstream_transfer`, `blocklist_update_during_download_denies_at_the_final_check`, `blocklist_update_during_revalidation_of_cached_content_denies` (the same evaluate → revalidate → evaluate window on the `content.open_verified` branch, with no download in flight), `overload_is_refused_not_queued`, `eviction_never_removes_an_open_file`, `crash_between_rename_and_commit_leaves_no_downloadable_temp_file` |
+| 10 | `npm_metadata.rs`, `pypi_metadata.rs` | `upstream_removal_becomes_404`, `revalidation_after_ttl`, `projection_expires_at_next_hold_release`, `backward_clock_jump_recomputes_projections` |
+| 11 | `artifacts_verification.rs` | `eviction_and_refetch_preserve_pins`, `pin_established_without_a_strong_advertised_digest`, `changed_bytes_for_the_same_reference_are_refused_with_502` |
+| 15 | `npm_metadata.rs`, `pypi_metadata.rs` | `a_304_does_not_advance_the_full_fetch_time`, `an_over_age_snapshot_is_refetched_in_full_without_validators`, `an_over_age_snapshot_is_never_served_when_upstream_is_unreachable`, `repeated_304s_cannot_extend_age_past_the_ceiling`, `a_zero_ceiling_restores_unbounded_revalidation`, `two_projects_fetched_together_do_not_expire_together`, `the_effective_ceiling_never_exceeds_the_configured_maximum`, `a_backward_wall_clock_jump_only_delays_the_ceiling` |
+| 15 | `config_validation.rs` | `a_ceiling_below_the_ttl_is_rejected`, `a_zero_ceiling_is_accepted_and_disables_the_rule`, `an_absent_ceiling_key_takes_the_default` |
+| 15 | `persistence_projects.rs` | `a_full_fetch_time_survives_a_restart`, `a_304_after_a_restart_still_reads_the_stored_full_fetch_time` |
+| 12 | `artifacts_concurrency.rs` | `one_waiter_cancels_others_continue`, `last_waiter_cancels_download_and_removes_temp_file`, `publication_once_started_completes`, `slow_downstream_hits_write_idle_timeout`, `response_lifetime_timeout_releases_pin_and_permit` |
+| 13 | `persistence_recovery.rs` | `project_and_references_commit_atomically`, `file_sync_order_holds`, `wal_recovery_after_kill`, `transaction_rollback_leaves_no_partial_project`, `disk_full_is_a_503_not_a_policy_relaxation`, `failed_recovery_keeps_readiness_false_and_never_recreates`, `restore_requires_a_current_blocklist_before_readiness` |
+| 14 | `origin_guard.rs` | `test_origins_work_through_the_constructor`, `production_origin_set_rejects_private_addresses`, `no_config_key_or_env_var_relaxes_origins`, `cross_origin_redirect_rejected`, `url_credentials_rejected`, `unexpected_port_rejected`, `client_authorization_cookies_and_proxy_credentials_are_never_forwarded` |
+
+Each Gate 2 review finding gets its named test, as Gate 2 constraint 7 requires:
+
+| Finding | Named test |
+| --- | --- |
+| STATE-01 | `artifacts_verification::eviction_and_refetch_preserve_pins` and `::changed_bytes_for_the_same_reference_are_refused_with_502` |
+| REL-01 | `persistence_recovery::file_sync_order_holds` and `::project_and_references_commit_atomically` |
+| FLOW-01 | `artifacts_concurrency::last_waiter_cancels_download_and_removes_temp_file` and `::slow_downstream_hits_write_idle_timeout` |
+| PERF-01 | `artifacts_verification::local_block_denies_with_upstream_unreachable` (asserts the denial resolves with the transport failing every call) |
+| TEST-01 | `origin_guard::no_config_key_or_env_var_relaxes_origins` |
+| OPS-01 | `persistence_recovery::disk_full_is_a_503_not_a_policy_relaxation`, plus the `docs/operations.md` state-capacity section |
+
+Threat-model mitigations get their own named tests, since none of the groups above would have caught them:
+
+| Threat | Named test |
+| --- | --- |
+| TM-1 | `npm_metadata::project_exceeding_reference_cap_is_502_and_logged`, and `artifacts_concurrency::blocklist_commit_is_not_delayed_by_a_large_project_refresh` (asserts the commit lands within a bound while a max-size refresh runs) |
+| TM-2 | `pypi_metadata::adversarial_multi_separator_filenames` — a corpus of names with repeated `-`/`_`/`.`, `+local` version segments, and version-like project names; each must yield either the correct identity or an exclusion, never a different version's identity |
+| TM-4 | `npm_metadata::absent_name_is_cached_and_does_not_refetch`, `::absent_cache_expires_with_metadata_ttl` |
+| TM-5 | `blocklist_snapshot::same_length_same_second_atomic_replacement_is_detected` (distinct contents, equal length, one poll interval), `::in_place_rewrite_is_detected_by_the_backstop_reread` |
+| UNKNOWN-1 (depth) | `blocklist_snapshot::deeply_nested_blocklist_is_rejected_not_a_crash`, `npm_metadata::deeply_nested_upstream_document_is_502` |
+| UNKNOWN-2 (URL) | `origin_guard::a_package_name_cannot_change_the_upstream_host` |
+
+Protocol and contract tests: `http_contract.rs` covers the whole SPEC §11 failure table — one test per row — plus `cache_control_no_store_on_every_response`, `no_downstream_304`, `unsupported_route_405_and_406`, and `ping_route_is_not_read_as_a_package_name`. `config_validation.rs` covers every `ConfigError::Invalid` rule and asserts `check-config` and `check-blocklist` exit nonzero and write nothing.
+
+Client integration (`#[ignore]`, run in the client slice): `e2e_npm.rs` — `npm_install_falls_back_to_an_older_eligible_release`, `npm_ci_succeeds_on_an_allowed_lockfile`, `npm_ci_fails_on_a_blocked_pin_without_rewriting_the_lockfile`, each on the current stable npm and the previous major. `e2e_pip.rs` — `pip_install_from_wheel`, `pip_install_from_sdist`, `pip_install_fails_when_nothing_eligible_remains`, on the current and previous supported pip minor. Both use fresh client caches, plus one deliberate `cache_reuse_documents_the_boundary` test.
+
+Benchmarks report, not gate: warm metadata throughput and p95, warm denial p95, warm artifact TTFB and throughput against a local-file baseline, and blocklist activation latency for a 100,000-entry fixture.
+
+## Invariants & spec dispositions
+
+**SMTC analyzer specs cannot be authored at this gate, and whether they will work for Rust later is UNKNOWN rather than no.** Measured in this repository on 2026-09-17: the daemon is healthy (`smtc daemon status` → running); Rust is listed as `tier: first_class` with a query pack; `.smtc/analyzers/` does not exist and `smtc spec list` reports 0 specs; `smtc freshness` reports a cached snapshot covering `file_count: 0`; `rustc`, `cargo` and `rust-analyzer` 1.96.0 are all installed. Critically, `smtc inspect matrix` grades every Rust operation family this design's invariants would need — references, call graph, dataflow, taint, protocol lifecycle, spec runs — as `ungraded`, which the matrix itself annotates as an inventory gap rather than a measured presence or absence; value-precision is the one family explicitly `unsupported` for Rust, and certificates the one explicitly `verified`. Nothing could be smoke-tested because there is no `.rs` file to test against.
+
+Two consequences. First, `sf-spec-authoring` validates a candidate check by running it against an unsafe and a safe root, and neither root can exist before the code does — so no spec is authored now and no Gate 4 row may name `sf-verify-cert verdict <spec>` as its witness. Every disposition below is an executable test or a named review obligation. Second, the capability question is deferred, not closed: the persistence slice is the first to produce real Rust source, and re-running the capability check there is cheap. The dispositions marked "no spec authorable" below mean *not authorable yet*, and the two invariants worth authoring first if Rust spec runs prove out are named at the end of this section.
+
+| Invariant | Disposition |
+| --- | --- |
+| One `now` and one blocklist snapshot per decision | No spec: `policy::evaluate` takes both as parameters, so a second read is a type-level impossibility inside the pure module. Callers are covered by `policy::check_order_is_unavailable_deny_hold_allow` and reviewed in the policy slice. |
+| A computed digest pin is permanent and survives eviction (STATE-01) | No spec authorable yet. Enforced by `store::pin_computed_digests` returning `PinOutcome::Conflict` rather than overwriting, witnessed by `eviction_and_refetch_preserve_pins` and `changed_bytes_for_the_same_reference_are_refused_with_502`. Load-bearing, so it is also a named `sf-code-review` obligation in its slice. |
+| Content bytes are durable before their mapping commits (REL-01) | No spec authorable. `ContentStore::publish` is the only path that renames into the cache, and `store.publish_content` is the only path that commits a mapping; ordering is witnessed by `file_sync_order_holds` and `crash_between_rename_and_commit_leaves_no_downloadable_temp_file`. Named `sf-adversarial-testing` target in the artifact slice. |
+| A blocklist commits before its snapshot is published | No spec authorable. Single call site in `tasks::blocklist_poller`; witnessed by `restart_uses_last_accepted_snapshot_while_valid`. |
+| No response body byte precedes the final policy check (the revocation boundary) | No spec authorable, and this is the one invariant a static ordering check would most have helped with. Compensating measures: `ArtifactResponse`'s `body` field is private and both constructors require an `Authorized` witness, which only `Authorized::from_decision` can mint and only from an `Allow` — so *every* call site, present or future, must have checked before it can build a body, and the witness is neither `Clone` nor `Copy`. Witnessed by `zero_body_bytes_before_cold_verification_completes`, `blocklist_update_during_download_denies_at_the_final_check`, and `blocklist_update_during_revalidation_of_cached_content_denies`; and it is a mandatory `sf-security-review` item in the artifact slice. |
+| A locally conclusive denial never waits on upstream (PERF-01) | No spec authorable. Witnessed by `local_block_denies_with_upstream_unreachable`, which fails if any upstream call is made. |
+| No release path relaxes origin or private-address checks (TEST-01) | No spec authorable. `allow_private_addresses` is settable only via `OriginSet::for_tests`; witnessed by `no_config_key_or_env_var_relaxes_origins` and by a `check-config` test asserting unknown keys are rejected. Mandatory `sf-security-review` item. |
+| All SQL lives inside `store` | No spec authorable; a one-line `grep` witness in the persistence slice (`turso::` and SQL string literals appear only under `src/store/`) plus a code-review obligation. |
+| A warm request issues no database query and no upstream call | No spec authorable. Witnessed behaviourally: the harness counts `StoreCommand`s and `Transport` calls and asserts zero across a second identical request. |
+| Every artifact and metadata read is size-capped | No spec authorable. Witnessed by `metadata_over_cap_is_502` and `artifact_over_cap_is_rejected_without_content_length`; enforced structurally by `Transport` taking `max_bytes` as a required parameter with no default. |
+
+If the persistence slice's re-check shows Rust analyzer specs run, the revocation boundary (an ordering obligation: the final `PolicyHandle::load` precedes body construction on every path) and SQL containment (a structural pattern: `turso::` and SQL literals only under `src/store/`) are the two worth authoring first — the first because no test can cover every path, the second because it is exactly the structural shape specs are good at.
+
+## Threat model
+
+### Scope
+
+Modelled: the planned data flows and module boundaries in this document against untrusted upstream npm/PyPI data, untrusted client route and header input, the locally-produced blocklist file, the three fixed outbound origins, the revocation boundary, and local Turso and content-cache state, as approved in `02-architecture.md` and specified in `SPEC.md` §5, §8–11. Not modelled: TLS termination, reverse-proxy and deployment access control, network policy forcing clients through the proxy, the blocklist producer's own intelligence quality, anything already in a client's own cache, and the six SPEC §15 findings, which are adopted corrections rather than open questions — three threats below survive one of those corrections rather than being closed by it. No source exists; every location cited is a planned file, type, or call stack in this document.
+
+### Entry points, trust boundaries, assets
+
+- **Client HTTP entry points** (`src/http/npm_routes.rs`, `pypi_routes.rs`, `artifact_routes.rs`): route components, Accept and Range headers. Boundary: `http::*_routes` validation, before anything reaches `npm`, `pypi` or `artifacts`. Assets: local server resources (semaphores, the store queue) and the correctness of the returned decision.
+- **Upstream HTTPS entry points** (`src/upstream/reqwest_transport.rs`, `npm/document.rs`, `pypi/filename.rs`, `pypi/render.rs`): package documents, Simple API JSON, artifact bytes, filenames, integrity digests — all influenceable by anyone who can publish a public package. Boundary: the `Transport` counted/capped read loop and `OriginSet::admit` inbound; `policy::evaluate` and digest verification outbound. Assets: decision correctness, integrity of delivered bytes, availability of the single storage task.
+- **Blocklist file** (`src/tasks/blocklist_poller.rs`): a local JSON file from a trusted external producer. Boundary: `BlocklistSnapshot::parse_and_validate`, off the request path, before `PolicyHandle::publish`. Asset: correctness and timeliness of the decision.
+- **Outbound network boundary** (`src/upstream/origins.rs`, `resolver.rs`): `admit` and the custom `Resolve` gate everything leaving the process. Asset: containment to three fixed origins; no SSRF to internal addresses.
+- **Revocation boundary** (`src/artifacts/mod.rs::serve_artifact`, the final `PolicyHandle::load`): separates authorized from not-yet-authorized for a given response. Asset: decision correctness at the instant of delivery.
+- **Local state** (`src/store/*`, `src/artifacts/content.rs`): the Turso database, content cache, and data-directory lock. Assets: durability of first-seen times and digest pins (STATE-01), durability of committed bytes (REL-01), availability of the storage task.
+
+### Retained threats
+
+| ID | property | mechanism | asset | planned location | severity | mitigation | verification property | design evidence | tier |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| TM-1 | availability | A public npm package document can declare an extremely large number of version entries within the 64 MiB metadata cap; `commit_project_refresh` batches all reference upserts for that project into one transaction on the sole storage task, whose biased `select!` is checked between transactions and never inside one — so one pathological project blocks every other store operation, including a pending blocklist commit, for that transaction's duration. | availability of `store`; timeliness of blocklist commits for all clients | `src/store/mod.rs` (single task, biased `select!`); `src/npm/mod.rs::resolve_project` refresh path | High | Cap the reference count per project refresh independently of the byte cap; reject and log an outlier before `commit_project_refresh`. **Adopted** as `max_references_per_project`. | A store transaction's duration is bounded independently of upstream document size; a blocklist commit queued behind any single refresh is never delayed past a fixed bound. | The refresh path's "ONE transaction" and the storage task's between-transactions bias | Weak as modelled — the ordering guarantee was stated with no size cap; now mitigated. |
+| TM-2 | integrity / authorization | `src/pypi/filename.rs` is a hand-rolled PEP 427/625 splitter (no maintained crate exists for this half). A filename exploiting repeated separators or `+local` version segments could be attributed to the wrong `(project, version)`; because `policy::evaluate` runs per file on that derived identity, misattribution could let a version-specific block be escaped. | correctness of version-specific denial | `src/pypi/filename.rs::file_identity`, consumed by `policy::evaluate` in the PyPI call stack | High | Exclude-and-log on any ambiguous split (already the default), plus an explicitly adversarial multi-separator corpus. **Adopted** as `pypi_metadata::adversarial_multi_separator_filenames`. | Every corpus filename yields an identity such that a version block denies exactly the correct files and never a different version's file. | Dependency note 1; least confident decision 3 | Medium — exclude-and-log and a corpus were named; adversarial coverage is now committed. |
+| TM-3 | availability | An attacker requests a legitimate artifact while consuming bytes just under the 30 s idle timeout, holding a `DownloadCoordinator` slot and one of `max_artifact_downloads` permits for up to the full 15-minute lifetime; repeating this occupies every download permit. FLOW-01 bounds each slot's duration, not how many slots one actor can hold at once. | availability of artifact delivery for all clients | `src/artifacts/download.rs`, `src/artifacts/stream.rs`, `src/http/limits.rs` | Medium | Per-client concurrent-download limiting, additive to the global semaphore. **Transferred** — see Accept or transfer. | Concurrently occupied download permits attributable to one client are bounded below `max_artifact_downloads`. | Permit acquisition in the download call stack; SPEC §9 timeouts | Weak — total duration is bounded, with no per-actor fairness in this binary. |
+| TM-4 | availability | Any client can request arbitrarily many distinct non-existent names; each is a cache miss triggering a real upstream fetch, bounded only in concurrency and not in total volume. Sustained, this risks the public registries rate-limiting the firewall's shared egress IP, degrading service for every user. | availability of metadata service for all users, via third-party rate limiting | `src/npm/mod.rs::resolve_project`, `src/pypi/mod.rs`, `src/http/limits.rs` | Medium | A short-TTL negative cache for confirmed-absent names. **Adopted** as `MemoryCaches::absent`, TTL = `metadata_ttl`. | Sustained requests for distinct non-existent names produce a bounded rate of outbound requests, not one per unique name. | The cache-miss path always called `fetch_metadata`; no negative cache existed in the types | Weak as modelled; now mitigated. |
+| TM-5 | integrity (timeliness) | `blocklist_poller` detected change via mtime and length only. A same-second replacement of coincidentally equal length may not be re-read on the next poll, delaying an urgent block past SPEC §12's two-interval target. | timeliness of block enforcement | `src/tasks/blocklist_poller.rs` change detection | Medium | Add a stronger change signal. **Adopted** — detection now includes the inode, which an atomic replace always changes, plus a 60 s unconditional re-read backstop. | Two distinct valid blocklist contents of equal length written within the same mtime-resolution window are both observed within two polling intervals. | The poller's change-detection step; SPEC §12 | Weak as modelled; now mitigated, and strong for any producer that replaces atomically as SPEC §8 requires. |
+
+### Limitations
+
+Both `UNKNOWN`s the lens returned have since been resolved and are recorded where the decision lives, not here:
+
+- **Parser recursion depth — resolved.** `serde_json` enforces a depth limit by default and lifting it needs both the `unbounded_depth` feature and an explicit `disable_recursion_limit()` call; this design uses neither. Dependency note 5, with tests `deeply_nested_blocklist_is_rejected_not_a_crash` and `deeply_nested_upstream_document_is_502`.
+- **URL construction from untrusted names — resolved.** Upstream URLs are built by cloning the origin and appending segments with `PathSegmentsMut::push`, never `Url::join` and never concatenation, with `admit` re-validating the result. Recorded under `### upstream`, with test `a_package_name_cannot_change_the_upstream_host`.
+
+Still open, and tracked elsewhere in this document rather than by this lens: pre-1.0 `turso` transaction semantics (least confident decision 1), which is empirical and is answered by the persistence slice. `nodejs-semver` provenance is no longer open — it was resolved on 2026-09-18 and is recorded in dependency note 4. Neither is a security question.
+
+### Accept or transfer
+
+- **TM-3, per-client download fairness — accepted for the MVP and transferred to the operator.** This binary has no client identity: no authentication, no accounts, and one shared policy for every consumer (SPEC §3). Per-client limiting would require inventing an identity concept the specification deliberately excludes, and the deployment model already places a reverse proxy in front of the service, which is where connection and rate limiting belong. Owner: the deploying operator, with the requirement written into `docs/operations.md` rather than left implicit. Revisit if the firewall is ever exposed beyond a trusted network.
+- **TLS termination and deployment access control** — transferred to the operator's reverse proxy (SPEC §3). Owner: the deploying operator.
+- **Network policy forcing clients through the firewall** — transferred to the operator (SPEC §11: "enforced use requires network policy"). Owner: the deploying operator.
+- **Blocklist producer's intelligence quality** — transferred to the external producer (SPEC §8). Owner: the blocklist producer. No individual or team is named anywhere in the specification or plan; naming one is a question for the gate approval below, not something this design can decide.
+- **Revocation is not retroactive** — an already-streaming response is not aborted by a later block. Accepted at the specification level (SPEC §9, to avoid a global lock around network writes). Owner: recorded in SPEC §15 as an explicit user decision with no named individual; same question as above.
+
+**Approval outcome, 2026-09-17.** Gate 3 was approved as drafted, which settles the `max_references_per_project` addition (presentation item 5). The two ownership questions (presentation item 7) were approved **without names supplied**: the blocklist producer and the non-retroactive-revocation acceptance therefore still have no named accountable owner. Neither blocks implementation — both are accountability records, not code — so they carry forward to Gate 4 rather than reopening this gate. If audit traceability matters for this deployment, name them in `docs/operations.md` when that file is written.
+
+## Red Team record
+
+`sf-red-team` was invoked (material uncertainty remained: a pre-1.0 storage engine, a hand-rolled parser, and an invariant with no static enforcement). Verdict: NEEDS REVISION on four of six angles, with F1 and F4 blocking. All five findings are resolved in this document:
+
+| ID | Angle | Finding | Resolution |
+| --- | --- | --- | --- |
+| F1 (blocking) | Verifiability | The invariants section claimed the type system forced the final policy check, but the only `stream::respond` call shown took no decision parameter and no signature was declared — so the sole compile-time guard for the SPEC §9 revocation boundary did not exist where the design said it did. | Resolved: `ArtifactResponse`'s body field is private; both constructors require a non-`Clone`, non-`Copy` `Authorized` witness mintable only from an `Allow`, carrying the revision it was granted under. Declared in `## Types & signatures` and matched in the call stack. |
+| F4 (blocking) | Internal contradiction | `turso` appeared as 0.7.2 in the dependency table and 0.2 in least confident decision 1 — a reader re-checking the riskiest dependency first would check the wrong release. | Resolved: 0.7.2 throughout. The stale figure was a pre-research guess the correction missed. |
+| F2 | Verifiability | The evaluate → revalidate → evaluate window exists identically on the cached-content branch, but the only named test for a blocklist change landing in it was scoped by its own name to "during download". | Resolved: added `blocklist_update_during_revalidation_of_cached_content_denies`, explicitly on the `content.open_verified` branch with no download in flight. |
+| F3 | Hard bar | A strict LRU hit must reorder a recency list — a mutation needing an exclusive lock — so every warm metadata request and warm denial serialized on one mutex per cache, bounding SPEC §12's warm targets by construction rather than by tuning. | Resolved: sixteen-way sharded second-chance caches; a hit takes a per-shard read lock and sets an atomic bit. Explained under `## Types & signatures`. Red Team correctly noted this severity is inferred from the types rather than measured, and SPEC §12 treats the targets as measured-and-reported — but the lock shape is a design decision, not a benchmark discovery, so it is fixed now. |
+| F5 | Slice readiness | Four SPEC §13 groups mapped onto one `blocklist_lifecycle.rs`, mixing tests that pass after the pure-policy slice with tests needing `DownloadCoordinator` and `pin_computed_digests` from the much later artifact slice — so closing the metadata slice with `cargo test --test blocklist_lifecycle` would hit types that slice never builds. | Resolved: split into `blocklist_snapshot.rs` (metadata slices) and `blocklist_revocation.rs` (artifact slice), preferred over `#[ignore]` so each file is a complete honest check at the end of the slice that creates it. |
+
+Angles the Red Team found sound, recorded so a later session does not redo them: **foundations and risk order** (the persistence-second ordering plus confining all SQL to `src/store/` is real containment for the `turso` risk; no other undisclosed load-bearing unvalidated assumption of that class), and **requirements coverage** (every row of `01-product.md`'s rules table and SPEC §2's contract has a matching mechanism, including the npm/PyPI empty-result asymmetry).
+
+## Least confident decisions
+
+1. **`turso` 0.7.2 is pre-1.0 and the whole persistence design rests on it.** WAL with `synchronous=FULL`, explicit transactions, crash recovery and a supported checkpoint API are all assumed. Gate 2 already ordered a persistence-and-recovery slice second for exactly this reason; the residual risk is that the pinned release cannot do one of them and the storage design has to change shape. The containment is real (all SQL inside `src/store/`), but a forced swap would still be a multi-day change.
+2. **Two `reqwest` clients instead of per-request timeout overrides.** This follows from `timeout` and `read_timeout` being builder-level, and it costs a second connection pool. Per-request overrides would keep one pool; I chose the builder form because it makes the four SPEC §11 timeouts impossible to get wrong at a call site. Worth challenging if pool duplication matters more than that.
+3. **We parse Python distribution filenames ourselves.** No maintained crates.io crate does it, so SPEC §7's "maintained parser" requirement is met for versions only. This is the most likely place for a silent identity error — a filename we mis-split is a file we exclude, or worse, attribute to the wrong project. The mitigation is exclude-and-log plus a large filename corpus in tests, but a dependency would have been better.
+4. **`PolicyHandle::load` as the revocation ordering point, with the type system as the enforcement.** SPEC §9 deliberately avoids a global lock, so correctness rests on each request re-loading the snapshot immediately before response creation. Requiring a non-`Clone` `Authorized` witness to construct a body is the strongest compile-time guard available without static ordering analysis — but it proves a check happened and under which revision, not that the snapshot it read was the newest one at that instant. That residual gap is inherent in SPEC §9's lock-free design, not a defect in this encoding.
+5. **PyPI's empty-listing behaviour differs from npm's `403`.** An existing project with no eligible files returns a valid empty listing for pip and a policy denial for npm. Both follow SPEC §§6–7, and each gives the better client-side message, but the asymmetry will look like a bug to anyone reading only the code.
+6. **`ReferenceId` includes the expected digests.** That makes changed upstream digests a new reference, which is what SPEC §5 requires — and also means a publisher-side metadata correction orphans the old reference and its first-seen time, so the corrected reference starts its cooldown again. That is the safe direction, but it is a real behaviour someone will report as a bug.
+7. **Reference membership is revalidated against a refreshed project snapshot on every artifact request.** This is what SPEC §9 requires, and it makes a cold artifact request potentially wait on a metadata refresh. Under an upstream outage, a cached, verified, unblocked artifact is still refused once its metadata TTL has passed. Deliberate, and consistent with "do not serve expired metadata during an upstream outage", but it is the design's harshest availability trade.
+8. **Batched access-time updates on a separate low-priority queue.** Eviction order is therefore approximate, and under sustained load the maintenance queue can starve behind critical work — which is the correct priority but means eviction may lag the cache budget. If it lags badly, cold requests start failing capacity reservation and returning `503`.
+
+## Post-approval corrections (recorded 2026-09-18, during slice 4)
+
+Two statements in this approved document were found false while slice 4 implemented against
+them. **Neither changes an approved decision** — both are supporting facts stated in the
+rationale, and in each case the decision they were offered to support still holds, for a
+better reason. This gate is therefore corrected in place rather than reopened. Slices 5-10
+must read the corrected statements, not the originals.
+
+1. **Dependency note 3 is incomplete: reqwest's `system-proxy` is a *default* feature.**
+   `reqwest-0.13.5/Cargo.toml` declares `default = ["default-tls", "charset", "http2",
+   "system-proxy"]`, and this design does not set `default-features = false` (it cannot,
+   without also dropping `default-tls`, which is what makes rustls the backend). With
+   `system-proxy` on, a `ClientBuilder` reads `HTTP_PROXY`/`HTTPS_PROXY`/`ALL_PROXY` at
+   build time and routes matching requests through whatever host they name, including any
+   credentials in that URL. That is a hole in **two** approved rules at once: the
+   never-forward rule for client credentials, and TEST-01's "no release path relaxes origin
+   checks" — an environment variable would have redirected egress. Closed in slice 4 by
+   `.no_proxy()` in `base_builder`, which both clients derive from, witnessed by
+   `origin_guard::no_config_key_or_env_var_relaxes_origins`.
+
+2. **The `### upstream` claim that `PathSegmentsMut::push` "percent-encodes the segment and
+   cannot escape the path" is false for `.` and `..`.** `url-2.5.8/src/path_segments.rs:246-249`
+   contains `if matches!(segment, "." | "..") { continue; }` — such a segment is **silently
+   dropped**: neither percent-encoded, nor rejected, nor treated as a pop. So `url_for` with a
+   package name of exactly `..` returned the bare origin root and a real request left the
+   process, which slice 4's own row says must be refused before a byte leaves. Closed in slice 4
+   by rejecting those segments in `url_for` with `UrlRejection::PathEscape`.
+
+   The two-independent-defences argument in `### upstream` survives, but not as written: `admit`
+   cannot be the second defence against `.`/`..`, because nothing was appended and `admit` is
+   right to accept the resulting URL. The refusal has to happen at construction. Note also that
+   drop and pop are indistinguishable only while every configured origin sits at path `/`; they
+   diverge the moment an origin carries a path prefix, so anyone adding such an origin must
+   re-derive this.
+
+## Revision: artifact routing under the ecosystem root (reopened 2026-09-19)
+
+**What changed.** Artifacts move from a single top-level `/artifacts/{reference_id}/{filename}`
+to one route per ecosystem: `/npm/artifacts/{reference_id}/{filename}` and
+`/pypi/artifacts/{reference_id}/{filename}`. The same handler, the same reference id, the same
+policy order, the same revocation boundary — with one addition required by the new shape, below.
+
+**The URL's ecosystem root is checked against the reference row (added after Red Team, 2026-09-19).**
+Under the old single-rooted form a URL asserted nothing about ecosystem. Under this revision it
+does, and nothing in the handler enforced that assertion: `serve_artifact(app, id, filename,
+method, range)` carries no ecosystem argument, and `src/http/logging.rs::Target::of` derives the
+logged `ecosystem` purely from the first path segment. Because a reference id is a deterministic
+hash over public metadata and is explicitly not an authorization token (SPEC §9), any client can
+compute or copy one — so a valid npm reference requested at `/pypi/artifacts/{id}/{filename}`
+would be served correctly and logged as `ecosystem=pypi`. Policy itself is unaffected, since it
+reads `row.reference.ecosystem` from the store rather than the path, so this is not an
+authorization bypass. It is a traceability defect, and it falsifies this revision's own stated
+reason for moving both ecosystems. **Rule: the artifact handler compares the URL's ecosystem
+segment with the reference row's ecosystem and returns `404` on mismatch.** This matches the
+treatment `filename` already gets — the server looks up the record and never trusts an arbitrary
+client URL parameter. The logged ecosystem is derived from the verified row, not from the raw
+path.
+
+**Why, in one paragraph.** npm 12.0.2, the current upstream stable, refuses every install
+through this firewall. `allow-remote` defaults to `none` as of npm 12
+(`@npmcli/config/lib/definitions/definitions.js:247-256`), and the exemption that lets a
+registry's own tarballs through (`@npmcli/arborist/lib/arborist/reify.js:988-1004`) requires
+**both** `resolvedURL.origin === registry.origin` **and**
+`registryPath === '/' || resolvedURL.pathname.startsWith(registryPath)`. With metadata at
+`/npm/`, our rewritten `dist.tarball` matched the origin and failed the prefix, so every
+tarball was classed as a remote dependency and refused with `npm error code EALLOWREMOTE`.
+Moving artifacts under the ecosystem root satisfies the second half. Verified by control:
+the same installs succeed against npm 12.0.2 with `--allow-remote=all`, which also rules out
+the other candidate cause — npm 12 warns it does not support this machine's Node v20.19.6,
+recorded here as a caveat on the surrounding behaviour, not as the explanation.
+
+**Why not the client-side workaround.** `allow-remote=all` in `.npmrc` disables npm 12's
+supply-chain control for *every* tarball dependency in a project, not only ones this proxy
+serves. Telling an operator to globally disable a client supply-chain control in order to run
+a supply-chain firewall defeats the product. The three narrower options were each checked and
+rejected: `allow-remote=root` scopes by dependency depth, not origin, so direct dependencies
+pass and transitive ones — most of a real tree — still fail (`pacote/lib/fetcher.js:477-483`);
+`replace-registry-host` rewrites the effective fetch URL to a path this server does not serve,
+and becomes redundant once artifacts already live under the registry prefix; and `allow-remote`
+has no origin- or path-scoped form in npm's config definitions or at either call site. The
+last of those is recorded as "found none", not "there is none" — npm's config resolution was
+not exhaustively audited.
+
+**Why both ecosystems move, when only npm requires it.** Only npm 12 forces the change; pip
+25.0.1, 25.1.1 and 26.2.1 were all exercised against the split-prefix layout npm refuses and
+none objected. Moving only npm would freeze a transient property of one client's config
+default into a permanent shape difference between the two halves of this service. Both shapes
+cost the same one extra parameter on the shared URL builder (`src/npm/render.rs:133-142`,
+called by `src/pypi/mod.rs:464`) and the same two production call sites, so symmetry is free.
+Moving both also removes a branch from the decision-log classifier rather than adding one, and
+fixes a real defect: `src/http/logging.rs:175-197` splits on the first path segment, which
+today yields three ecosystem values for two ecosystems (`npm`, `pypi`, `artifact`), so an
+artifact request cannot be correlated with the ecosystem whose policy denied it without joining
+on the reference id. SPEC §11 asks the decision line to carry `ecosystem`; under this revision
+it genuinely does, for the request type that matters most.
+
+**The name is ours, not npm's.** npm 12's check is purely
+`resolvedURL.pathname.startsWith(registryPath)` — it does not care what the segment is called,
+so `/npm/artifacts/…`, `/npm/-/artifacts/…` and `/npm/{package}/-/{id}/{filename}` all satisfy
+it equally. `artifacts` beside npm's `-` is chosen deliberately over the alternatives:
+putting our route inside `-` claims a name in npm's own API namespace, which is the whole of the
+objection. An earlier draft of this section also called the `matchit` precedence it would rely on
+"read but not tested"; that was wrong, and Red Team corrected it — `/npm/-/ping` is a static leaf
+already beating the `/npm/-/{*rest}` catch-all in this exact running router, so the precedence is
+exercised today. The rejection rests on namespace ownership alone. Mirroring npm's
+`/{package}/-/{filename}` convention
+would put the package name into a path that SPEC §9 says is addressed by reference id alone.
+
+**SPEC §9 deviation, recorded rather than silent.** `SPEC.md:225` states the artifact URL form
+literally, and `SPEC.md:325` repeats it in the route table. This revision changes a form the
+specification writes out, so SPEC §9 is amended to the two ecosystem-rooted forms; if the
+specification is not amended, this document's route list is an explicit, dated deviation from
+it. That is the reason this is a gate reopen and not a slice: the change is small in code and
+large in contract.
+
+**What is not affected, and why that matters.** The reference id does not depend on the public
+path — `src/artifacts/reference.rs:43-67` hashes ecosystem, name, version, filename, upstream
+URL and expected digests. So no reference id rotates, no `artifact_references` row is
+invalidated, and no digest pin or first-seen time moves. This is a routing-and-rendering
+change, not a state migration. `public_url` handling is prefix-agnostic. The integration tests
+read the artifact path out of the rendered document via `common::artifact_path` rather than
+constructing it, so they follow automatically. Slices 11, 12 and 13 are unaffected: their only
+`artifacts` references are source paths, not URLs.
+
+**Route collisions, reasoned from the route table and not yet tested.** `/npm/artifacts/{id}/{filename}`
+is four segments; the npm package routes are two and three, and scoped names stay two and three
+because the `/` is percent-encoded, so a package literally named `artifacts` resolves to
+`/npm/artifacts` and `/npm/artifacts/1.0.0` without overlapping. `{version_or_tag}` is a single
+segment and cannot produce a four-segment request. On the PyPI side every project lives under
+the static `simple` segment, so `/pypi/artifacts/…` is unreachable from any project path at any
+arity, and a project named `artifacts` resolves to `/pypi/simple/artifacts/` as before.
+
+**Open items for the slice that implements this.** Files to change:
+`src/http/mod.rs:51` (the route), `src/npm/render.rs:133-142` (`artifact_url`, which grows an
+ecosystem-root parameter and arguably belongs in a neutral module once PyPI passes its own
+root), `src/http/logging.rs:193` (the `Some("artifacts")` arm, which otherwise goes dead and
+lets artifact requests fall into the `npm` arm logging `package = "artifacts"` and
+`version = <reference id>` — wrong fields, no error), `src/npm/render.rs:240` and
+`src/pypi/render.rs:241` (unit tests asserting the literal prefix), and `docs/operations.md`.
+The handler and `src/artifacts/mod.rs::serve_artifact` additionally take the request's ecosystem
+root and enforce the match rule stated above.
+
+The witness must include: an install driven by npm 12.0.2 without `--allow-remote`, since that
+is the behaviour this revision exists to restore; a test that a package or project named
+`artifacts` still resolves correctly on both ecosystems; a test requesting a known-npm reference
+id under `/pypi/artifacts/…` and a known-PyPI reference id under `/npm/artifacts/…`, each
+answering `404` and each logging an ecosystem derived from the row rather than the path; and a
+pip install driven against the real post-change `/pypi/artifacts/…` route. That last one matters
+because PyPI's move is justified by symmetry rather than necessity, and all existing pip evidence
+was gathered against the pre-change layout — carrying it forward would be asserting compatibility
+with a route that did not exist when the check ran.
+
+**One thing this revision does not claim.** SPEC §11 already places Git, URL and alternate-index
+dependencies outside registry-proxy coverage, so a project containing any of those still needs an
+`allow-remote` override regardless of this change. This revision restores `allow-remote=none`
+compatibility for trees whose tarballs are all firewall-resolved, and no further. `docs/operations.md`
+states that limit explicitly rather than implying npm 12 works everywhere once this ships.
+
+**Red Team on this revision (2026-09-19).** `sf-red-team` returned NEEDS REVISION with one MAJOR
+and two MINORs; all three are resolved above. The MAJOR is the ecosystem-match rule: the revision
+asserted that moving both ecosystems makes the decision log's `ecosystem` field genuinely
+correlate with the policy outcome, while nothing checked the URL's implied ecosystem against the
+reference row, so any cross-root request falsified that claim. Threat model entry TM-R1 covers it:
+integrity of decision-log attribution, Medium, mitigated by rejecting on mismatch and deriving the
+logged ecosystem from the verified row. The existing TM-1 through TM-5 are unaffected, because
+none of them depends on URL shape. The first MINOR corrected this document's own reasoning about
+`matchit` precedence. The second added the post-change pip witness. Red Team checked the collision
+argument against the real axum router rather than the route table and found it sound: the npm
+routes are disjoint from the four-segment artifact route by arity and literal segment, a
+percent-encoded `/` in a scoped name is decoded only after route matching so it cannot collapse
+four segments into two or three, PyPI's project routes are unreachable from `/pypi/artifacts/…` at
+any arity, and dot or empty segments introduce no path hazard because lookup is by database-keyed
+reference id rather than by path concatenation. Its stated limitations: it reviewed as a single
+agent rather than spawning an independent pass, it could not run npm 12.0.2 or pip against a live
+build because the implementing slice does not exist yet, and it did not verify the cited `@npmcli`
+line numbers against npm 12.0.2's source, no copy of which is present in this repository.
+
+## Revision: bounded maximum age for cached metadata (reopened 2026-09-19)
+
+The user decided that a cached item needs a configurable maximum age. This reopened Gate 3, and
+Gate 4 behind it. The cause is slice 12's recorded tradeoff: `metadata_ttl_seconds` bounds how
+often the firewall CHECKS upstream, not how old a stored copy may become, because every upstream
+`304` resets `validated_at_micros`. An unchanging or dishonest upstream can therefore hold this
+firewall's view of a project fixed forever. SPEC is amended to revision 3 and the change is
+recorded in its §4 configuration block, its §10 persistence table, and its §10 caching rules.
+
+Three decisions were the user's, taken before this document was written:
+
+- **The ceiling applies to project metadata and absent-name marks only.** Verified artifact bytes
+  are content-addressed — the key is the verified SHA-256 — so they cannot become stale, and an
+  age ceiling over them would evict correct data and re-download it for no integrity gain. Their
+  only removal reason remains capacity eviction. The blocklist already carries a self-describing
+  expiry and gains no second, competing rule.
+- **Over-age fails closed.** SPEC already says not to serve expired metadata during an upstream
+  outage; the ceiling reaches that same rule by a second route rather than adding a softer one
+  beside it. The cost is explicit: an outage longer than the ceiling turns warm reads into
+  refusals as each project's ceiling lapses.
+- **No other knob is exposed.** The 60 s blocklist file re-read backstop and the 30 s maintenance
+  cadence stay hardcoded; they are internal cadences, not cache-entry lifetimes.
+
+The load-bearing finding from the repository inventory that produced this design: **no field
+recording a full fetch exists today.** `projects` carries exactly one timestamp,
+`validated_at_micros`, and both the `200` and `304` branches set it to `now`; its own doc comment
+says it is "kept only for the conditional request that revalidates this snapshot". The ceiling
+therefore cannot be computed from any existing state, and `fetched_at_micros` is a new column on
+`projects` — a storage-schema change carrying `SCHEMA_VERSION` from 3 to 4. That version change
+refuses an older database rather than migrating it, which remains acceptable only while nothing
+has shipped; the repository can prove no deployed database exists, but it cannot prove one does
+not exist in the world, so this is stated as a condition rather than a fact.
+
+Design consequences worth stating once, here, rather than rediscovering during implementation:
+
+- A `304` carries the stored `fetched_at_micros` forward unchanged. This is the whole mechanism;
+  if a `304` ever writes `now` into that column the ceiling silently stops existing, and no
+  ordinary test would notice, because every visible behaviour stays identical until a copy has
+  aged past the ceiling. The slice's witness must therefore assert the stored value directly and
+  must fail when the field is advanced, not merely when the ceiling is removed.
+- An over-age refresh sends **no validators at all**, so upstream is given no opportunity to
+  answer `304`. Asking conditionally and rejecting the `304` afterwards would leave the firewall
+  dependent on upstream choosing to send a body, which is exactly the dependence the ceiling
+  exists to remove.
+- A `304` answering that unconditional request is an upstream protocol violation and is already
+  handled: slice 12 refuses it as `502 UPSTREAM_INVALID` and has an executed witness for it.
+- `MetadataResponse::Missing` remains `404` whether or not the snapshot is over-age. It is a
+  definitive upstream answer, not a failure to reach upstream, and conflating the two would turn
+  a legitimate removal into an outage.
+- The ceiling never touches blocklist enforcement, which invalidates rendered responses on its own
+  revision and requires no upstream contact. Slice 12's security review established that
+  independently; this revision must not be read as adding to it.

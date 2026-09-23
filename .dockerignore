@@ -1,0 +1,8 @@
+# The build context is tarred up and sent to the builder before the first COPY runs,
+# so without this the multi-gigabyte `target/` directory is transferred on every
+# build. The Dockerfile copies only the manifests, `src/` and `benches/`; everything
+# else here is either output or analysis state.
+/target
+/local
+.smtc-cache/
+.git

@@ -1,0 +1,147 @@
+# Architecture: Decision log delivery
+
+Repository evidence for every "existing" claim below: `evidence/repository-structure.md`, produced
+read-only against Git base `0f50cec6d526773abec4b4897f64afc10992a8ae`.
+
+`sf-red-team: not triggered` for the 2026-09-22 revision (C48): it adds one record field read from the existing injected clock, and no uncertainty, risk-order concern or hard proof problem remains that could change the plan. Its only choice, whether stdout gains the field, was the user's (Gate 2 grilling Q1).
+
+`sf-red-team: not triggered` for the 2026-09-21 backtracking revision (C41): it changes no
+decision of its own. It carries two corrections already attacked by the isolated Red Team review
+of the reopened Gate 3 — the durable-console finding and the startup-failure blast radius — and
+the user's resulting choices, recorded there as Gate 3 C35 and C39.
+
+## Repository evidence
+
+- `evidence/repository-structure.md` — repository grounding for every "existing" claim, Git base `0f50cec`.
+- `evidence/slice-3.md` — the sf-verification P-WHEN finding that reopened this Gate for C48.
+
+Note on IDs: approved Gate 1 now also uses C7 (refuse setting deferred) and C8 (records state the decision time). In this document, C7 and C8 mean the Gate 2 rows below; Gate 1 rows are always cited as "Gate 1 C<n>".
+
+## Clarifications and decisions
+
+| ID | Class | Status | Owning Gate | Target Gate | Question or disposition | Selected value or policy | Decision source |
+|---|---|---|---|---|---|---|---|
+| C4 | current-Gate decision | resolved | 1 | 2 | Which wire format and transport carries records to the SIEM, and how does the operator name a destination? | HTTP `POST` of newline-delimited JSON (one record per line) to a URL the operator sets as `siem_url`. Absent key means the SIEM sink is off. Transport is the already-present `reqwest 0.13.5` over rustls — zero new dependency. `https://` is required; `http://` is accepted only when the host is a loopback address, so a local forwarder agent still works without weakening the remote case. **The SIEM client is built with `reqwest::redirect::Policy::none()`.** Startup validation only checks the URL the operator configured; reqwest's default policy follows up to ten redirects to any host, so without this a `3xx` from the collector could send decision records — peer IPs included when consumer identification (Gate 1 C1) is on — to a destination nobody validated. Disabling redirects also removes the need to rely on unconfirmed library behaviour about whether the auth header survives a cross-host redirect. | `## External`, `## Fit` row `src/delivery/siem.rs` |
+| C5 | current-Gate decision | resolved | 1 | 2 | How does the local file behave over time — size, rollover, retention — given the non-goal that this is not a storage product? | The operator sets `log_file_path`; absent means the file sink is off. Records are appended as newline-delimited JSON. At `log_file_max_bytes` (default 100 MiB) the file is renamed to `<path>.1`, replacing any previous `.1`, and a fresh file is opened. Disk use is therefore bounded at twice the cap, with no timer, no retention schedule and no new dependency. | `## Fit` row `src/delivery/file.rs`, `## Constraints` |
+| C6 | current-Gate decision | resolved | 1 | 2 | How does any credential the SIEM destination requires reach the process without being written into the configuration file? | Through the process environment variable `OSPREY_SIEM_AUTH`, whose value becomes the request header named by `siem_auth_header` (default `Authorization`). The configuration file holds only the header name, never a value. If the variable is unset the sink runs without an auth header, which a local collector needs; one startup line states whether the sink is authenticated so an unset variable is visible rather than silent. The value is never written to a record, a log line or an error. | `## External` |
+| C7 | current-Gate decision | resolved | 2 | none | When consumer identification is on (Gate 1 C1), what actually identifies the consumer? | The peer IP address of the accepted TCP connection, and nothing else — no port, no header, nothing the caller supplies. Rejected: `X-Forwarded-For` and `User-Agent`, because reversing the "nothing a client sends reaches a log line" rule for a spoofable value buys a clean-up list nobody can trust. Stated cost: behind a proxy, NAT or load balancer this records that hop, not the machine that ran the install. | `## Fit` row `src/http/logging.rs`, `## Constraints` |
+| C8 | current-Gate decision | resolved | 2 | none | One delivery pipeline for both destinations, or one each? | One each. Each enabled sink owns a bounded queue, its own background task and its own drop counter. A SIEM retry must not stall a local file write, and an operator must be able to see *which* sink is losing records rather than a single undifferentiated number. Cost: one extra record clone per request when both sinks are on. | `## Fit`, `## Flow` |
+| C9 | current-Gate decision | resolved | 2 | none | Does the existing stdout line change? | The decision becomes one record value rendered to stdout, file and SIEM. **Corrected at the 2026-09-22 reopening (C48):** the renders are identical except that the file and SIEM copies also carry a `timestamp` field, which the stdout render leaves out because the console formatter already stamps its line. With consumer identification off the stdout field set is exactly the twelve fields emitted today, so an operator who turns nothing on sees no change. With it on, the consumer field appears on all three. | `## Fit` row `src/http/logging.rs` |
+| C10 | current-Gate decision | resolved | 2 | none | What happens to records still in flight or queued when the process is shutting down? | Sink tasks watch a **second, separate cancellation token**, cancelled only after the HTTP server join returns (`src/lib.rs:257`). They ignore the main `shutdown` token entirely. Once that drain token fires, no further records can be produced, and each sink drains its queue until empty or a five-second deadline, flushes its tail, and exits. Rejected: starting the drain at `shutdown.cancel()` (`src/lib.rs:256`), which is what a single shared token would do. A request may legitimately stay in flight for the full `RESPONSE_LIFETIME` of 15 minutes (`src/http/limits.rs:24`), so a five-second timer started at cancellation would have exited long before those requests emitted their records — guaranteeing the loss of every slow request active at shutdown, which is exactly the audit-completeness case this feature exists to serve. Waiting for sender closure instead is not available: `drop(self.app)` at `src/lib.rs:265` happens *after* `tasks.join()` at `:264`, so that wait would deadlock. | `## Flow` step 5, `## Constraints` |
+| C11 | current-Gate decision | resolved | 2 | none | Is any combination of the five optional keys silently meaningless or quietly harmful? | Three combinations are rejected at startup as `ConfigError::Invalid`, naming the offending key, through the existing `RawConfig::validate()` cross-field idiom (`src/config.rs:139-199`, the same shape as the `max_artifact_bytes` vs `cache_max_bytes` rule at `:192-199`): `log_consumer_identification = true` with no sink configured; `log_file_max_bytes` with no `log_file_path`; `siem_auth_header` with no `siem_url`. The first is the one that matters — without it, an operator who turns on consumer identification but configures no destination starts writing peer IPs to the console, which is data acquired for no stated purpose. The opt-in must say where the data goes, or it is refused. **Premise corrected at the Gate 3 reopening (C41):** this row originally called the console "a channel the product explicitly calls non-durable". That is false wherever this firewall actually runs — under systemd its stdout is journald's persistent journal, under a container runtime a host-kept log file. The rejection therefore does not give peer addresses *a* destination; they already have one. What it buys is a durable destination **the operator chose**, which is still the reason to keep it. | `## Fit` row `src/config.rs`, `## Program behavior` failures; Gate 3 C35 |
+| C41 | current-Gate decision | resolved | 2 | none | Backtracking record: after slice 3 was implemented, Gate 3 was reopened for a security surface it had not modelled, and two of its resolved decisions contradict this approved Gate — C11's "non-durable console" premise, and the Failures bullet saying an unopenable log file leaves the firewall serving, with no condition. | Gate 2 is brought into agreement rather than left stale. C11's premise is corrected in place, keeping the rejection and changing only its stated reason (Gate 3 C35). The Failures bullet gains the condition the user selected at the Gate 3 reopening and is split into two bullets: with `log_consumer_identification` on, a log file that cannot be opened at startup stops startup; otherwise the firewall keeps serving (Gate 3 C28, C39). `## Flow` step 1 and the `src/delivery/mod.rs` Fit row now name the startup probe in `delivery::build` that this condition depends on (Gate 3 C36). No other Gate 2 decision changes. | Gate 3 QA (reopened), finding R6; user answers recorded as Gate 3 C28 and C39 |
+| C48 | user clarification | resolved | 2 | none | Gate 1 C8 (reopened 2026-09-22): every record delivered to the file or the SIEM states the time of the decision. Does the console line gain the same field? | File and SIEM only. Every record offered to a sink — decision records and summary records alike — carries a `timestamp` field: UTC, RFC 3339, read from the clock `App` already injects (`app.clock.now_utc_micros()`, `src/lib.rs:52-54` at the Git base), because `src/clock.rs:8-9` requires every time reading in the application to go through that trait so tests control it. No dependency is added; which formatter renders the microseconds as RFC 3339 is a Gate 3 choice. The time is read when the record is built: a decision record in `decide()` after `next.run(request)` returns; a periodic summary when `summarise()` builds it; the final summary when the drain flush builds it (`## Flow` steps 2 and 5). The stdout render omits the field, so the console line keeps its exact twelve decision fields and its formatter-supplied time (C9 is otherwise unchanged). A collector's receipt time is not a substitute, because a SIEM batch may lag the decision by up to 2 s plus retries. | user answer, Gate 2 grilling Q1 (2026-09-22) |
+| C12 | current-Gate decision | resolved | 2 | none | Drop counts satisfy "counted" — what makes them *surfaced*, given they ride on a summary that only reaches stdout and is only emitted by the next request that notices its window elapsed? | The periodic summary becomes a record like any other and is offered to every enabled sink, so an operator who configured durable delivery gets durable drop counts. A final summary is flushed once when the drain token fires, before the sinks finish draining, so counts accumulated after the last summary reach a destination instead of dying with the process. No background timer is added. Stated residual limit: while the firewall is idle the counts sit in memory until the next request or shutdown, and a SIEM-only operator whose SIEM is unreachable cannot be told about the resulting drops through the channel that is down — the file sink is the answer for anyone who needs that guarantee. | `## Flow` steps 2 and 5, `## Constraints` |
+
+## Program behavior
+
+**Purpose:** the firewall already decides and records what it served, to its own console and
+nowhere else. This delivers that same per-decision record, optionally, to a file the operator names
+and to the operator's SIEM, so the records survive a restart and reach the people who watch for
+supply-chain events.
+
+**Capabilities:**
+
+- Operator sets `log_file_path` → every decision record is appended to that file as one JSON object per line, and the file never grows past twice `log_file_max_bytes`.
+- Operator sets `siem_url` → every decision record is batched and `POST`ed to that collector as newline-delimited JSON, authenticated by an environment variable if one is set.
+- Operator sets both → both, independently; neither can stall the other.
+- Every record delivered to the file or the SIEM states when the decision was made, as a UTC RFC 3339 `timestamp` field (C48).
+- Operator sets `log_consumer_identification = true` → every record additionally carries the peer IP of the connection that asked, making "which machines already took the blocked package" answerable by one SIEM query.
+- Operator sets none of these → no file is opened, no connection is made, and the console output is unchanged. This is the default.
+
+**Failures:**
+
+- A destination is unreachable, slow, or rejecting → records are dropped, counted per sink, and the count is reported on the periodic summary, which is itself delivered to every enabled sink (C12) rather than only to the console.
+- A queue fills because delivery cannot keep up → same outcome: drop, count, report.
+- The log file cannot be opened **at startup** while consumer identification is on → startup fails, naming `log_file_path`, because otherwise the process would collect peer IPs with no working destination the operator chose for them — they would still reach the console, which the operator did not choose (C11, C41). `check_config` cannot catch this, since it writes nothing and the startup check may create the file.
+- The log file cannot be opened at startup with consumer identification off, or cannot be opened or written **after** startup → one startup error line in the first case; in both, the sink counts each record it could not write and retries the open on the next record. The firewall keeps serving.
+- `siem_url` is malformed, or is `http://` at a non-loopback host → startup fails with a `ConfigError::Invalid` naming the key, through the existing `check_config` path. The operator finds out before the process serves anything, not after.
+- Consumer identification is on but no sink is configured, or a sink's dependent key is set without the sink itself → startup fails the same way (C11). An opt-in that records peer IPs has to name a destination.
+
+**Programming entry point:** none. This is operator-facing configuration; there is no new public
+Rust API and no new HTTP surface.
+
+## Fit
+
+| Module/package | Purpose | Provided functionality | Owns | Used by / uses | Existing or proposed |
+|---|---|---|---|---|---|
+| `src/delivery/mod.rs` | The one place that knows a decision record exists as a value and where copies of it go | Build the sink set from config, probing `log_file_path` at startup when it is set (C41); hand callers a non-blocking offer that never fails the caller; spawn each sink's task | The record type, the bounded queues, the per-sink drop accounting | Used by `src/http/logging.rs` and `src/lib.rs`; uses `tokio::sync::mpsc` and `tokio_util::sync::CancellationToken`, both already direct dependencies | **New.** No existing module owns "a record leaves this process" — logging owns "a line reaches stdout" |
+| `src/delivery/file.rs` | Append records to one operator-named file with a hard size ceiling | Serialise one record per line; append; rename to `<path>.1` and reopen at the cap; count what it could not write | The open file handle and the bytes-written tally | Used by `src/delivery/mod.rs`; uses `std::fs` and `serde_json` | **New.** `tracing-appender` is absent from the tree and would sit on the tracing writer path this design deliberately does not use |
+| `src/delivery/siem.rs` | Ship records to an HTTP collector without ever touching the request path | Batch up to 256 records or 2 s; `POST` newline-delimited JSON with the optional auth header; retry only what is worth retrying; count a dropped batch | The HTTP client — built with `redirect::Policy::none()` — the pending batch, the retry schedule | Used by `src/delivery/mod.rs`; uses `reqwest 0.13.5` (rustls), already a direct dependency | **New** |
+| `src/http/logging.rs` | Already emits exactly one decision line per request | Build the decision as a record value, render it to stdout through the existing `tracing::info!`, then offer a copy to each enabled sink; carry the per-sink drop counts on the summary and deliver the summary through the sinks too; expose a one-shot summary flush for the drain | The decision fields, `Target::of`/`loggable` bounding, the counters | Uses `src/delivery/mod.rs` | **Change.** Emission at `:172-186` becomes record-then-render; `struct Counters` at `:276-282` gains per-sink dropped fields, reset at `:317-321` and reported at `:324-331` — the same shape `errors` already has beside `requests`. Consumer identification adds the peer IP from `ConnectInfo`, never from a header. Decision and summary records gain a `timestamp` read from the injected `App.clock` — `decide()` reads it from the `App` it already has; `summarise()` and the drain flush receive the same `Arc<dyn Clock>` from their caller — that the stdout render leaves out (C48) |
+| `src/config.rs` | Already parses, key-checks and validates the whole configuration | Five new optional keys, all absent-means-off, plus the three cross-key rejections of C11 | The typed `Config`, the key lists, the validation rules | Used by `src/lib.rs` | **Change.** Each key is a three-place addition — `RawConfig` field, `Config` field, and the name in `OPTIONAL_KEYS` at `:117` — plus the loopback/`https` rule for `siem_url` and the C11 cross-key rules in `RawConfig::validate()`, which already holds this exact idiom at `:192-199`. `deny_unknown_fields` at `:61` makes registration mandatory, not optional |
+| `src/lib.rs` | Already builds `App`, spawns tasks and owns the drain order | Construct the sink set at startup and hold its senders on `App`; create the drain token and cancel it after the server join; enable `ConnectInfo` on the server only when consumer identification is on | The `CancellationToken`s and the `Running` drain order | Uses `src/delivery/mod.rs` | **Change.** Sink construction beside the existing `App` assembly; a second token created next to `shutdown` at `:166` and cancelled between `:257` and `:264`; `axum::serve` at `:170` gains connect-info when, and only when, the opt-in is on |
+| `src/tasks/mod.rs` | Already spawns background loops and collects their handles | Spawn each enabled sink's task with the **drain** token — not the main `shutdown` token the other two loops take — and push its handle into `Tasks.handles` | The handle set | Used by `src/lib.rs` | **Change.** Two lines beside `blocklist_poller` and `maintenance` at `:32-37`. The existing `Tasks::join()` at `:46-52` then awaits delivery with no new hook point |
+| `src/main.rs` | Initialises the global subscriber | unchanged | the subscriber | — | **No change.** Delivery is not a tracing layer, so `:58-63` stays exactly as it is |
+| `config.sample.toml` | The operator's worked example | Five commented-out keys with the privacy note on the consumer-identification key | — | — | **Change.** Keys stay flat; the file has no nested `[section]` today and this feature does not introduce the first one |
+| `docs/operations.md` | Current and accurate operator guide, including "## 8. Logs" at `:409-428` | Document the five keys and the three rejected combinations; the `timestamp` field on file and SIEM records and that the console line omits it (C48); the drop counters and where they are delivered; the bounded file behaviour and that the path must have exactly one writer and must not be handed to an external `logrotate`; the environment variable; and what consumer identification records, what it costs behind a proxy, and that turning it off erases nothing already written | — | — | **Change** |
+
+`docs/codebase-overview.md` is entirely stale — it claims this repository has no source code at all.
+It is out of scope for this feature and is named here only so nobody grounds a later decision in it.
+
+## Endpoints
+
+None. This feature adds no route and changes no existing route's behaviour.
+
+## Data
+
+No tables, collections or queries. The existing `store` module is untouched; delivered records are
+written to a file and to an external collector, and the firewall never reads them back. This is a
+direct consequence of the product non-goal "not a log search or storage product".
+
+## Flow
+
+1. **Startup.** `Config::load` yields the five optional values. `src/lib.rs` calls
+   `delivery::build(&config)`, which creates one bounded queue (capacity 4096) and one task per
+   enabled sink and returns the sender set, held on `App`. When `log_file_path` is set, `build`
+   first probes it — opens it for append, creating it if absent, and closes it again. A failed
+   probe stops startup while consumer identification is on and is logged once otherwise (C41).
+   With neither key set the sender set is empty, nothing is spawned, no file is opened and no
+   client is constructed. `src/tasks/mod.rs` pushes each task handle into `Tasks.handles`.
+2. **Per request.** `decide()` runs exactly as it does today through `next.run(request)`. Afterwards
+   it builds the decision record — stamped from `app.clock.now_utc_micros()` (C48), and including the
+   peer IP only when consumer identification is on — renders it to stdout through the existing
+   `tracing::info!` without the timestamp, then offers a clone to each enabled
+   sink with a non-blocking send. A full or closed queue increments that sink's drop count and
+   returns immediately; nothing on this path awaits I/O. `summarise()` then runs as today; when
+   its window has elapsed the summary it emits — stamped when `summarise()` builds it (C48) — now carries the per-sink drop counts and is itself
+   offered to the sinks, so drop counts land wherever decision records land.
+3. **File sink task.** Receives a record, serialises it to JSON plus a newline, appends it, and adds
+   to its byte tally. At `log_file_max_bytes` it renames the file to `<path>.1` — replacing any
+   previous `.1` — and opens a fresh one. Any I/O error counts one drop and is retried on the next
+   record.
+4. **SIEM sink task.** Accumulates records until it holds 256 or 2 s have passed, then `POST`s them
+   as newline-delimited JSON with the auth header if one was configured, over a client that does
+   not follow redirects. A transport error, a `5xx`, or a `429` is retried three times with
+   100 ms / 500 ms / 2 s backoff; any other `4xx` is dropped and counted immediately, because a
+   stale credential or a rejected payload will fail identically on every attempt and retrying it
+   only widens the window in which the queue fills and sheds records. After the retries a batch is
+   dropped and counted. While a retry is in flight the queue keeps filling and may drop — which is
+   the approved policy, not an accident.
+5. **Shutdown.** `Running::shutdown()` cancels the main token (`src/lib.rs:256`) and joins the HTTP
+   server (`src/lib.rs:257`). Only then is the drain token cancelled — which is the point after
+   which no further records can be produced, however long an individual request took to finish.
+   The final summary — stamped from `app.clock` when the flush builds it (C48) — is flushed into the queues, and each sink task drains until its queue is
+   empty or five seconds have passed, writes or sends its tail, and returns. `Tasks::join()`
+   (`src/lib.rs:264`) already awaits them. Anything still queued at the deadline is dropped and
+   counted.
+
+## Constraints
+
+- **Configuration keys must be registered in three places.** `#[serde(deny_unknown_fields)]` at `src/config.rs:61` plus the name-level `check_keys()` at `src/config.rs:240` mean a key added to `RawConfig` but missing from `OPTIONAL_KEYS` at `src/config.rs:117` is rejected outright. Five keys, three places each.
+- **Shutdown ordering is why C10 needs a second token.** The existing `shutdown` token is cancelled at `src/lib.rs:256`, *before* in-flight requests finish at `:257`, and a request may run for the full `RESPONSE_LIFETIME` of 15 minutes (`src/http/limits.rs:24`). A sink watching that token would exit long before those requests emitted their records. Waiting for sender closure instead would deadlock, because `drop(self.app)` at `:265` is after `tasks.join()` at `:264`. A separate drain token cancelled between `:257` and `:264` is the only one of the three that is correct, and it leaves the existing drain order intact.
+- **Records produced during the drain window still reach a sink; records produced after the deadline do not.** The five-second deadline exists so a wedged sink cannot hang the process, and anything it discards is counted like any other drop. This is an accepted consequence of the Gate 1 decision to drop rather than block, not an overlooked case.
+- **The request path already takes a synchronous mutex every request** (`src/http/logging.rs:300`). Per-sink drop counts go on that same existing `Counters` lock, so this feature adds arithmetic to a critical section that is already entered, not a new one. Nothing else this feature adds is allowed on that path. *(Housekeeping note added at Gate 3: C13 in `03-program-design.md` refines the mechanism — the counts became per-sink atomics rather than fields under this lock, because the sink tasks increment them too and are async. The constraint this bullet sets, that nothing new lands on the request path, is unchanged and still binding. No Gate 2 decision is reversed; this note exists so a future reader of Gate 2 alone is not misled by the literal wording above.)*
+- **Consumer identification needs connect-info at the server.** The peer address is available to Axum middleware only if the server is built with `into_make_service_with_connect_info`, which is a change at `src/lib.rs:170`. It is enabled only when the opt-in is on, so the default path is untouched.
+- **Behind a proxy, NAT or load balancer, the peer IP is that hop.** Consumer identification then produces a list of hops, not of machines. This is a real limit on the product's headline metric and belongs in the operator documentation, not in a later surprise.
+- **There is no CI in this repository and `cargo test --release` is self-reported as never green** (`docs/operations.md:717-736`). Gate 4 witnesses run under debug `cargo test` and `cargo clippy --all-targets -- -D warnings`, which is what the repository actually uses.
+- **A record whose delivery is dropped is gone.** There is no spool, no disk buffer and no replay. That follows directly from the approved Gate 1 decision to drop rather than slow or fail a request, and it is the reason drops must be counted and surfaced.
+- **Drop counts cannot be reported through a channel that is down.** C12 delivers them to every enabled sink and flushes a final summary at shutdown, but an operator running the SIEM sink alone, whose SIEM is unreachable, learns about the resulting drops only from the console. Anyone who needs that guarantee configures the file sink as well. While the firewall is idle the counts also sit in memory until the next request or shutdown, because no background timer is added.
+- **The file sink assumes it is the only writer of its path.** There is no interprocess lock, so two instances pointed at one file, or an external `logrotate` renaming the file out from under the process, will interleave or lose records. A crash can also leave a partially written final line, which is the normal cost of newline-delimited JSON. These belong in the operator documentation Gate 4 writes, not in the design.
+- **Turning consumer identification off does not erase what it already recorded.** Peer IPs already written to the log file, to its `.1` rollover, or shipped to the SIEM stay there. There is no purge path, and adding one is not in scope — this belongs in the operator documentation alongside what the opt-in records.
+
+## External
+
+- **The operator's SIEM HTTP collector**, named by `siem_url`. No vendor SDK and no vendor-specific payload: newline-delimited JSON over `POST` is what Splunk HEC raw, Elastic, Datadog, Sumo Logic and Vector/Fluent Bit collectors all accept. Reached with `reqwest 0.13.5` over rustls, already a direct dependency (`Cargo.lock`: `rustls 0.23.45`), with redirects disabled so the only host this client ever talks to is the one the operator configured and validation approved.
+- **Environment variable `OSPREY_SIEM_AUTH`** — name only, never a value, never in this repository and never in a record, a log line or an error message. Its contents become the value of the header named by `siem_auth_header` (default `Authorization`).
+- No webhooks, no callbacks, no inbound external surface.
